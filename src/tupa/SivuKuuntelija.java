@@ -29,7 +29,8 @@ public class SivuKuuntelija implements ChangeListener<TreeItem<Kohde>>
            public void changed(ObservableValue<? extends TreeItem<Kohde>> observable, TreeItem<Kohde> oldValue, TreeItem<Kohde> newValue) {
                  TreeItem<Kohde> selectedItem = newValue;
 
-                  ikkuna.valittuKohde(selectedItem);
+                 Kasittelija kasittelija = new Kasittelija(ikkuna);
+                  kasittelija.valittuKohde(selectedItem);
               
 
            }

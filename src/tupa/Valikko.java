@@ -10,6 +10,8 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import static javafx.geometry.Pos.CENTER;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -36,17 +38,18 @@ public class Valikko implements EventHandler<ActionEvent>{
 
 
 protected MenuBar menuBar;
-
-
+protected TUPA ikkuna;
+private Pysyvat loki;
 
 public Valikko(){
     
 }
 
-public Valikko(MenuBar menu){
+public Valikko(MenuBar menu, TUPA ikkuna){
     
     this.menuBar=menu;
-    
+    this.ikkuna = ikkuna;
+    loki = new Pysyvat(ikkuna);
 }
 
 public MenuBar buildMenuBar() {
@@ -69,12 +72,6 @@ tallenna_n.setAccelerator (new KeyCharacterCombination("S", KeyCombination.SHIFT
 
 MenuItem lopeta = new MenuItem ("Lopeta");
 lopeta.setAccelerator (new KeyCharacterCombination("Q", KeyCombination.SHORTCUT_DOWN));
-//menuTiedosto.getItems().add(lopeta);
-//    lopeta.setOnAction(actionEvent -> Platform.exit());
-//
-//
-//
-//uusi.setOnAction (this);
 
 
 
@@ -137,45 +134,73 @@ stage = (Stage) menuBar.getScene().getWindow();
     break;
 }    
 case "Avaa":
-    //ks. OLIOPELI!!
+    
     break;
 
 case "Tallenna":
-    //ks. OLIOPELI!!
+          Tallennus tallenna = new Tallennus(ikkuna.annaKohteet());
+          tallenna.suoritaTallennus();
+          loki.writeMessage("Tallennus onnistui.");
     break;
 
 case "Tallenna nimellä":
-    //ks. OLIOPELI!!
+    
     break;    
     
 case "Lopeta":{
     
-    //eka varmistus, että haluaako tallentaa..
-    
-//    Button nappi = (Button) e.getSource ();
-	
+	Stage stageV = new Stage();
    	BorderPane alue = new BorderPane ();
 		
-		Label viesti = new Label ("Haluatko tallentaa ennen ohjelman lopettamista?");
-		alue.setTop (viesti);
+            VBox vbox = new VBox();
+            	vbox.setPadding (new Insets (10));
+		vbox.setSpacing (10);
 		
-		HBox hbox = new HBox ();
-		hbox.setPadding (new Insets (10, 10, 15, 15));
-		hbox.setSpacing (10);
-		Button okNappi = new Button ("Tallenna");
-		Button cancelNappi = new Button ("Lopeta tallentamatta");
+                HBox hbox1 = new HBox();
+                Label viesti = new Label ("Haluatko tallentaa ennen ohjelman lopettamista?");
 		
-		hbox.getChildren ().addAll (okNappi, cancelNappi);
-		alue.setBottom (hbox);
-		  Stage stageV = new Stage();
-		Scene sceneV = new Scene (alue, 50, 100);
+                hbox1.setAlignment(Pos. CENTER);
+		hbox1.getChildren().add(viesti);
+                
+                
+		HBox hbox2 = new HBox ();
+		hbox2.setPadding (new Insets (10));
+		hbox2.setSpacing (10);
+		Button jooTallennus = new Button ("Tallenna");
+		Button eiTallennus = new Button ("Älä tallenna");
+                Button peruuta = new Button ("Peruuta");
+		 eiTallennus.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                    Platform.exit ();
+            }
+        });
+                 
+                  jooTallennus.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            
+                Tallennus tallenna = new Tallennus(ikkuna.annaKohteet());
+                
+                   Platform.exit ();
+            }
+        });
+                  peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+           
+                  stageV.close();
+            }
+        });
+		hbox2.getChildren ().addAll (jooTallennus, eiTallennus, peruuta);
+		vbox.getChildren ().addAll (hbox1, hbox2);
+                alue.setCenter (vbox);
+		  
+		Scene sceneV = new Scene (alue, 400, 100);
 		stageV.setTitle ("TUPA - TULOSPALVELU");
 		stageV.setScene (sceneV);
 		stageV.show ();	
  
- 
-   
-//    Platform.exit ();
     
 }
 
