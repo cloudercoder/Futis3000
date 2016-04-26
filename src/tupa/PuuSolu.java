@@ -54,9 +54,17 @@ public class PuuSolu extends TreeCell<Kohde>
 	private ContextMenu rakennaHakemistoValikko ()
 	{
 		ContextMenu menu = new ContextMenu ();
-		MenuItem item1 = new MenuItem ("Vie");
+		MenuItem item1 = new MenuItem ("Lisää");
 		menu.getItems ().add (item1);
 		
+                MenuItem item2 = new MenuItem ("Poista");
+		menu.getItems ().add (item1);
+                MenuItem item3 = new MenuItem ("Vie");
+		menu.getItems ().add (item1);
+                MenuItem item4 = new MenuItem ("Vie");
+		menu.getItems ().add (item1);
+                
+                // tähän mitä tapahtuu
 //		juureksi.setOnAction ((EventHandler<ActionEvent>) ikkuna);
 		
 		return menu;
