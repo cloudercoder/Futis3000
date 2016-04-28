@@ -1,9 +1,9 @@
 /*
- * Derp
- * ASD
- * ASD
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
-package TKyhteys;
+package tkyhteys.tkyhteys;
 
 import java.sql.*;
 import javax.swing.JOptionPane;
