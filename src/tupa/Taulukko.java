@@ -250,12 +250,12 @@ public class Taulukko {
 //            nakyma.luoOtteluSivu((Ottelu) newSelection);
         });
 
-        taulukko.setFixedCellSize(25);
+       taulukko.setFixedCellSize(25);
 
         if (taulukko.getItems().size() == 0) {
-            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(2)));
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(3)));
         } else {
-            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(1.1)));
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(2.1)));
         }
 
         taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
@@ -284,9 +284,9 @@ public class Taulukko {
         TableColumn pelinumero = new TableColumn("#");
         TableColumn pelipaikka = new TableColumn("Pelipaikka");
 
-        pelaaja.setCellValueFactory(new PropertyValueFactory<TuomarinRooli, String>("taulukkonimi"));
-        pelinumero.setCellValueFactory(new PropertyValueFactory<TuomarinRooli, Integer>("taulukkonumero"));
-        pelipaikka.setCellValueFactory(new PropertyValueFactory<TuomarinRooli, String>("taulukkopelipaikka"));
+        pelaaja.setCellValueFactory(new PropertyValueFactory<Pelaaja, String>("taulukkonimi"));
+        pelinumero.setCellValueFactory(new PropertyValueFactory<Pelaaja, Integer>("taulukkonumero"));
+        pelipaikka.setCellValueFactory(new PropertyValueFactory<Pelaaja, String>("taulukkopelipaikka"));
 
         pelaaja.setPrefWidth(10);
         pelinumero.setPrefWidth(10);
@@ -295,7 +295,7 @@ public class Taulukko {
         taulukko.setItems(data);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoPelaajaSivu((TuomarinRooli) newSelection);
+            nakyma.luoPelaajaSivu((Pelaaja) newSelection);
         });
 
         taulukko.setFixedCellSize(25);
@@ -385,5 +385,44 @@ public class Taulukko {
 
         return taulukko;
     }
+public TableView luoPelaajanPisteTaulukko(Pelaaja pelaaja) {
+        taulukko.setId("my-table");
+        taulukko.setPlaceholder(new Label(""));
+        List<Pelaaja> pisteet = new ArrayList<>();
+   
+       
+            pisteet.add(pelaaja);
+          
 
+        
+
+        ObservableList<Pelaaja> data
+                = FXCollections.observableArrayList(pisteet);
+        
+        
+        TableColumn ottelut = new TableColumn("Ottelut");
+        TableColumn maalit = new TableColumn("Maalit");
+        TableColumn syotot = new TableColumn("Syötöt");
+        
+        ottelut.setCellValueFactory(new PropertyValueFactory<Pelaaja, Integer>("taulukko_ottelut"));
+        maalit.setCellValueFactory(new PropertyValueFactory<Pelaaja, Integer>("taulukkomaalit"));
+        syotot.setCellValueFactory(new PropertyValueFactory<Pelaaja, Integer>("taulukkosyotot"));
+        
+       
+        taulukko.setItems(data);
+
+        taulukko.setFixedCellSize(25);
+
+         if (taulukko.getItems().size() == 0) {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(2)));
+        } else {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(1.1)));
+        }
+
+        taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
+        taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
+        taulukko.getColumns().addAll(ottelut, maalit, syotot);
+    
+        return taulukko;
+    }
 }

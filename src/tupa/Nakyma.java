@@ -28,7 +28,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -49,6 +48,12 @@ public class Nakyma {
 
     private TextField etunimi = new TextField();
     private TextField sukunimi = new TextField();
+      private TextField pelipaikka = new TextField();
+        
+          private ComboBox<Integer> pelinumero  = new ComboBox<>();
+private TextField sposti = new TextField();
+private TextField puh = new TextField();
+private TextField rooli = new TextField();
 
     private Tiedottaja tiedottaja;
     private Varmistus varmistaja;
@@ -60,6 +65,7 @@ public class Nakyma {
     private TableView sarjataulukko;
     private TableView pelaajat;
     private TableView toimihenkilot;
+     private TableView pisteet;
 
     Nakyma() {
 
@@ -1062,8 +1068,8 @@ public class Nakyma {
         grid.setPadding(new Insets(20, 10, 40, 10));
 
         HBox rivi1 = new HBox();
-        rivi1.setPadding(new Insets(60, 0, 0, 0));
-        rivi1.setAlignment(Pos. CENTER);
+        rivi1.setPadding(new Insets(20, 10, 20, 80));
+        rivi1.setAlignment(Pos. TOP_RIGHT);
         rivi1.setSpacing(20);
         
         Button muokkausnappula = new Button();
@@ -1097,10 +1103,10 @@ public class Nakyma {
 
         //rivi2
         VBox info = new VBox();
-        info.setPadding(new Insets(10));
+        info.setPadding(new Insets(10,10,40,10));
 
         Label nimi = new Label(joukkue.toString());
-        nimi.setFont(Font.font("Papyrus", 28));
+        nimi.setFont(Font.font("Papyrus", 32));
         
         info.setAlignment(Pos.CENTER);
         info.getChildren().addAll(nimi);
@@ -1108,18 +1114,20 @@ public class Nakyma {
         
 
         HBox rivi3 = new HBox();
-        rivi3.setSpacing(20);
-
+        rivi3.setSpacing(40);
+ rivi3.setPadding(new Insets(10,10,60,10));
         Taulukko taulukontekija1 = new Taulukko();
         ottelut = taulukontekija1.luoJoukkueenOtteluTaulukko(joukkue);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         VBox osio1 = new VBox();
         osio1.setSpacing(20);
+          osio1.setPadding(new Insets(0,0, 10, 0));
         osio1.setAlignment(Pos.CENTER);
         Label otsikko1 = new Label("Joukkueen ottelut");
         otsikko1.setFont(Font.font("Papyrus", 18));
-
+  osio1.getChildren().addAll(otsikko1, ottelut);
+        
         VBox osio2 = new VBox();
         osio2.setSpacing(20);
         osio2.setAlignment(Pos.CENTER);
@@ -1133,6 +1141,7 @@ public class Nakyma {
 
         VBox osio3 = new VBox();
         osio3.setSpacing(20);
+      
         osio3.setAlignment(Pos.CENTER);
         Label otsikko3 = new Label("Toimihenkilöt");
         otsikko3.setFont(Font.font("Papyrus", 18));
@@ -1142,6 +1151,7 @@ public class Nakyma {
         toimihenkilot.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         VBox osio4 = new VBox();
+        
         osio4.setSpacing(20);
         osio4.setAlignment(Pos.CENTER);
 
@@ -1296,12 +1306,12 @@ public class Nakyma {
         alle2.getChildren().addAll(ohje2, lisays2);
        osio3.getChildren().addAll(otsikko3, toimihenkilot, alle2);
 
-      rivi3.getChildren().addAll(osio1, osio2);
+      rivi3.getChildren().addAll(osio1, osio4);
       grid.add(rivi3, 0, 2);
       
       HBox rivi4 = new HBox();
-      rivi4.setSpacing(20);
-      rivi4.getChildren().addAll(osio3, osio4);
+      rivi4.setSpacing(40);
+      rivi4.getChildren().addAll(osio2, osio3);
       grid.add(rivi4, 0, 3);
       
       
@@ -1373,16 +1383,321 @@ public class Nakyma {
         return grid;
     }
 
-    public void luoPelaajaSivu(TuomarinRooli rooli) {
+    public void luoPelaajaSivu(Pelaaja pelaaja) {
+  ScrollPane sb = new ScrollPane();
+      
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20, 10, 40, 300));
+
+        //riville 1
+        HBox painike = new HBox();
+        painike.setSpacing(20);
+    
+        Button muokkausnappula = new Button();
+
+        muokkausnappula.setText("Muokkaa");
+        muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                VBox peitto = new VBox();
+                peitto.setStyle("-fx-background-color: white;");
+                ikkuna.annaNaytto().getChildren().add(peitto);
+
+              luoPelaajaMuokkaus(pelaaja);
+
+            }
+        });
+
+        Button poistonappula = new Button("Poista pelaaja");
+        poistonappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                varmistaja.annaPoistoVarmistus(pelaaja);
+
+            }
+        });
+
+        painike.setPadding(new Insets(20, 20, 20 ,200));
+        painike.setAlignment(Pos.TOP_RIGHT);
+        painike.getChildren().addAll(muokkausnappula, poistonappula);
+        grid.add(painike, 0, 0);
+
+        //riville 2
+        VBox info = new VBox();
+        info.setPadding(new Insets(10, 10, 20, 10)); 
+        Label nimi = new Label(pelaaja.toString());
+        nimi.setFont(Font.font("Papyrus", 32));
+           info.setAlignment(Pos.CENTER);
+        info.getChildren().addAll(nimi);
+        
+        HBox tiedot = new HBox();
+         tiedot.setPadding(new Insets(10, 10, 40, 10)); 
+        tiedot.setSpacing(40);
+         
+        Label id = new Label("PelaajaID: " + pelaaja.annaJulkinenID());
+        id.setFont(Font.font("Papyrus", 14));
+        Label pelipaikka = new Label("Pelipaikka: " + pelaaja.annaPelipaikka());
+        pelipaikka.setFont(Font.font("Papyrus", 14));
+        Label pelinumero = new Label("Pelinumero: " + pelaaja.annaPelinumero());
+        pelinumero.setFont(Font.font("Papyrus", 14));
+         Label joukkue = new Label("Joukkue: " + pelaaja.annaJoukkue());
+        joukkue.setFont(Font.font("Papyrus", 18));
+     
+   info.setAlignment(Pos.CENTER);
+     tiedot.setAlignment(Pos.CENTER);
+        tiedot.getChildren().addAll(id, joukkue, pelipaikka, pelinumero);
+        grid.add(info, 0, 1);
+        grid.add(tiedot, 0, 2);
+
+        Taulukko taulukontekija1 = new Taulukko();
+
+        pisteet = taulukontekija1.luoPelaajanPisteTaulukko(pelaaja);
+        pisteet.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        //riville 3
+        VBox osio1 = new VBox();
+        osio1.setSpacing(20);
+        osio1.setAlignment(Pos.CENTER);
+        Label otsikko1 = new Label("Pelaajan pisteet");
+        otsikko1.setFont(Font.font("Papyrus", 18));
+        osio1.getChildren().addAll(otsikko1, pisteet);
+
+        grid.add(osio1, 0, 3);
+        sb.setContent(grid);
+        VBox peitto = new VBox();
+        peitto.setStyle("-fx-background-color: white;");
+        ikkuna.annaNaytto().getChildren().add(peitto);
+        ikkuna.annaNaytto().getChildren().add(sb);
 
     }
 
+    public void luoPelaajaMuokkaus(Pelaaja pelaaja){
+        Button muokkausnappula = new Button("Tallenna");
+        muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (etunimi.getText().trim().isEmpty() || sukunimi.getText().trim().isEmpty()) {
+
+                    tiedottaja.annaVaroitus("Et voi antaa tyhjää kenttää.");
+                } else {
+
+                   
+
+                    pelaaja.asetaEtuNimi(etunimi.getText());
+                    pelaaja.asetaSukuNimi(sukunimi.getText());
+                    pelaaja.asetaNimi(etunimi.getText() + " " + sukunimi.getText());
+
+                 
+
+                    tiedottaja.kirjoitaLoki("Pelaajan tietoja muokattu.");
+                    nimi.setText("");
+                    ikkuna.asetaMuutos(true);
+
+                    luoPelaajaSivu(pelaaja);
+                }
+
+            }
+        });
+
+        Button peruuta = new Button("Peruuta");
+        peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+               
+                luoPelaajaSivu(pelaaja);
+
+            }
+        });
+
+        etunimi.setText(pelaaja.annaEtuNimi());
+        sukunimi.setText(pelaaja.annaSukuNimi());
+
+        VBox vbox = new VBox();
+        vbox.setSpacing(20);
+
+        Label otsikko = new Label("Muokkaa pelaajan " + pelaaja.toString() + " tietoja: ");
+        otsikko.setFont(Font.font("Papyrus", 22));
+
+        HBox hbox1 = new HBox();
+        Label label1 = new Label("Etunimi:");
+        hbox1.setSpacing(20);
+        hbox1.getChildren().addAll(label1, etunimi);
+        HBox hbox2 = new HBox();
+        Label label2 = new Label("Sukunimi:");
+        hbox2.setSpacing(10);
+        hbox2.getChildren().addAll(label2, sukunimi);
+
+        HBox painikkeet = new HBox();
+        painikkeet.setSpacing(20);
+        painikkeet.getChildren().addAll(muokkausnappula, peruuta);
+        vbox.getChildren().addAll(otsikko, hbox1, hbox2, painikkeet);
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(40));
+        grid.setAlignment(Pos.CENTER);
+
+        grid.add(vbox, 1, 7);
+
+      VBox peitto = new VBox();
+                peitto.setStyle("-fx-background-color: white;");
+                ikkuna.annaNaytto().getChildren().add(peitto);
+                  ikkuna.annaNaytto().getChildren().add(grid);
+    }
+    
     public void luoToimariSivu(Toimihenkilo toimari) {
+ScrollPane sb = new ScrollPane();
+      
 
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20, 10, 40, 300));
+
+        //riville 1
+        HBox painike = new HBox();
+        painike.setSpacing(20);
+    
+        Button muokkausnappula = new Button();
+
+        muokkausnappula.setText("Muokkaa");
+        muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                VBox peitto = new VBox();
+                peitto.setStyle("-fx-background-color: white;");
+                ikkuna.annaNaytto().getChildren().add(peitto);
+
+              luoToimariMuokkaus(toimari);
+
+            }
+        });
+
+        Button poistonappula = new Button("Poista toimihenkilö");
+        poistonappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                varmistaja.annaPoistoVarmistus(toimari);
+
+            }
+        });
+
+        painike.setPadding(new Insets(20, 20, 20 ,150));
+        painike.setAlignment(Pos.TOP_RIGHT);
+        painike.getChildren().addAll(muokkausnappula, poistonappula);
+        grid.add(painike, 0, 0);
+
+        //riville 2
+        VBox info = new VBox();
+        info.setPadding(new Insets(10, 10, 20, 10)); 
+        Label nimi = new Label(toimari.toString());
+        nimi.setFont(Font.font("Papyrus", 32));
+           info.setAlignment(Pos.CENTER);
+        info.getChildren().addAll(nimi);
+        
+        HBox tiedot = new HBox();
+         tiedot.setPadding(new Insets(10, 10, 40, 10)); 
+        tiedot.setSpacing(40);
+         
+     
+        Label rooli = new Label("Rooli: " + toimari.annaRooli());
+        rooli.setFont(Font.font("Papyrus", 14));
+        Label sposti = new Label("Sähköpostiosoite: " + toimari.annaSposti());
+        sposti.setFont(Font.font("Papyrus", 14));
+         Label puh = new Label("Puhelinnumero: " + toimari.annaPuh());
+        puh.setFont(Font.font("Papyrus", 18));
+     
+   info.setAlignment(Pos.CENTER);
+     tiedot.setAlignment(Pos.CENTER);
+        tiedot.getChildren().addAll(rooli, sposti, puh);
+        grid.add(info, 0, 1);
+        grid.add(tiedot, 0, 2);
+
+        sb.setContent(grid);
+        VBox peitto = new VBox();
+        peitto.setStyle("-fx-background-color: white;");
+        ikkuna.annaNaytto().getChildren().add(peitto);
+        ikkuna.annaNaytto().getChildren().add(sb);
     }
 
+   public void luoToimariMuokkaus(Toimihenkilo toimari){
+          Button muokkausnappula = new Button("Tallenna");
+        muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (etunimi.getText().trim().isEmpty() || sukunimi.getText().trim().isEmpty()) {
+
+                    tiedottaja.annaVaroitus("Et voi antaa tyhjää kenttää.");
+                } else {
+
+                   
+
+                   toimari.asetaEtuNimi(etunimi.getText());
+                    toimari.asetaSukuNimi(sukunimi.getText());
+                    toimari.asetaNimi(etunimi.getText() + " " + sukunimi.getText());
+
+                 
+
+                    tiedottaja.kirjoitaLoki("Pelaajan tietoja muokattu.");
+                    nimi.setText("");
+                    ikkuna.asetaMuutos(true);
+
+                    luoToimariSivu(toimari);
+                }
+
+            }
+        });
+
+        Button peruuta = new Button("Peruuta");
+        peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+               
+                luoToimariSivu(toimari);
+
+            }
+        });
+
+        etunimi.setText(toimari.annaEtuNimi());
+        sukunimi.setText(toimari.annaSukuNimi());
+
+        VBox vbox = new VBox();
+        vbox.setSpacing(20);
+
+        Label otsikko = new Label("Muokkaa toimihenkilön " + toimari.toString() + " tietoja: ");
+        otsikko.setFont(Font.font("Papyrus", 22));
+
+        HBox hbox1 = new HBox();
+        Label label1 = new Label("Etunimi:");
+        hbox1.setSpacing(20);
+        hbox1.getChildren().addAll(label1, etunimi);
+        HBox hbox2 = new HBox();
+        Label label2 = new Label("Sukunimi:");
+        hbox2.setSpacing(10);
+        hbox2.getChildren().addAll(label2, sukunimi);
+
+        HBox painikkeet = new HBox();
+        painikkeet.setSpacing(20);
+        painikkeet.getChildren().addAll(muokkausnappula, peruuta);
+        vbox.getChildren().addAll(otsikko, hbox1, hbox2, painikkeet);
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(40));
+        grid.setAlignment(Pos.CENTER);
+
+        grid.add(vbox, 1, 7);
+
+      VBox peitto = new VBox();
+                peitto.setStyle("-fx-background-color: white;");
+                ikkuna.annaNaytto().getChildren().add(peitto);
+                  ikkuna.annaNaytto().getChildren().add(grid);
+    }
     public void luoOttelusivu(Ottelu ottelu) {
 
     }
+   public void luoOtteluMuokkaus(Ottelu ottelu) {
 
+    }
 }
