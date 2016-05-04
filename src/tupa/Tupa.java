@@ -1,5 +1,5 @@
 /*
-Pääohjelma
+Pääohjelmaluokka
  */
 package tupa;
 
@@ -79,6 +79,7 @@ public class Tupa extends Application {
         Nakyma nakyma = new Nakyma(this);
         //keskinäytön tyylittely
         naytto.setStyle("-fx-background-color: white;");
+
         //aloitusnäkymä
         nakyma.luoEtusivu();
 
@@ -113,7 +114,7 @@ public class Tupa extends Application {
         keski.getChildren().add(naytto);
         border.setCenter(keski);
 
-        Scene scene = new Scene(border, 600, 500);
+        Scene scene = new Scene(border, 940, 500);
         primaryStage.setTitle("TUPA \t - \t Tulospalvelu");
         scene.getStylesheets().add(Tupa.class.getResource("tyylit.css").toExternalForm());
 

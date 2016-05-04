@@ -193,13 +193,13 @@ public class Muuttaja {
         pelaaja.asetaTaulukkonumero();
         pelaaja.asetaTaulukkopelipaikka();
         pelaaja.asetaTaulukkonimi();
-        System.out.println(pelaaja.annaTaulukkopelipaikka());
+     
         ikkuna.asetaMuutos(true);
 
     }
 
     public void lisaaOttelu(Joukkue koti, Joukkue vieras, String aika, String paikka, Tuomari erotuomari, Tuomari avustava1, Tuomari avustava2, Sarja sarja) {
-        System.out.println(erotuomari);
+     
         Ottelu ottelu = new Ottelu(sarja);
         koti.annaOttelut().add(ottelu);
         vieras.annaOttelut().add(ottelu);

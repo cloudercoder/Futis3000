@@ -33,7 +33,7 @@ public class Taulukko {
 
     public TableView luoOtteluTaulukko(Sarja sarja) {
         taulukko.setId("my-table");
-        
+
         taulukko.setPlaceholder(new Label("Ei lisättyjä otteluita"));
         List<Ottelu> ottelut = new ArrayList<>();
 
@@ -65,7 +65,7 @@ public class Taulukko {
         avustava1.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava1"));
         avustava2.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava2"));
         tulos.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkotulos"));
-avustava1.prefWidthProperty().bind(avustava1.widthProperty());
+        avustava1.prefWidthProperty().bind(avustava1.widthProperty());
         taulukko.setItems(data);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -90,6 +90,7 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
 
     public TableView luoSarjaTaulukko() {
         taulukko.setId("my-table");
+        taulukko.setPlaceholder(new Label(""));
         TableColumn sijoitus = new TableColumn("#");
         TableColumn joukkue = new TableColumn("Joukkue");
         TableColumn ottelut = new TableColumn("Ott");
@@ -108,6 +109,7 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
 
     public TableView luoMaalintekijaTaulukko() {
         taulukko.setId("my-table");
+        taulukko.setPlaceholder(new Label(""));
         TableColumn sijoitus = new TableColumn("#");
         TableColumn pelaaja = new TableColumn("Pelaaja");
         TableColumn maalit = new TableColumn("Maalit");
@@ -120,22 +122,10 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
         return taulukko;
     }
 
-    public TableView luoPelaajaTaulukko() {
-        taulukko.setId("my-table");
-        TableColumn nimi = new TableColumn("Nimi");
-        TableColumn pelipaikka = new TableColumn("Pelipaikka");
-        TableColumn pelinumero = new TableColumn("Pelinumero");
-        taulukko.setFixedCellSize(25);
-        taulukko.getColumns().addAll(pelinumero, nimi, pelipaikka);
-        taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(2)));
-        taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
-        taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
-        return taulukko;
-    }
 
     public TableView luoToimihenkiloTaulukko(Joukkue joukkue) {
         taulukko.setId("my-table");
-   taulukko.setPlaceholder(new Label("Ei lisättyjä toimihenkilöitä"));
+        taulukko.setPlaceholder(new Label("Ei lisättyjä toimihenkilöitä"));
         List<Toimihenkilo> toimarit = new ArrayList<>();
 
         for (int i = 0; i < joukkue.annaToimarit().size(); i++) {
@@ -180,7 +170,7 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
 
     public TableView luoJoukkueTaulukko(Sarja sarja) {
         taulukko.setId("my-table");
-           taulukko.setPlaceholder(new Label("Ei lisättyjä joukkueita"));
+        taulukko.setPlaceholder(new Label("Ei lisättyjä joukkueita"));
         List<Joukkue> joukkueet = new ArrayList<>();
 
         for (int i = 0; i < sarja.annaJoukkueet().size(); i++) {
@@ -220,7 +210,7 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
     }
 
     public TableView luoJoukkueenOtteluTaulukko(Joukkue joukkue) {
-           taulukko.setPlaceholder(new Label("Ei lisättyjä otteluita"));
+        taulukko.setPlaceholder(new Label("Ei lisättyjä otteluita"));
         taulukko.setId("my-table");
         List<Ottelu> ottelut = new ArrayList<>();
 
@@ -233,19 +223,26 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
         ObservableList<Ottelu> data
                 = FXCollections.observableArrayList(ottelut);
 
-        TableColumn id = new TableColumn("OtteluID");
+  TableColumn id = new TableColumn("OtteluID");
         TableColumn ottelu = new TableColumn("Ottelu");
         TableColumn ajankohta = new TableColumn("Ajankohta");
         TableColumn paikka = new TableColumn("Paikka");
-        TableColumn tuomari = new TableColumn("Tuomari");
+        TableColumn tuomarit = new TableColumn("Tuomarit");
+        TableColumn erotuomari = new TableColumn("Erotuomari");
+        TableColumn avustava1 = new TableColumn("1. Avustava");
+        TableColumn avustava2 = new TableColumn("2. Avustava");
+        tuomarit.getColumns().addAll(erotuomari, avustava1, avustava2);
         TableColumn tulos = new TableColumn("Tulos");
 
-        id.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkoid"));
+    id.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkoid"));
         ottelu.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkonimi"));
         ajankohta.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoaika"));
         paikka.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaikka"));
-        tuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkotuomari"));
+        erotuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoerotuomari"));
+        avustava1.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava1"));
+        avustava2.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava2"));
         tulos.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkotulos"));
+        avustava1.prefWidthProperty().bind(avustava1.widthProperty());
 
         taulukko.setItems(data);
 
@@ -264,13 +261,13 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
         taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
         taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
 
-        taulukko.getColumns().addAll(id, ottelu, ajankohta, paikka, tuomari, tulos);
+        taulukko.getColumns().addAll(id, ottelu, ajankohta, paikka, tuomarit, tulos);
 
         return taulukko;
     }
 
     public TableView luoPelaajaTaulukko(Joukkue joukkue) {
-           taulukko.setPlaceholder(new Label("Ei lisättyjä pelaajia"));
+        taulukko.setPlaceholder(new Label("Ei lisättyjä pelaajia"));
         taulukko.setId("my-table");
         List<Pelaaja> pelaajat = new ArrayList<>();
 
@@ -318,6 +315,7 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
 
     public TableView luoJoukkueenMaalintekijaTaulukko(Joukkue joukkue) {
         taulukko.setId("my-table");
+        taulukko.setPlaceholder(new Label(""));
         TableColumn sijoitus = new TableColumn("#");
         TableColumn pelaaja = new TableColumn("Pelaaja");
         TableColumn maalit = new TableColumn("Maalit");
@@ -331,15 +329,15 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
     }
 
     public TableView luoTuomarinOtteluTaulukko(Tuomari tuomari) {
-        System.out.println(tuomari);
-           taulukko.setPlaceholder(new Label("Ei lisättyjä otteluita"));
+    
+        taulukko.setPlaceholder(new Label("Ei lisättyjä otteluita"));
         taulukko.setId("my-table");
         List<Ottelu> ottelut = new ArrayList<>();
- System.out.println(tuomari.annaTuomarinRoolit().size());
+   
         for (int i = 0; i < tuomari.annaTuomarinRoolit().size(); i++) {
 
             ottelut.add(tuomari.annaTuomarinRoolit().get(i).annaOttelu());
-             System.out.println(tuomari.annaTuomarinRoolit().get(i).annaOttelu());
+          
 
         }
 
@@ -352,8 +350,8 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
         TableColumn paikka = new TableColumn("Paikka");
         TableColumn tuomarit = new TableColumn("Tuomarit");
         TableColumn erotuomari = new TableColumn("Erotuomari");
-        TableColumn avustava1 = new TableColumn("1. Avustava erotuomari");
-        TableColumn avustava2 = new TableColumn("2. Avustava erotuomari");
+        TableColumn avustava1 = new TableColumn("1. Avustava");
+        TableColumn avustava2 = new TableColumn("2. Avustava");
         tuomarit.getColumns().addAll(erotuomari, avustava1, avustava2);
         TableColumn tulos = new TableColumn("Tulos");
 
@@ -363,7 +361,7 @@ avustava1.prefWidthProperty().bind(avustava1.widthProperty());
         paikka.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaikka"));
         erotuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoerotuomari"));
         avustava1.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava1"));
-         avustava2.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava2"));
+        avustava2.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava2"));
         tulos.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkotulos"));
 
         taulukko.setItems(data);

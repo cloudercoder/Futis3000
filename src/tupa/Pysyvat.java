@@ -52,7 +52,7 @@ public class Pysyvat {
         Label logo = new Label("TUPA \t - \t Tulospalvelu ");
         logo.setFont(Font.font("Papyrus", FontWeight.BOLD, 28));
 
-        kuvaotsikko.setStyle("-fx-background-color:  linear-gradient(to bottom, #00b300, 	 #33ff33); -fx-border-color: BLACK; -fx-border-width: 1px 0px 1px 0px;");
+        kuvaotsikko.setStyle("-fx-background-color:  linear-gradient(to bottom, #00b300, 	 #33ff33);");
         kuvaotsikko.setPadding(new Insets(10));
         kuvaotsikko.setSpacing(30);
         kuvaotsikko.setAlignment(Pos.CENTER);
@@ -81,7 +81,7 @@ public class Pysyvat {
         //sivulaitaan puurakenne, joka sisältää kohteet
 
         VBox sivu = new VBox();
-        sivu.setStyle("-fx-background-color: linear-gradient(to right, #00b300, 	 #33ff33); -fx-border-color: BLACK; -fx-border-width: 1px 1px 0px 1px");
+        sivu.setStyle("-fx-background-color: linear-gradient(to right, #00b300, 	 #33ff33);");
         sivu.setPadding(new Insets(100, 10, 0, 10));
         sivu.setSpacing(10);
      

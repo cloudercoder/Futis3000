@@ -29,6 +29,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -124,26 +125,28 @@ public class Nakyma {
     }
 
     public void luoEtusivu() {
+
+        HBox osa = new HBox();
+
         HBox nimipalkki = new HBox();
 
-        nimipalkki.setPadding(new Insets(10, 30, 10, 30));
-        Text nimi = new Text(ikkuna.annaTurnaus().toString());
+        nimipalkki.setPadding(new Insets(20));
+        Label nimi = new Label(ikkuna.annaTurnaus().toString());
         nimi.setFont(Font.font("Papyrus", FontWeight.BOLD, 30));
-
-        nimipalkki.getChildren().add(nimi);
+        nimipalkki.setAlignment(Pos.CENTER);
+        nimipalkki.getChildren().addAll(nimi);
 
         VBox peitto = new VBox();
         peitto.setStyle("-fx-background-color: white;");
         ikkuna.annaNaytto().getChildren().add(peitto);
 
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(40, 20, 10, 300));
-        grid.setAlignment(Pos.CENTER);
+        grid.setPadding(new Insets(40, 10, 40, 300));
 
-        Button uusi = new Button();
+        Button muokkausnappula = new Button();
 
-        uusi.setText("Muokkaa");
-        uusi.setOnAction(new EventHandler<ActionEvent>() {
+        muokkausnappula.setText("Muokkaa");
+        muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
 
@@ -156,8 +159,13 @@ public class Nakyma {
             }
         });
 
+        VBox rivi1 = new VBox();
+        rivi1.setAlignment(Pos.TOP_RIGHT);
+        rivi1.getChildren().addAll(muokkausnappula);
+
         VBox hakupalkki = new VBox();
-        hakupalkki.setPadding(new Insets(40));
+        hakupalkki.setAlignment(Pos.CENTER);
+        hakupalkki.setPadding(new Insets(20));
         hakupalkki.setSpacing(20);
         Label otsikko = new Label("Hae sarjaa/joukkuetta/tuomaria: ");
         otsikko.setFont(Font.font("Papyrus", FontWeight.BOLD, 18));
@@ -198,17 +206,24 @@ public class Nakyma {
 
             }
         });
-
+        tulospalkki.setAlignment(Pos.CENTER);
         ScrollPane sb = new ScrollPane();
         sb.setStyle("-fx-background: #fff;");
 
         hakupalkki.getChildren().addAll(otsikko, haku, tulospalkki);
 
-        grid.add(nimipalkki, 2, 2);
-        grid.add(uusi, 5, 1);
-        grid.add(hakupalkki, 2, 5);
-        sb.setContent(grid);
+        grid.add(nimipalkki, 1, 1);
+        grid.add(muokkausnappula, 2, 0);
+        grid.add(hakupalkki, 1, 2);
+        grid.setAlignment(Pos.CENTER_RIGHT);
 
+        osa.getChildren().addAll(grid);
+        osa.setAlignment(Pos.CENTER);
+        sb.setContent(osa);
+
+        StackPane uusisp = new StackPane();
+        uusisp = ikkuna.annaNaytto();
+        uusisp.setAlignment(sb, Pos.CENTER);
         ikkuna.annaNaytto().getChildren().add(sb);
 
     }
@@ -234,12 +249,21 @@ public class Nakyma {
             }
         });
 
+        Button peruuta = new Button("Peruuta");
+        peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                luoEtusivu();
+
+            }
+        });
+
         nimi.setText(ikkuna.annaTurnaus().toString());
 
         HBox hbox1 = new HBox();
         Label label1 = new Label("Turnauksen nimi:");
         hbox1.setSpacing(10);
-        hbox1.getChildren().addAll(label1, nimi, muokkausnappula);
+        hbox1.getChildren().addAll(label1, nimi, muokkausnappula, peruuta);
 
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(40));
@@ -393,19 +417,24 @@ public class Nakyma {
         pisteporssi = taulukontekija2.luoMaalintekijaTaulukko();
         pisteporssi.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
+        VBox ylialle = new VBox();
+        ylialle.setSpacing(10);
         HBox alle = new HBox();
         alle.setSpacing(10);
+
+        Label ohje = new Label("Lisää ottelu:");
+        ohje.setFont(Font.font("Papyrus", 14));
 
         VBox ohjekoti = new VBox();
         Label ohjek = new Label("Koti");
         ComboBox<Joukkue> koti = new ComboBox();
         List<Joukkue> kotijoukkuelista = new ArrayList();
-        
-        for(int i=0; i<sarja.annaJoukkueet().size(); i++){
-            kotijoukkuelista.add( sarja.annaJoukkueet().get(i));
+
+        for (int i = 0; i < sarja.annaJoukkueet().size(); i++) {
+            kotijoukkuelista.add(sarja.annaJoukkueet().get(i));
         }
-        
-         ObservableList joukkueet1 = FXCollections.observableList(kotijoukkuelista);
+
+        ObservableList joukkueet1 = FXCollections.observableList(kotijoukkuelista);
         koti.setItems(joukkueet1);
         ohjekoti.getChildren().addAll(ohjek, koti);
 
@@ -413,13 +442,12 @@ public class Nakyma {
         Label ohjev = new Label("Vieras");
         ComboBox<Joukkue> vieras = new ComboBox();
         List<Joukkue> vierasjoukkuelista = new ArrayList();
-       
 
-            for(int i=0; i<sarja.annaJoukkueet().size(); i++){
-            vierasjoukkuelista.add( sarja.annaJoukkueet().get(i));
+        for (int i = 0; i < sarja.annaJoukkueet().size(); i++) {
+            vierasjoukkuelista.add(sarja.annaJoukkueet().get(i));
         }
-        
- ObservableList joukkueet2 = FXCollections.observableList(vierasjoukkuelista);
+
+        ObservableList joukkueet2 = FXCollections.observableList(vierasjoukkuelista);
         vieras.setItems(joukkueet2);
         ohjevieras.getChildren().addAll(ohjev, vieras);
 
@@ -432,20 +460,19 @@ public class Nakyma {
                     for (int i = 0; i < joukkueet2.size(); i++) {
                         if (joukkueet2.get(i).equals(ov.getValue())) {
                             joukkueet2.remove(uusi);
+                              joukkueet2.add(vanha);
                         }
                     }
 
-                  
-
                 } else {
-                  
+
                     joukkueet2.remove(uusi);
                 }
             }
 
         });
-        
-               vieras.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Joukkue>() {
+
+        vieras.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Joukkue>() {
             @Override
             public void changed(ObservableValue ov, Joukkue vanha, Joukkue uusi) {
 
@@ -454,23 +481,18 @@ public class Nakyma {
                     for (int i = 0; i < joukkueet1.size(); i++) {
                         if (joukkueet1.get(i).equals(ov.getValue())) {
                             joukkueet1.remove(uusi);
+                             joukkueet1.add(vanha);
                         }
                     }
 
-                  
-
                 } else {
-                  
+
                     joukkueet1.remove(uusi);
                 }
             }
 
         });
-        
-        
-        
-        
-        
+
         VBox ohjeaika = new VBox();
 
         Label ohjea = new Label("Ajankohta");
@@ -568,12 +590,14 @@ public class Nakyma {
                     for (int i = 0; i < avustavat2.size(); i++) {
                         if (avustavat2.get(i).equals(ov.getValue())) {
                             avustavat2.remove(uusi);
+                               avustavat2.add(vanha);
                         }
                     }
 
                     for (int i = 0; i < avustavat1.size(); i++) {
                         if (avustavat1.get(i).equals(ov.getValue())) {
                             avustavat1.remove(uusi);
+                               avustavat1.add(vanha);
                         }
                     }
 
@@ -594,12 +618,14 @@ public class Nakyma {
                     for (int i = 0; i < avustavat2.size(); i++) {
                         if (avustavat2.get(i).equals(ov.getValue())) {
                             avustavat2.remove(uusi);
+                            avustavat2.add(vanha);
                         }
                     }
 
                     for (int i = 0; i < erotuomarit.size(); i++) {
                         if (erotuomarit.get(i).equals(ov.getValue())) {
                             erotuomarit.remove(uusi);
+                            erotuomarit.add(vanha);
                         }
                     }
 
@@ -620,12 +646,14 @@ public class Nakyma {
                     for (int i = 0; i < avustavat1.size(); i++) {
                         if (avustavat1.get(i).equals(ov.getValue())) {
                             avustavat1.remove(uusi);
+                               avustavat1.add(vanha);
                         }
                     }
 
                     for (int i = 0; i < erotuomarit.size(); i++) {
                         if (erotuomarit.get(i).equals(ov.getValue())) {
                             erotuomarit.remove(uusi);
+                               erotuomarit.add(vanha);
                         }
                     }
 
@@ -640,7 +668,7 @@ public class Nakyma {
         VBox painikeboksi = new VBox();
         painikeboksi.setPadding(new Insets(15, 0, 0, 0));
         painikeboksi.setSpacing(10);
-       
+
         Button lisaysnappula = new Button("Lisää");
         lisaysnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -665,14 +693,12 @@ public class Nakyma {
         painikeboksi.getChildren().addAll(lisaysnappula, tyhjennys);
 
         alle.getChildren().addAll(ohjekoti, ohjevieras, ohjeaika, ohjepaikka, ohjetuomari1, ohjetuomari2, ohjetuomari3, painikeboksi);
-
+        ylialle.getChildren().addAll(ohje, alle);
         VBox alle2 = new VBox();
-
-        HBox ohjeboksi2 = new HBox();
-
-        ohjeboksi2.setSpacing(10);
-        Label ohje2 = new Label("Joukkue");
-        ohjeboksi2.getChildren().addAll(ohje2);
+        alle2.setSpacing(10);
+        Label ohjej = new Label("Lisää joukkue:");
+        ohjej.setFont(Font.font("Papyrus", 14));
+     
 
         HBox painikeboksi2 = new HBox();
 
@@ -713,9 +739,9 @@ public class Nakyma {
         });
 
         painikeboksi2.getChildren().addAll(lisaaJoukkue, lisaysnappula2);
-        alle2.getChildren().addAll(ohjeboksi2, painikeboksi2);
+        alle2.getChildren().addAll(ohjej, painikeboksi2);
 
-        osio1.getChildren().addAll(otsikko1, ottelut, alle);
+        osio1.getChildren().addAll(otsikko1, ottelut, ylialle);
         osio2.getChildren().addAll(otsikko2, joukkueet, alle2);
         osio3.getChildren().addAll(otsikko3, sarjataulukko);
         osio4.getChildren().addAll(otsikko4, pisteporssi);
@@ -833,6 +859,16 @@ public class Nakyma {
             }
         });
 
+        Button peruuta = new Button("Peruuta");
+
+        peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                luoEtusivu();
+
+            }
+        });
+
         VBox vbox = new VBox();
         vbox.setSpacing(20);
         HBox hbox1 = new HBox();
@@ -866,9 +902,9 @@ public class Nakyma {
         Tuomari tuomari = (Tuomari) arvo.getValue();
 
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(40, 20, 10, 400));
-        grid.setAlignment(Pos.TOP_CENTER);
-        grid.setHgap(20);
+        grid.setPadding(new Insets(20, 10, 40, 300));
+
+        //riville 1
         HBox painike = new HBox();
         painike.setSpacing(20);
         Button muokkausnappula = new Button();
@@ -896,12 +932,14 @@ public class Nakyma {
             }
         });
 
-        painike.setPadding(new Insets(20));
-        painike.setAlignment(Pos.CENTER);
+        painike.setPadding(new Insets(60, 20, 20 ,20));
+        painike.setAlignment(Pos.TOP_RIGHT);
         painike.getChildren().addAll(muokkausnappula, poistonappula);
+        grid.add(painike, 0, 0);
 
+        //riville 2
         VBox info = new VBox();
-        info.setPadding(new Insets(10));
+        info.setPadding(new Insets(10, 10, 40, 10));
         Label nimi = new Label(tuomari.toString());
         nimi.setFont(Font.font("Papyrus", 28));
         Label id = new Label("tuomariID: " + tuomari.annaJulkinenId());
@@ -909,21 +947,22 @@ public class Nakyma {
         info.setAlignment(Pos.CENTER);
         info.getChildren().addAll(nimi, id);
 
-        grid.add(painike, 5, 1);
-        grid.add(info, 2, 2);
-        grid.setAlignment(Pos.CENTER);
+        grid.add(info, 0, 1);
 
         Taulukko taulukontekija1 = new Taulukko();
 
         ottelut = taulukontekija1.luoTuomarinOtteluTaulukko(tuomari);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        //riville 3
         VBox osio1 = new VBox();
         osio1.setSpacing(20);
         osio1.setAlignment(Pos.CENTER);
         Label otsikko1 = new Label("Otteluluettelo");
         otsikko1.setFont(Font.font("Papyrus", 18));
         osio1.getChildren().addAll(otsikko1, ottelut);
-        grid.add(ottelut, 2, 5);
+
+        grid.add(osio1, 0, 2);
         sb.setContent(grid);
         VBox peitto = new VBox();
         peitto.setStyle("-fx-background-color: white;");
@@ -1022,6 +1061,11 @@ public class Nakyma {
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(20, 10, 40, 10));
 
+        HBox rivi1 = new HBox();
+        rivi1.setPadding(new Insets(60, 0, 0, 0));
+        rivi1.setAlignment(Pos. CENTER);
+        rivi1.setSpacing(20);
+        
         Button muokkausnappula = new Button();
 
         muokkausnappula.setText("Muokkaa");
@@ -1047,39 +1091,34 @@ public class Nakyma {
 
             }
         });
+        
+        rivi1.getChildren().addAll(muokkausnappula, poistonappula);
+        grid.add(rivi1, 0, 0);
 
+        //rivi2
         VBox info = new VBox();
         info.setPadding(new Insets(10));
 
         Label nimi = new Label(joukkue.toString());
         nimi.setFont(Font.font("Papyrus", 28));
-        Label id = new Label("");
-        id.setFont(Font.font("Papyrus", 18));
-        info.setAlignment(Pos.TOP_RIGHT);
-        info.getChildren().addAll(nimi, id);
+        
+        info.setAlignment(Pos.CENTER);
+        info.getChildren().addAll(nimi);
+        grid.add(info, 0, 1);
+        
 
-        HBox painikkeet = new HBox();
-        painikkeet.setPadding(new Insets(10));
-        painikkeet.setSpacing(20);
-        painikkeet.getChildren().addAll(muokkausnappula, poistonappula);
-
-        grid.add(painikkeet, 1, 1);
-
-        grid.add(info, 0, 2);
-        grid.setHgap(20);
+        HBox rivi3 = new HBox();
+        rivi3.setSpacing(20);
 
         Taulukko taulukontekija1 = new Taulukko();
-
         ottelut = taulukontekija1.luoJoukkueenOtteluTaulukko(joukkue);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         VBox osio1 = new VBox();
         osio1.setSpacing(20);
         osio1.setAlignment(Pos.CENTER);
-        Label otsikko1 = new Label("Otteluluettelo");
+        Label otsikko1 = new Label("Joukkueen ottelut");
         otsikko1.setFont(Font.font("Papyrus", 18));
-        osio1.getChildren().addAll(otsikko1, ottelut);
-
-        grid.add(osio1, 0, 3);
 
         VBox osio2 = new VBox();
         osio2.setSpacing(20);
@@ -1090,8 +1129,7 @@ public class Nakyma {
         Taulukko taulukontekija3 = new Taulukko(this);
         pelaajat = taulukontekija3.luoPelaajaTaulukko(joukkue);
         pelaajat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        osio2.getChildren().addAll(otsikko2, pelaajat);
-        grid.add(osio2, 1, 3);
+    
 
         VBox osio3 = new VBox();
         osio3.setSpacing(20);
@@ -1103,22 +1141,17 @@ public class Nakyma {
         toimihenkilot = taulukontekija4.luoToimihenkiloTaulukko(joukkue);
         toimihenkilot.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        osio3.getChildren().addAll(otsikko3, toimihenkilot);
-        grid.add(osio3, 0, 5);
-
         VBox osio4 = new VBox();
         osio4.setSpacing(20);
         osio4.setAlignment(Pos.CENTER);
 
-        Label otsikko4 = new Label("Pistepörssi");
+        Label otsikko4 = new Label("Joukkueen sisäinen pistepörssi");
         otsikko4.setFont(Font.font("Papyrus", 18));
         Taulukko taulukontekija2 = new Taulukko();
         pisteporssi = taulukontekija2.luoJoukkueenMaalintekijaTaulukko(joukkue);
         pisteporssi.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         osio4.getChildren().addAll(otsikko4, pisteporssi);
-
-        grid.add(osio4, 1, 5);
 
         VBox alle = new VBox();
         alle.setPadding(new Insets(20, 0, 60, 0));
@@ -1188,7 +1221,7 @@ public class Nakyma {
 
         lisays.getChildren().addAll(vbox0, vbox1, vbox2, vbox3, vbox4);
         alle.getChildren().addAll(ohje, lisays);
-        grid.add(alle, 1, 4);
+         osio2.getChildren().addAll(otsikko2, pelaajat, alle);
 
         VBox alle2 = new VBox();
         alle2.setPadding(new Insets(20, 0, 60, 0));
@@ -1261,8 +1294,17 @@ public class Nakyma {
 
         lisays2.getChildren().addAll(vbox11, vbox12, vbox13, vbox14, vbox15, vbox16);
         alle2.getChildren().addAll(ohje2, lisays2);
-        grid.add(alle2, 0, 6);
+       osio3.getChildren().addAll(otsikko3, toimihenkilot, alle2);
 
+      rivi3.getChildren().addAll(osio1, osio2);
+      grid.add(rivi3, 0, 2);
+      
+      HBox rivi4 = new HBox();
+      rivi4.setSpacing(20);
+      rivi4.getChildren().addAll(osio3, osio4);
+      grid.add(rivi4, 0, 3);
+      
+      
         sb.setContent(grid);
         VBox peitto = new VBox();
         peitto.setStyle("-fx-background-color: white;");

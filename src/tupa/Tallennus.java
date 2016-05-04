@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Tallennus {
 
-    private String tallennusTiedosto = "TUPA_kohteet";
+    private String tallennusTiedosto = "TUPA_tallennus";
     private Tupa ikkuna;
 
     private List<Kohde> kohdetk = new ArrayList<>();
