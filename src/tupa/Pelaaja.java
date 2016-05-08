@@ -16,15 +16,19 @@ public class Pelaaja extends Henkilo {
     private static int peLaskuri;
     private int id_julkinen;
     private Joukkue joukkue;
-    // välilät 1-99
+    // väliltä 1-99
     private int pelinumero;
     private String pelipaikka;
     private transient IntegerProperty taulukkonumero = new SimpleIntegerProperty();
     private transient IntegerProperty taulukko_ottelut = new SimpleIntegerProperty();
     private transient IntegerProperty taulukkomaalit = new SimpleIntegerProperty();
     private transient IntegerProperty taulukkosyotot = new SimpleIntegerProperty();
+    private transient IntegerProperty taulukkopisteet = new SimpleIntegerProperty();
     private transient StringProperty taulukkopelipaikka = new SimpleStringProperty();
     private transient StringProperty taulukkonimi = new SimpleStringProperty();
+    private transient IntegerProperty taulukkosijoitus = new SimpleIntegerProperty();
+    private transient StringProperty taulukkorooli = new SimpleStringProperty();
+
     private List<Kokoonpano> kokoonpanot = new ArrayList<>();
     private List<Maali> maalit = new ArrayList<>();
 
@@ -60,10 +64,6 @@ public class Pelaaja extends Henkilo {
         return kokoonpanot;
     }
 
-    public List<Maali> annaPisteet() {
-        return maalit;
-    }
-
     public void asetaPelinumero(int pelinumero) {
         this.pelinumero = pelinumero;
     }
@@ -93,6 +93,7 @@ public class Pelaaja extends Henkilo {
                 maara++;
             }
         }
+
         return maara;
     }
 
@@ -104,8 +105,15 @@ public class Pelaaja extends Henkilo {
             if (maalit.get(i).annaSyottaja().equals(this)) {
                 maara++;
             }
+
         }
+
         return maara;
+    }
+
+    public int annaPisteet() {
+
+        return (this.annaMaalit() + annaSyotot());
     }
 
     public IntegerProperty taulukkonumeroProperty() {
@@ -140,6 +148,14 @@ public class Pelaaja extends Henkilo {
         this.taulukkosyotot = new SimpleIntegerProperty(this.annaSyotot());
     }
 
+    public IntegerProperty taulukkopisteetProperty() {
+        return taulukkopisteet;
+    }
+
+    public void asetaTaulukkopisteet() {
+        this.taulukkopisteet = new SimpleIntegerProperty(this.annaPisteet());
+    }
+
     public StringProperty taulukkopelipaikkaProperty() {
         return taulukkopelipaikka;
     }
@@ -158,6 +174,40 @@ public class Pelaaja extends Henkilo {
 
     public void asetaTaulukkonimi() {
         this.taulukkonimi = new SimpleStringProperty(this.annaKokoNimi());
+    }
+
+    public void asetaTaulukkosijoitus(int i) {
+        this.taulukkosijoitus = new SimpleIntegerProperty(i);
+    }
+
+    public IntegerProperty taulukkosijoitusProperty() {
+        return taulukkosijoitus;
+    }
+
+    public List<Maali> annaKaikkiMaalit() {
+        return maalit;
+    }
+
+    public void asetaTaulukkorooli(Ottelu ottelu) {
+
+        boolean on_kokoonpanossa = false;
+
+        for (int i = 0; i < kokoonpanot.size(); i++) {
+            if (kokoonpanot.get(i).annaOttelu().equals(ottelu)) {
+                on_kokoonpanossa = true;
+            }
+        }
+
+        if (on_kokoonpanossa) {
+            this.taulukkorooli = new SimpleStringProperty("Kokoonpanossa");
+        } else {
+            this.taulukkorooli = new SimpleStringProperty("");
+        }
+
+    }
+
+    public StringProperty taulukkorooliProperty() {
+        return taulukkorooli;
     }
 
 }

@@ -73,7 +73,7 @@ public class Tupa extends Application {
         //luodaan turnaus, kun ohjelma käynnistyy
         turnaus = new Turnaus();
         kohdetk.add(turnaus);
-
+        
         BorderPane border = new BorderPane();
 
         Nakyma nakyma = new Nakyma(this);

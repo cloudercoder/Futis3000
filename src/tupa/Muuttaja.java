@@ -3,6 +3,8 @@ Luokka, joka lisää ja poistaa eri kohteita
  */
 package tupa;
 
+import java.time.LocalDate;
+import java.util.List;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -28,14 +30,25 @@ public class Muuttaja {
         if (arvo instanceof Sarja) {
             // tallennetaan turnaus, johon kuuluu
             Sarja sarja = (Sarja) arvo;
-            sarja.asetaTurnaus((Turnaus) ikkuna.annaTurnaus());
+            for (int i = 0; i < ikkuna.annaKohteet().size(); i++) {
+                if (ikkuna.annaKohteet().get(i) instanceof Turnaus) {
+                    sarja.asetaTurnaus((Turnaus) ikkuna.annaKohteet().get(i));
+                }
+
+            }
+
         } else if (arvo instanceof Tuomari) {
             // tallennetaan turnaus, johon kuuluu
             Tuomari tuomari = (Tuomari) arvo;
-            Turnaus turnaus = (Turnaus) ikkuna.annaTurnaus();
-            tuomari.asetaTurnaus(turnaus);
-            //tallennetaan tuomari turnauksen tietoihin, sarjoille tämä on jo tehty muodostimen yhteydessä
-            turnaus.annaTuomarit().add(tuomari);
+            for (int i = 0; i < ikkuna.annaKohteet().size(); i++) {
+                if (ikkuna.annaKohteet().get(i) instanceof Turnaus) {
+                    Turnaus turnaus = (Turnaus) ikkuna.annaKohteet().get(i);
+                    tuomari.asetaTurnaus(turnaus);
+                    //tallennetaan tuomari turnauksen tietoihin, sarjoille tämä on jo tehty muodostimen yhteydessä
+                    turnaus.annaTuomarit().add(tuomari);
+                }
+
+            }
 
         }
 
@@ -80,8 +93,8 @@ public class Muuttaja {
     }
 
     public void poistaKohde(Kohde arvo) {
-
-        //jos kyseessä sarja poistetaan turnauksen sarjoista
+        System.out.println(arvo);
+        //jos kyseessä sarja poistetaan turnauksen sarjoista ja tuomari turnauksen tuomareista
         if (arvo instanceof Sarja) {
 
             Sarja sarja = (Sarja) arvo;
@@ -138,6 +151,8 @@ public class Muuttaja {
                     tiedottaja.kirjoitaLoki("Sarja poistettu.");
 
                 }
+
+                //POISTETTAVA KAIKKI TÄHÄN LIITTYVÄ!
             }
         } else if (arvo instanceof Tuomari) {
 
@@ -148,6 +163,50 @@ public class Muuttaja {
                     tiedottaja.kirjoitaLoki("Tuomari poistettu.");
 
                 }
+
+                //MISSÄ MUUALLA ON??!?
+            }
+
+        } else if (arvo instanceof Joukkue) {
+
+            for (int i = 0; i < ikkuna.annaJoukkuetk().size(); i++) {
+
+                if (ikkuna.annaJoukkuetk().get(i).annaID() == arvo.annaID()) {
+                    ikkuna.annaJoukkuetk().remove(i);
+                    tiedottaja.kirjoitaLoki("Joukkue poistettu.");
+
+                }
+
+                //POISTETTAVA MYÖS KAIKKI PELAAJAT!!!
+            }
+
+        } else if (arvo instanceof Pelaaja) {
+
+            for (int i = 0; i < ikkuna.annaPelaajatk().size(); i++) {
+                System.out.println("pelaajassa id:Tä ennen");
+                System.out.println("pelaajatkid: " + ikkuna.annaPelaajatk().get(i).annaID());
+                System.out.println("arvoid: " + arvo.annaID());
+                System.out.println("arvo: " + arvo);
+                if (ikkuna.annaPelaajatk().get(i).annaID() == arvo.annaID()) {
+                    System.out.println("id:n jälkeen");
+                    System.out.println(arvo.annaID());
+                    ikkuna.annaPelaajatk().remove(i);
+                    tiedottaja.kirjoitaLoki("Pelaaja poistettu.");
+
+                }
+                //MITÄ MUUTA PITÄÄ POISTAA?!??!
+            }
+
+        } else if (arvo instanceof Toimihenkilo) {
+
+            for (int i = 0; i < ikkuna.annaToimaritk().size(); i++) {
+
+                if (ikkuna.annaToimaritk().get(i).annaID() == arvo.annaID()) {
+                    ikkuna.annaToimaritk().remove(i);
+                    tiedottaja.kirjoitaLoki("Tuomari poistettu.");
+
+                }
+                //MITÄ MUUTA PITÄÄ POISTAA?!??!
             }
 
         }
@@ -164,6 +223,12 @@ public class Muuttaja {
         ikkuna.asetaMuutos(true);
     }
 
+    public void poistaOttelu(Ottelu ottelu) {
+        //HAETAAN SARJAN OTTELUT JA POISTETAAN SIELTÄ
+
+        //MITÄ MUUTA PITÄÄ POISTAA?!?!
+    }
+
     public void lisaaJoukkue(String nimi, Sarja sarja) {
 
         Joukkue joukkue = new Joukkue(nimi);
@@ -174,9 +239,13 @@ public class Muuttaja {
         ikkuna.annaKohteet().add((Kohde) joukkue);
 
         joukkue.asetaSarja(sarja);
-        joukkue.asetaTaulukkonimi();
+
         ikkuna.asetaMuutos(true);
 
+    }
+
+    public void poistaPelaaja(Pelaaja pelaaja) {
+        System.out.println("pelaajassa");
     }
 
     public void lisaaPelaaja(String etunimi, String sukunimi, String pelipaikka, int pelinumero, Joukkue joukkue) {
@@ -190,19 +259,14 @@ public class Muuttaja {
         ikkuna.annaPelaajatk().add(pelaaja);
         ikkuna.annaKohteet().add((Kohde) pelaaja);
 
-        pelaaja.asetaTaulukkonumero();
-        pelaaja.asetaTaulukkopelipaikka();
-        pelaaja.asetaTaulukkonimi();
-     
         ikkuna.asetaMuutos(true);
 
     }
 
-    public void lisaaOttelu(Joukkue koti, Joukkue vieras, String aika, String paikka, Tuomari erotuomari, Tuomari avustava1, Tuomari avustava2, Sarja sarja) {
-     
+    public void lisaaOttelu(Joukkue koti, Joukkue vieras, LocalDate aika, String paikka, Tuomari erotuomari, Tuomari avustava1, Tuomari avustava2, Sarja sarja) {
+
         Ottelu ottelu = new Ottelu(sarja);
-        koti.annaOttelut().add(ottelu);
-        vieras.annaOttelut().add(ottelu);
+
         ottelu.asetaJoukkueet(koti, vieras);
         ottelu.asetaPaikka(paikka);
         ottelu.asetaAika(aika);
@@ -211,8 +275,7 @@ public class Muuttaja {
         if (erotuomari != null) {
             TuomarinRooli erotuomariR = new TuomarinRooli(erotuomari, ottelu);
             erotuomariR.asetaRooli("Erotuomari");
-            erotuomariR.asetaTaulukkonimi();
-            erotuomariR.asetaTaulukkorooli();
+
             ottelu.annaRoolit().add(erotuomariR);
             erotuomari.annaTuomarinRoolit().add(erotuomariR);
         }
@@ -221,8 +284,7 @@ public class Muuttaja {
 
             TuomarinRooli avustava1R = new TuomarinRooli(avustava1, ottelu);
             avustava1R.asetaRooli("1. Avustava erotuomari");
-            avustava1R.asetaTaulukkonimi();
-            avustava1R.asetaTaulukkorooli();
+
             ottelu.annaRoolit().add(avustava1R);
             avustava1.annaTuomarinRoolit().add(avustava1R);
         }
@@ -230,19 +292,11 @@ public class Muuttaja {
         if (avustava2 != null) {
             TuomarinRooli avustava2R = new TuomarinRooli(avustava2, ottelu);
             avustava2R.asetaRooli("2. Avustava erotuomari");
-            avustava2R.asetaTaulukkonimi();
-            avustava2R.asetaTaulukkorooli();
 
             ottelu.annaRoolit().add(avustava2R);
             avustava2.annaTuomarinRoolit().add(avustava2R);
         }
 
-        ottelu.asetaTaulukkopaikka();
-        ottelu.asetaTaulukkoaika();
-        ottelu.asetaTaulukkonimi();
-        ottelu.asetaTaulukkoid();
-        ottelu.asetaTaulukkotuomarit();
-        ottelu.asetaTaulukkotulos();
         sarja.annaOttelut().add(ottelu);
         ikkuna.asetaMuutos(true);
 
@@ -262,12 +316,36 @@ public class Muuttaja {
         ikkuna.annaToimaritk().add(toimari);
         ikkuna.annaKohteet().add((Kohde) toimari);
 
-        toimari.asetaTaulukkonimi();
-        toimari.asetaTaulukkosposti();
-        toimari.asetaTaulukkopuh();
-        toimari.asetaTaulukkorooli();
-
         ikkuna.asetaMuutos(true);
+
+    }
+
+    public void lisaaMaali(int aika, Pelaaja maalintekija, Pelaaja syottaja, Ottelu ottelu) {
+
+        Maali maali = new Maali(ottelu);
+        maali.asetaTiedot(aika, maalintekija, syottaja);
+    }
+
+    public void lisaaTulos(int kotimaalit, int vierasmaalit, Ottelu ottelu) {
+        ottelu.asetaTulos(kotimaalit, vierasmaalit);
+    }
+
+    public void lisaaKokoonpano(Pelaaja[] pelaajat, String[] roolit, Joukkue joukkue, Ottelu ottelu) {
+
+        for (int i = 0; i < pelaajat.length; i++) {
+
+            if (roolit[i].equals("Kokoonpanossa")) {
+                //katsotaan onko koti- vai vierasjoukkue
+                if (joukkue.equals(ottelu.annaKotijoukkue())) {
+                    Kokoonpano kotikokoonpano = ottelu.annaKotiKokoonpano();
+                    kotikokoonpano.asetaPelaaja(pelaajat[i]);
+                } else if (joukkue.equals(ottelu.annaKotijoukkue())) {
+                    Kokoonpano vieraskokoonpano = ottelu.annaVierasKokoonpano();
+                    vieraskokoonpano.asetaPelaaja(pelaajat[i]);
+                }
+            }
+
+        }
 
     }
 

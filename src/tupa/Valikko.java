@@ -161,15 +161,7 @@ public class Valikko implements EventHandler<ActionEvent> {
 
                         if (kohdetk.get(i) instanceof Sarja) {
                             Sarja sarja = (Sarja) kohdetk.get(i);
-                            //ottelut
-                            for (int j = 0; j < sarja.annaOttelut().size(); j++) {
-                                sarja.annaOttelut().get(j).asetaTaulukkoaika();
-                                sarja.annaOttelut().get(j).asetaTaulukkoid();
-                                sarja.annaOttelut().get(j).asetaTaulukkonimi();
-                                sarja.annaOttelut().get(j).asetaTaulukkopaikka();
-                                sarja.annaOttelut().get(j).asetaTaulukkotuomarit();
-                                sarja.annaOttelut().get(j).asetaTaulukkotulos();
-                            }
+                   
                             sarjatk.add(sarja);
                             ikkuna.annaSarjatk().add(sarja);
 
@@ -182,10 +174,7 @@ public class Valikko implements EventHandler<ActionEvent> {
                             tuomaritk.add(tuomari);
                             ikkuna.annaTuomaritk().add(tuomari);
 
-                            for (int k = 0; k < tuomari.annaTuomarinRoolit().size(); i++) {
-                                tuomari.annaTuomarinRoolit().get(k).asetaTaulukkorooli();
-                                tuomari.annaTuomarinRoolit().get(k).asetaTaulukkonimi();
-                            }
+                      
 
                             parent = ikkuna.annaRootTuomarit();
                             TreeItem<Kohde> uusiKohde = new TreeItem<Kohde>(kohdetk.get(i));
@@ -200,9 +189,7 @@ public class Valikko implements EventHandler<ActionEvent> {
                             Pelaaja pelaaja = (Pelaaja) kohdetk.get(i);
                             pelaajatk.add(pelaaja);
                             ikkuna.annaPelaajatk().add(pelaaja);
-                            pelaaja.asetaTaulukkonimi();
-                            pelaaja.asetaTaulukkonumero();
-                            pelaaja.asetaTaulukkopelipaikka();
+                       
 
                         } else if (kohdetk.get(i) instanceof Toimihenkilo) {
                             Toimihenkilo toimari = (Toimihenkilo) kohdetk.get(i);

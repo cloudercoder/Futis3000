@@ -51,7 +51,7 @@ public class Avaus {
             System.out.println("\n**********************************************************");
 
         }
- 
+
         return kohdetk;
     }
 
