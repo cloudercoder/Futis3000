@@ -1,3 +1,23 @@
 # Futis3000
 Futistulosten tietopalvelu
-Kerätään dataa tänne
+
+
+
+
+
+Toiminnallisuudet / Ominaisuudet
+
++ työpöydällä toimiva tulospalvelu
++ voi lisätä uusia joukkuita, sarjoja, tuomareita, pelaajia 
++ sisältää hakuominaisuuden sekä listat sarjoista, tuomareista ja pelaajista
++ ohjelmaan tallennetut tiedot sijaitsevat verkossa olevalla palvelimella
+
+
+Tekninen toteutus
+
+
++ Javalla toteutettu työpöytäohjelma
++ MySQL palvelin
++ Kirjautuminen
++ Ohjelmaan tallennetut tiedoista saa varmuuskopiot XML tiedostoon
+
