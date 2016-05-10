@@ -21,3 +21,8 @@ Tekninen toteutus
 + Kirjautuminen
 + Ohjelmaan tallennetut tiedoista saa varmuuskopiot XML tiedostoon
 
+Teknisiä toiveita
+
+-XML ja DB
+-Socketointi
+-Triggeröinti MYSQL vain yksi yhteys
