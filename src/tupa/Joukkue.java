@@ -80,6 +80,7 @@ public class Joukkue extends Kohde {
         this.taulukkonimi = new SimpleStringProperty(this.toString());
     }
 
+    
     public List<Toimihenkilo> annaToimarit() {
         return toimarit;
     }
@@ -174,6 +175,14 @@ public class Joukkue extends Kohde {
     public int annaPisteet() {
         return ((3 * voitot.size()) + (1 * tasapelit.size()));
     }
+    
+    public List<Integer> annaTehdyt(){
+        return tehdyt;
+    }
+     public List<Integer> annaPaastetyt(){
+        return paastetyt;
+    }
+    
     
     public String annaMaalisuhde() {      
       int tehdyt_maalit = 0;

@@ -8,11 +8,7 @@ import java.util.List;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -30,7 +26,6 @@ public class Taulukko {
 
     private TableView taulukko = new TableView();
     private Nakyma nakyma;
- 
 
     Taulukko() {
 
@@ -38,7 +33,6 @@ public class Taulukko {
 
     Taulukko(Nakyma nakyma) {
         this.nakyma = nakyma;
-        
 
     }
 
@@ -49,12 +43,14 @@ public class Taulukko {
         List<Ottelu> ottelut = new ArrayList<>();
 
         for (int i = 0; i < sarja.annaOttelut().size(); i++) {
-            sarja.annaOttelut().get(i).asetaTaulukkoaika();
+            sarja.annaOttelut().get(i).asetaTaulukkopaiva();
+            sarja.annaOttelut().get(i).asetaTaulukkokello();
             sarja.annaOttelut().get(i).asetaTaulukkoid();
             sarja.annaOttelut().get(i).asetaTaulukkonimi();
             sarja.annaOttelut().get(i).asetaTaulukkopaikka();
             sarja.annaOttelut().get(i).asetaTaulukkotulos();
             sarja.annaOttelut().get(i).asetaTaulukkotuomarit();
+            sarja.annaOttelut().get(i).asetaTaulukkokierros();
             ottelut.add(sarja.annaOttelut().get(i));
 
         }
@@ -63,8 +59,12 @@ public class Taulukko {
                 = FXCollections.observableArrayList(ottelut);
 
         TableColumn id = new TableColumn("OtteluID");
+         TableColumn kierros = new TableColumn("Kierros");
         TableColumn ottelu = new TableColumn("Ottelu");
         TableColumn ajankohta = new TableColumn("Ajankohta");
+        TableColumn paiva = new TableColumn("Päivä");
+        TableColumn kello = new TableColumn("Klo");
+        ajankohta.getColumns().addAll(paiva, kello);
         TableColumn paikka = new TableColumn("Paikka");
         TableColumn tuomarit = new TableColumn("Tuomarit");
         TableColumn erotuomari = new TableColumn("Erotuomari");
@@ -74,8 +74,10 @@ public class Taulukko {
         TableColumn tulos = new TableColumn("Tulos");
 
         id.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkoid"));
+         kierros.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkokierros"));
         ottelu.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkonimi"));
-        ajankohta.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoaika"));
+        paiva.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaiva"));
+        kello.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkokello"));
         paikka.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaikka"));
         erotuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoerotuomari"));
         avustava1.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava1"));
@@ -83,11 +85,13 @@ public class Taulukko {
         tulos.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkotulos"));
         avustava1.prefWidthProperty().bind(avustava1.widthProperty());
 
-        taulukko.getColumns().addAll(id, ottelu, ajankohta, paikka, tuomarit, tulos);
+        taulukko.getColumns().addAll(id, kierros, ottelu, ajankohta, paikka, tuomarit, tulos);
         taulukko.setItems(data);
 
-        ajankohta.setSortType(TableColumn.SortType.ASCENDING);
-        taulukko.getSortOrder().add(ajankohta);
+        paiva.setSortType(TableColumn.SortType.ASCENDING);
+        taulukko.getSortOrder().add(kierros);
+        taulukko.getSortOrder().add(paiva);
+        taulukko.getSortOrder().add(kello);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             nakyma.luoOttelusivu((Ottelu) newSelection);
@@ -431,7 +435,8 @@ public class Taulukko {
         List<Ottelu> ottelut = new ArrayList<>();
 
         for (int i = 0; i < joukkue.annaOttelut().size(); i++) {
-            joukkue.annaOttelut().get(i).asetaTaulukkoaika();
+            joukkue.annaOttelut().get(i).asetaTaulukkopaiva();
+            joukkue.annaOttelut().get(i).asetaTaulukkokello();
             joukkue.annaOttelut().get(i).asetaTaulukkoid();
             joukkue.annaOttelut().get(i).asetaTaulukkonimi();
             joukkue.annaOttelut().get(i).asetaTaulukkopaikka();
@@ -447,6 +452,9 @@ public class Taulukko {
         TableColumn id = new TableColumn("OtteluID");
         TableColumn ottelu = new TableColumn("Ottelu");
         TableColumn ajankohta = new TableColumn("Ajankohta");
+        TableColumn paiva = new TableColumn("Päivä");
+        TableColumn kello = new TableColumn("Klo");
+        ajankohta.getColumns().addAll(paiva, kello);
         TableColumn paikka = new TableColumn("Paikka");
         TableColumn tuomarit = new TableColumn("Tuomarit");
         TableColumn erotuomari = new TableColumn("Erotuomari");
@@ -457,7 +465,8 @@ public class Taulukko {
 
         id.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkoid"));
         ottelu.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkonimi"));
-        ajankohta.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoaika"));
+        paiva.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaiva"));
+        kello.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkokello"));
         paikka.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaikka"));
         erotuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoerotuomari"));
         avustava1.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava1"));
@@ -466,8 +475,8 @@ public class Taulukko {
         avustava1.prefWidthProperty().bind(avustava1.widthProperty());
         taulukko.getColumns().addAll(id, ottelu, ajankohta, paikka, tuomarit, tulos);
         taulukko.setItems(data);
-        ajankohta.setSortType(TableColumn.SortType.ASCENDING);
-        taulukko.getSortOrder().add(ajankohta);
+        kello.setSortType(TableColumn.SortType.ASCENDING);
+        taulukko.getSortOrder().add(kello);
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             nakyma.luoOttelusivu((Ottelu) newSelection);
         });
@@ -491,7 +500,8 @@ public class Taulukko {
         taulukko.setId("ei-klikattava");
         List<Ottelu> ottelut = new ArrayList<>();
 
-        ottelu.asetaTaulukkoaika();
+        ottelu.asetaTaulukkopaiva();
+        ottelu.asetaTaulukkokello();
         ottelu.asetaTaulukkoid();
         ottelu.asetaTaulukkonimi();
         ottelu.asetaTaulukkopaikka();
@@ -505,6 +515,9 @@ public class Taulukko {
         TableColumn id = new TableColumn("OtteluID");
         TableColumn otteluc = new TableColumn("Ottelu");
         TableColumn ajankohta = new TableColumn("Ajankohta");
+        TableColumn paiva = new TableColumn("Päivä");
+        TableColumn kello = new TableColumn("Klo");
+        ajankohta.getColumns().addAll(paiva, kello);
         TableColumn paikka = new TableColumn("Paikka");
         TableColumn tuomarit = new TableColumn("Tuomarit");
         TableColumn erotuomari = new TableColumn("Erotuomari");
@@ -515,7 +528,8 @@ public class Taulukko {
 
         id.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkoid"));
         otteluc.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkonimi"));
-        ajankohta.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoaika"));
+        paiva.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaiva"));
+        kello.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkokello"));
         paikka.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaikka"));
         erotuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoerotuomari"));
         avustava1.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava1"));
@@ -524,8 +538,6 @@ public class Taulukko {
         avustava1.prefWidthProperty().bind(avustava1.widthProperty());
         taulukko.getColumns().addAll(id, otteluc, ajankohta, paikka, tuomarit, tulos);
         taulukko.setItems(data);
-        ajankohta.setSortType(TableColumn.SortType.ASCENDING);
-        taulukko.getSortOrder().add(ajankohta);
 
         taulukko.setFixedCellSize(25);
 
@@ -703,7 +715,8 @@ public class Taulukko {
             tuomari.annaTuomarinRoolit().get(i).annaOttelu().asetaTaulukkopaikka();
             tuomari.annaTuomarinRoolit().get(i).annaOttelu().asetaTaulukkonimi();
             tuomari.annaTuomarinRoolit().get(i).annaOttelu().asetaTaulukkotulos();
-            tuomari.annaTuomarinRoolit().get(i).annaOttelu().asetaTaulukkoaika();
+            tuomari.annaTuomarinRoolit().get(i).annaOttelu().asetaTaulukkopaiva();
+            tuomari.annaTuomarinRoolit().get(i).annaOttelu().asetaTaulukkokello();
             tuomari.annaTuomarinRoolit().get(i).annaOttelu().asetaTaulukkotuomarit();
 
             ottelut.add(tuomari.annaTuomarinRoolit().get(i).annaOttelu());
@@ -716,6 +729,9 @@ public class Taulukko {
         TableColumn id = new TableColumn("OtteluID");
         TableColumn ottelu = new TableColumn("Ottelu");
         TableColumn ajankohta = new TableColumn("Ajankohta");
+        TableColumn paiva = new TableColumn("Päivä");
+        TableColumn kello = new TableColumn("Klo");
+        ajankohta.getColumns().addAll(paiva, kello);
         TableColumn paikka = new TableColumn("Paikka");
         TableColumn tuomarit = new TableColumn("Tuomarit");
         TableColumn erotuomari = new TableColumn("Erotuomari");
@@ -726,7 +742,8 @@ public class Taulukko {
 
         id.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkoid"));
         ottelu.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkonimi"));
-        ajankohta.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoaika"));
+        paiva.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaiva"));
+        kello.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkokello"));
         paikka.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaikka"));
         erotuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoerotuomari"));
         avustava1.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava1"));
@@ -734,8 +751,9 @@ public class Taulukko {
         tulos.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkotulos"));
 
         taulukko.setItems(data);
-        ajankohta.setSortType(TableColumn.SortType.ASCENDING);
-        taulukko.getSortOrder().add(ajankohta);
+        paiva.setSortType(TableColumn.SortType.ASCENDING);
+        taulukko.getSortOrder().add(paiva);
+        taulukko.getSortOrder().add(kello);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             nakyma.luoOttelusivu((Ottelu) newSelection);
@@ -952,52 +970,48 @@ public class Taulukko {
     public HBox luoKokoonpanoTaulukko(Ottelu ottelu, Joukkue joukkue) {
 
         HBox kokoonpanoluettelo = new HBox();
-   
-        kokoonpanoluettelo.setSpacing(10);
 
-      
+        kokoonpanoluettelo.setSpacing(10);
 
         Label otnro = new Label("Pelinumero");
         Label otnimi = new Label("Pelaaja");
         Label otpelipaikka = new Label("Pelipaikka");
         Label otrooli = new Label("Rooli ottelussa");
-        
-        
-          otnro.setFont(Font.font("Papyrus", FontWeight.BOLD, 12));
+
+        otnro.setFont(Font.font("Papyrus", FontWeight.BOLD, 12));
         otnimi.setFont(Font.font("Papyrus", FontWeight.BOLD, 12));
         otpelipaikka.setFont(Font.font("Papyrus", FontWeight.BOLD, 12));
         otrooli.setFont(Font.font("Papyrus", FontWeight.BOLD, 12));
-        
+
         VBox sarake1 = new VBox();
         sarake1.setSpacing(10);
         sarake1.setPadding(new Insets(20));
         sarake1.getChildren().add(otnro);
-      
- VBox sarake2 = new VBox();
+
+        VBox sarake2 = new VBox();
         sarake2.setSpacing(10);
         sarake2.setPadding(new Insets(20));
         sarake2.getChildren().add(otnimi);
-        
-         VBox sarake3 = new VBox();
+
+        VBox sarake3 = new VBox();
         sarake3.setSpacing(10);
         sarake3.setPadding(new Insets(20));
         sarake3.getChildren().add(otpelipaikka);
-        
-         VBox sarake4 = new VBox();
+
+        VBox sarake4 = new VBox();
         sarake4.setSpacing(10);
         sarake4.setPadding(new Insets(20));
         sarake4.getChildren().add(otrooli);
-   
+
         int koko = joukkue.annaPelaajat().size();
 
         for (int i = 0; i < koko; i++) {
-         
 
             Pelaaja haettu = joukkue.annaPelaajat().get(i);
-            
+
             Label nro = new Label("" + haettu.annaPelinumero() + "");
             sarake1.getChildren().add(nro);
-            
+
             Label nimi = new Label(haettu.toString());
             sarake2.getChildren().add(nimi);
             //onko kokoonpanossa:
@@ -1018,12 +1032,11 @@ public class Taulukko {
             Label opelipaikka = new Label(haettu.annaPelipaikka());
             sarake3.getChildren().add(opelipaikka);
             sarake4.getChildren().add(orooli);
-            
+
         }
 
-            kokoonpanoluettelo.getChildren().addAll(sarake1, sarake2, sarake3, sarake4);
+        kokoonpanoluettelo.getChildren().addAll(sarake1, sarake2, sarake3, sarake4);
         return kokoonpanoluettelo;
     }
 
-  
 }

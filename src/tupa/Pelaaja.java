@@ -44,6 +44,10 @@ public class Pelaaja extends Henkilo {
 
     }
 
+    public List<Maali> annaMaaliLista(){
+        return maalit;
+    }
+    
     public int annaPelaajaMaara() {
         return peLaskuri;
     }

@@ -30,6 +30,7 @@ public class Varmistus {
     private List<Kohde> kohdetk = new ArrayList<>();
     private Tupa ikkuna;
     private Muuttaja muuttaja;
+        private Nakyma nakyma;
     Varmistus(){
         
     }
@@ -39,9 +40,10 @@ public class Varmistus {
         this.ikkuna = ikkuna;
     }
     
-    Varmistus (Tupa ikkuna){
-        muuttaja = new Muuttaja(ikkuna);
+    Varmistus (Tupa ikkuna, Nakyma nakyma){
+        muuttaja = new Muuttaja(ikkuna, nakyma);
         this.ikkuna = ikkuna;
+        this.nakyma = nakyma;
     }
     
     public void annaVarmistus(){
@@ -435,6 +437,7 @@ public class Varmistus {
             
                 
                 muuttaja.poistaOttelu(ottelu);
+               
                 stageV.close();
                 
             }
@@ -458,7 +461,190 @@ public class Varmistus {
  
 
             }
-                   
-  
+        
+    public void annaKaikkienOtteluidenPoistoVarmistus(Sarja sarja){
+         Stage stageV = new Stage();
+            BorderPane alue = new BorderPane ();
+		
+            VBox vbox = new VBox();
+            	vbox.setPadding (new Insets (10));
+		vbox.setSpacing (10);
+		
+                HBox hbox1 = new HBox();
+                Label viesti = new Label ("Haluatko todella poistaa kaikki sarjan " + sarja.toString() + " ottelut?");
+		
+                hbox1.setAlignment(Pos. CENTER);
+		hbox1.getChildren().add(viesti);
+                
+                
+		HBox hbox2 = new HBox ();
+		hbox2.setPadding (new Insets (10));
+		hbox2.setSpacing (10);
+		Button joo = new Button ("Kyllä");
+		
+                Button peruuta = new Button ("Peruuta");
+	
+                 
+                  joo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            
+                List<Ottelu> poistettavat = (sarja.annaOttelut());
+                
+                for(int i=0; i<poistettavat.size(); i++){
+                    System.out.println(poistettavat.get(i));
+                }
+                
+                  muuttaja.poistaKaikkiOttelut(poistettavat, sarja);
+                 
+                
+                       TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+
+                nakyma.luoSarjaSivu(mihin);
+                stageV.close();
+                
+            }
+        });
+                  peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+           
+                  stageV.close();
+            }
+        });
+                   hbox2.setAlignment(Pos. CENTER);
+		hbox2.getChildren ().addAll (joo, peruuta);
+		vbox.getChildren ().addAll (hbox1, hbox2);
+                alue.setCenter (vbox);
+		  
+		Scene sceneV = new Scene (alue, 400, 100);
+		stageV.setTitle ("TUPA - TULOSPALVELU");
+		stageV.setScene (sceneV);
+		stageV.show ();	
+ 
+
+            }
+    
+    public void annaAutoVarmistus(Sarja sarja){
+        Stage stageV = new Stage();
+            BorderPane alue = new BorderPane ();
+		
+            VBox vbox = new VBox();
+            	vbox.setPadding (new Insets (10));
+		vbox.setSpacing (10);
+		
+                HBox hbox1 = new HBox();
+                Label viesti = new Label ("Automaattinen otteluluettelon laadinta poistaa ensin kaikki sarjaan lisätyt ottelut. Haluatko jatkaa?");
+		
+                hbox1.setAlignment(Pos. CENTER);
+		hbox1.getChildren().add(viesti);
+                
+                
+		HBox hbox2 = new HBox ();
+		hbox2.setPadding (new Insets (10));
+		hbox2.setSpacing (10);
+		Button joo = new Button ("Kyllä");
+		
+                Button peruuta = new Button ("Peruuta");
+	
+                 
+                  joo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            
+             
+                
+                   muuttaja.suoritaAutoOtteluLista(sarja);
+                 
+                
+                       TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+
+                nakyma.luoSarjaSivu(mihin);
+                stageV.close();
+                
+            }
+        });
+                  peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+           
+                  stageV.close();
+            }
+        });
+                   hbox2.setAlignment(Pos. CENTER);
+		hbox2.getChildren ().addAll (joo, peruuta);
+		vbox.getChildren ().addAll (hbox1, hbox2);
+                alue.setCenter (vbox);
+		  
+		Scene sceneV = new Scene (alue, 400, 100);
+		stageV.setTitle ("TUPA - TULOSPALVELU");
+		stageV.setScene (sceneV);
+		stageV.show ();	
+ 
+
+            }
+    
+  public void annaKaikkienJoukkueidenPoistoVarmistus(Sarja sarja){
+         Stage stageV = new Stage();
+            BorderPane alue = new BorderPane ();
+		
+            VBox vbox = new VBox();
+            	vbox.setPadding (new Insets (10));
+		vbox.setSpacing (10);
+		
+                HBox hbox1 = new HBox();
+                Label viesti = new Label ("Joukkueiden poisto poistaa samalla kaikki joukkueiden pelaajat järjestelmästä. Haluatko jatkaa?");
+		
+                hbox1.setAlignment(Pos. CENTER);
+		hbox1.getChildren().add(viesti);
+                
+                
+		HBox hbox2 = new HBox ();
+		hbox2.setPadding (new Insets (10));
+		hbox2.setSpacing (10);
+		Button joo = new Button ("Kyllä");
+		
+                Button peruuta = new Button ("Peruuta");
+	
+                 
+                  joo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            
+                List<Joukkue> poistettavat = (sarja.annaJoukkueet());
+                
+           
+                
+                  muuttaja.poistaKaikkiJoukkueet(poistettavat, sarja);
+                 
+                
+                       TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+
+                nakyma.luoSarjaSivu(mihin);
+                stageV.close();
+                
+            }
+        });
+                  peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+           
+                  stageV.close();
+            }
+        });
+                   hbox2.setAlignment(Pos. CENTER);
+		hbox2.getChildren ().addAll (joo, peruuta);
+		vbox.getChildren ().addAll (hbox1, hbox2);
+                alue.setCenter (vbox);
+		  
+		Scene sceneV = new Scene (alue, 600, 100);
+		stageV.setTitle ("TUPA - TULOSPALVELU");
+		stageV.setScene (sceneV);
+		stageV.show ();	
+ 
+
+            }
+    
+    
     
 }
