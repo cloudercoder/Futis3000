@@ -274,30 +274,29 @@ public class Muuttaja {
             }
         }
 
-        if(!ottelu.annaTulos().equals("-")){
-                    //kotijoukkue voittanut
-            if(ottelu.annaKotimaalit()>ottelu.annaVierasmaalit()){
+        if (!ottelu.annaTulos().equals("-")) {
+            //kotijoukkue voittanut
+            if (ottelu.annaKotimaalit() > ottelu.annaVierasmaalit()) {
                 joukkue1.annaVoitot().remove(0);
                 joukkue2.annaHaviot().remove(0);
             }
             //vierasjoukkue voittanut
-            if(ottelu.annaKotimaalit()<ottelu.annaVierasmaalit()){
+            if (ottelu.annaKotimaalit() < ottelu.annaVierasmaalit()) {
                 joukkue1.annaHaviot().remove(0);
                 joukkue2.annaVoitot().remove(0);
             }
-             //tasapeli
-            if(ottelu.annaKotimaalit()==ottelu.annaVierasmaalit()){
+            //tasapeli
+            if (ottelu.annaKotimaalit() == ottelu.annaVierasmaalit()) {
                 joukkue1.annaTasapelit().remove(0);
                 joukkue2.annaTasapelit().remove(0);
             }
-            
-            joukkue1.annaTehdyt().add(ottelu.annaKotimaalit()*(-1));
-            joukkue1.annaPaastetyt().add(ottelu.annaVierasmaalit()*(-1));
-             joukkue2.annaTehdyt().add(ottelu.annaVierasmaalit()*(-1));
-            joukkue2.annaPaastetyt().add(ottelu.annaKotimaalit()*(-1));
+
+            joukkue1.annaTehdyt().add(ottelu.annaKotimaalit() * (-1));
+            joukkue1.annaPaastetyt().add(ottelu.annaVierasmaalit() * (-1));
+            joukkue2.annaTehdyt().add(ottelu.annaVierasmaalit() * (-1));
+            joukkue2.annaPaastetyt().add(ottelu.annaKotimaalit() * (-1));
         }
 
-        
         joukkue1.annaOttelut().remove(ottelu);
         joukkue2.annaOttelut().remove(ottelu);
         sarja.annaOttelut().remove(ottelu);
@@ -320,13 +319,8 @@ public class Muuttaja {
 
     }
 
-    public void poistaPelaaja(Pelaaja pelaaja, Sarja sarja) {
-             
-        Joukkue joukkue = pelaaja.annaJoukkue();
-        
-        
-        joukkue.annaPelaajat().remove(joukkue);
-      
+    public void poistaPelaaja(Pelaaja pelaaja, Joukkue joukkue) {
+
         for (int i = 0; i < ikkuna.annaKohteet().size(); i++) {
             if (ikkuna.annaKohteet().get(i).annaID() == joukkue.annaID()) {
 
@@ -334,26 +328,38 @@ public class Muuttaja {
 
             }
         }
-             sarja.annaJoukkueet().remove(joukkue);
-         ikkuna.asetaMuutos(true);
+        joukkue.annaPelaajat().remove(joukkue);
+        ikkuna.asetaMuutos(true);
+    }
+
+    public void poistaToimari(Toimihenkilo toimari, Joukkue joukkue) {
+
+        for (int i = 0; i < ikkuna.annaKohteet().size(); i++) {
+            if (ikkuna.annaKohteet().get(i).annaID() == toimari.annaID()) {
+
+                ikkuna.annaKohteet().remove(i);
+
+            }
+        }
+        joukkue.annaToimarit().remove(toimari);
+        ikkuna.asetaMuutos(true);
     }
 
     public void poistaJoukkue(Joukkue joukkue, Sarja sarja) {
-      
-        for(int j=0; j<joukkue.annaPelaajat().size(); j++){
-               for (int i = 0; i < ikkuna.annaKohteet().size(); i++) {
-            if (ikkuna.annaKohteet().get(i).annaID() == joukkue.annaPelaajat().get(j).annaID()) {
 
-                ikkuna.annaKohteet().remove(i);
+        for (int j = 0; j < joukkue.annaPelaajat().size(); j++) {
+            for (int i = 0; i < ikkuna.annaKohteet().size(); i++) {
+                if (ikkuna.annaKohteet().get(i).annaID() == joukkue.annaPelaajat().get(j).annaID()) {
 
+                    ikkuna.annaKohteet().remove(i);
+
+                }
             }
+
         }
-            
-        }
-        
-           
+
         joukkue.annaPelaajat().clear();
-      
+
         for (int i = 0; i < ikkuna.annaKohteet().size(); i++) {
             if (ikkuna.annaKohteet().get(i).annaID() == joukkue.annaID()) {
 
@@ -361,11 +367,11 @@ public class Muuttaja {
 
             }
         }
-             sarja.annaJoukkueet().remove(joukkue);
-         ikkuna.asetaMuutos(true);
-      
+        sarja.annaJoukkueet().remove(joukkue);
+        ikkuna.asetaMuutos(true);
+
     }
-    
+
     public void lisaaPelaaja(String etunimi, String sukunimi, String pelipaikka, int pelinumero, Joukkue joukkue) {
 
         Pelaaja pelaaja = new Pelaaja(etunimi, sukunimi);
@@ -470,11 +476,10 @@ public class Muuttaja {
     public void suoritaAutoOtteluLista(Sarja sarja) {
 
         // poistetaan kaikki aiemmin luodut ottelut ensin
-        
-        for(int i=0; i<sarja.annaOttelut().size(); i++){
+        for (int i = 0; i < sarja.annaOttelut().size(); i++) {
             poistaOttelu(sarja.annaOttelut().get(i));
         }
-        
+
         int maara = sarja.annaJoukkueet().size();
 
         Joukkue[] joukkueet = new Joukkue[maara];
@@ -593,25 +598,45 @@ public class Muuttaja {
         nakyma.luoSarjaSivu(mihin);
 
     }
-    
-    public void poistaKaikkiOttelut(List<Ottelu> ottelut, Sarja sarja){
-        for(int i=0; i<ottelut.size(); i++){
+
+    public void poistaKaikkiOttelut(List<Ottelu> ottelut, Sarja sarja) {
+        for (int i = 0; i < ottelut.size(); i++) {
             poistaOttelu(ottelut.get(i));
-            
+
         }
-        
+
         sarja.annaOttelut().clear();
-          ikkuna.asetaMuutos(true);
+        ikkuna.asetaMuutos(true);
     }
-    
-    public void poistaKaikkiJoukkueet(List<Joukkue> joukkueet, Sarja sarja){
-        for(int i=0; i<joukkueet.size(); i++){
+
+    public void poistaKaikkiJoukkueet(List<Joukkue> joukkueet, Sarja sarja) {
+        for (int i = 0; i < joukkueet.size(); i++) {
             poistaJoukkue(joukkueet.get(i), sarja);
-            
+
         }
-        
+
         sarja.annaJoukkueet().clear();
-          ikkuna.asetaMuutos(true);
+        ikkuna.asetaMuutos(true);
+    }
+
+    void poistaKaikkiPelaajat(List<Pelaaja> poistettavat, Joukkue joukkue) {
+        for (int i = 0; i < poistettavat.size(); i++) {
+            poistaPelaaja(poistettavat.get(i), joukkue);
+
+        }
+
+        joukkue.annaPelaajat().clear();
+        ikkuna.asetaMuutos(true);
+    }
+
+    void poistaKaikkiToimarit(List<Toimihenkilo> poistettavat, Joukkue joukkue) {
+        for (int i = 0; i < poistettavat.size(); i++) {
+            poistaToimari(poistettavat.get(i), joukkue);
+
+        }
+
+        joukkue.annaToimarit().clear();
+        ikkuna.asetaMuutos(true);
     }
 
 }

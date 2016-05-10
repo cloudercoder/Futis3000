@@ -84,11 +84,9 @@ public class Pysyvat {
         sivu.setStyle("-fx-background-color: linear-gradient(to right, #00b300, 	 #33ff33);");
         sivu.setPadding(new Insets(100, 10, 0, 10));
         sivu.setSpacing(10);
-     
-        //hakutoiminto HBox
-       
-        // Etusivu-linkki
 
+        //hakutoiminto HBox
+        // Etusivu-linkki
         HBox etusivu = new HBox();
         LinkkiLabel etusivuteksti = new LinkkiLabel(ikkuna);
         etusivuteksti.setText("Etusivu");
@@ -99,11 +97,10 @@ public class Pysyvat {
         etusivu.setSpacing(10);
         etusivu.getChildren().addAll(etusivuteksti);
 
-     
-        sivu.setPrefWidth(200);
+        sivu.setPrefWidth(150);
         sivu.getChildren().addAll(etusivu, spuu);
         sivu.setVgrow(spuu, Priority.ALWAYS);
-     
+
         return sivu;
     }
 

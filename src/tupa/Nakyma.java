@@ -465,12 +465,12 @@ public class Nakyma {
             @Override
             public void handle(ActionEvent event) {
 
-               varmistaja.annaAutoVarmistus(sarja);
+                varmistaja.annaAutoVarmistus(sarja);
 
             }
         });
 
-            Button tyhjennysnappula = new Button("Poista kaikki ottelut");
+        Button tyhjennysnappula = new Button("Poista kaikki ottelut");
 
         tyhjennysnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -478,11 +478,9 @@ public class Nakyma {
 
                 varmistaja.annaKaikkienOtteluidenPoistoVarmistus(sarja);
 
-                
-
             }
         });
-        
+
         HBox painikeboksi = new HBox();
         painikeboksi.setSpacing(40);
 
@@ -502,14 +500,14 @@ public class Nakyma {
 
             }
         });
-        
+
         Button joukkuepoistonappula = new Button("Poista kaikki joukkueet");
 
         joukkuepoistonappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 
-              varmistaja.annaKaikkienJoukkueidenPoistoVarmistus(sarja);
+                varmistaja.annaKaikkienJoukkueidenPoistoVarmistus(sarja);
 
             }
         });
@@ -612,11 +610,11 @@ public class Nakyma {
 
         Label ohje = new Label("Lisää ottelu:");
         ohje.setFont(Font.font("Papyrus", 14));
-        
+
         VBox ohjekierros = new VBox();
         Label ohjeki = new Label("Kierros");
-        
-          ComboBox<Integer> kierros = new ComboBox();
+
+        ComboBox<Integer> kierros = new ComboBox();
         List<Integer> kierroslista = new ArrayList();
 
         for (int i = 1; i < 99; i++) {
@@ -625,9 +623,9 @@ public class Nakyma {
 
         ObservableList kierrokset = FXCollections.observableList(kierroslista);
         kierros.setItems(kierrokset);
-        
-         ohjekierros.getChildren().addAll(ohjeki, kierros);
-         
+
+        ohjekierros.getChildren().addAll(ohjeki, kierros);
+
         VBox ohjekoti = new VBox();
         Label ohjek = new Label("Koti");
         ComboBox<Joukkue> koti = new ComboBox();
@@ -789,15 +787,25 @@ public class Nakyma {
         lisaysnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-
+                boolean ok = true;
                 //TARKISTUKSET!!
-                if (koti.getValue() != null && vieras.getValue() != null) {
+                if (koti.getValue() == null || vieras.getValue() == null) {
+                    tiedottaja.annaVaroitus("Valitse sekä koti- että vierasjoukkue.");
+                    ok = false;
+                }
+                if (koti.getValue() == vieras.getValue()) {
+                    tiedottaja.annaVaroitus("Koti- ja vierasjoukkue eivät voi olla samoja.");
+                    ok = false;
+                }
+                if (erotuomari.getValue() == avustava1.getValue() || erotuomari.getValue() == avustava2.getValue() || avustava2.getValue() == avustava1.getValue()) {
+                    tiedottaja.annaVaroitus("Sama henkilö ei voi olla kuin yhdessä tuomarin roolissa.");
+                    ok = false;
+                }
+                if (ok) {
                     muuttaja.lisaaOttelu(koti.getValue(), vieras.getValue(), ajankohta.getValue(), kellotunnit.getValue(), kellominuutit.getValue(), paikka.getText(), erotuomari.getValue(), avustava1.getValue(), avustava2.getValue(), sarja);
                     ikkuna.asetaMuutos(true);
                     TreeItem<Kohde> sarjak = new TreeItem<>((Kohde) sarja);
                     luoSarjaSivu(sarjak);
-                } else {
-                    tiedottaja.annaVaroitus("Valitse sekä koti- että vierasjoukkue.");
                 }
 
             }
@@ -1028,10 +1036,38 @@ public class Nakyma {
         lisaysnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                boolean ok = true;
+                //nimen syöttöjen tarkistus
                 if (etunimi.getText().trim().isEmpty() || sukunimi.getText().trim().isEmpty()) {
 
                     tiedottaja.annaVaroitus("Et voi antaa tyhjää kenttää.");
-                } else {
+                    ok = false;
+                } else if (etunimi.getText().length() > 64 || sukunimi.getText().length() > 64) {
+                    tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää korkeintaan 64 merkkiä.");
+                    ok = false;
+                }
+                for (char c : etunimi.getText().toCharArray()) {
+
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+
+                    }
+                }
+                for (char c : sukunimi.getText().toCharArray()) {
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+                    }
+                }
+
+                if (ok) {
 
                     Kohde uusi = new Tuomari(etunimi.getText(), sukunimi.getText());
 
@@ -1167,10 +1203,38 @@ public class Nakyma {
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                boolean ok = true;
+                //nimen syöttöjen tarkistus
                 if (etunimi.getText().trim().isEmpty() || sukunimi.getText().trim().isEmpty()) {
 
                     tiedottaja.annaVaroitus("Et voi antaa tyhjää kenttää.");
-                } else {
+                    ok = false;
+                } else if (etunimi.getText().length() > 64 || sukunimi.getText().length() > 64) {
+                    tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää korkeintaan 64 merkkiä.");
+                    ok = false;
+                }
+                for (char c : etunimi.getText().toCharArray()) {
+
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+
+                    }
+                }
+                for (char c : sukunimi.getText().toCharArray()) {
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+                    }
+                }
+
+                if (ok) {
 
                     //poisto puusta
                     TreeItem<Kohde> parent = new TreeItem<>();
@@ -1265,7 +1329,7 @@ public class Nakyma {
 
         Button muokkausnappula = new Button();
 
-        muokkausnappula.setText("Muokkaa");
+        muokkausnappula.setText("Muokkaa nimeä");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -1289,7 +1353,18 @@ public class Nakyma {
             }
         });
 
-        rivi1.getChildren().addAll(muokkausnappula, poistonappula);
+        Button paluunappula = new Button("<< Palaa takaisin");
+        paluunappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                TreeItem<Kohde> mihin = new TreeItem<>(joukkue.annaSarja());
+                luoSarjaSivu(mihin);
+
+            }
+        });
+
+        rivi1.getChildren().addAll(paluunappula, muokkausnappula, poistonappula);
         grid.add(rivi1, 0, 0);
 
         //rivi2
@@ -1350,6 +1425,130 @@ public class Nakyma {
 
         osio4.getChildren().addAll(otsikko4, pisteporssi);
 
+        HBox pelaajienalle = new HBox();
+        pelaajienalle.setPadding(new Insets(20, 0, 0, 0));
+        pelaajienalle.setSpacing(30);
+
+        Button plisaysnappula = new Button("Lisää pelaajia");
+        plisaysnappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                luoJoukkueenPelaajaLisays(joukkue);
+
+            }
+        });
+
+        Button pepoistonappula = new Button("Poista kaikki pelaajat");
+        pepoistonappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                varmistaja.annaKaikkienPelaajienPoistoVarmitus(joukkue);
+
+            }
+        });
+
+        pelaajienalle.getChildren().addAll(plisaysnappula, pepoistonappula);
+
+        HBox toimarienalle = new HBox();
+        toimarienalle.setPadding(new Insets(20, 0, 0, 0));
+        toimarienalle.setSpacing(30);
+
+        Button tlisaysnappula = new Button("Lisää toimihenkilöitä");
+        tlisaysnappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                luoJoukkueenToimariLisays(joukkue);
+
+            }
+        });
+
+        Button tpoistonappula = new Button("Poista kaikki toimihenkilöt");
+        tpoistonappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                varmistaja.annaKaikkienToimarienPoistoVarmitus(joukkue);
+
+            }
+        });
+
+        toimarienalle.getChildren().addAll(tlisaysnappula, tpoistonappula);
+
+        osio3.getChildren().addAll(otsikko3, toimihenkilot, toimarienalle);
+        osio2.getChildren().addAll(otsikko2, pelaajat, pelaajienalle);
+        rivi3.getChildren().addAll(osio1);
+        grid.add(rivi3, 0, 2);
+
+        HBox rivi4 = new HBox();
+        rivi4.setSpacing(40);
+        rivi4.getChildren().addAll(osio2, osio4);
+
+        HBox rivi5 = new HBox();
+        rivi5.setPadding(new Insets(40, 0, 0, 0));
+        rivi5.getChildren().addAll(osio3);
+        grid.add(rivi4, 0, 3);
+        grid.add(rivi5, 0, 4);
+
+        sb.setContent(grid);
+        VBox peitto = new VBox();
+        peitto.setStyle("-fx-background-color: white;");
+        ikkuna.annaNaytto().getChildren().add(peitto);
+
+        ikkuna.annaNaytto().getChildren().add(sb);
+
+    }
+
+    public void luoJoukkueenPelaajaLisays(Joukkue joukkue) {
+
+        ScrollPane sb = new ScrollPane();
+        sb.setHbarPolicy(AS_NEEDED);
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20, 10, 40, 10));
+
+        HBox rivi1 = new HBox();
+        rivi1.setPadding(new Insets(20, 10, 20, 80));
+        rivi1.setAlignment(Pos.TOP_RIGHT);
+        rivi1.setSpacing(20);
+
+        Button paluunappula = new Button();
+
+        paluunappula.setText("<< Palaa takaisin");
+        paluunappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                luoJoukkueSivu(joukkue);
+
+            }
+        });
+
+        rivi1.getChildren().addAll(paluunappula);
+        grid.add(rivi1, 0, 0);
+
+        //rivi2
+        VBox info = new VBox();
+        info.setPadding(new Insets(10, 10, 40, 10));
+
+        Label nimi = new Label("Lisää pelaajia joukkueeseen " + joukkue.toString() + ":");
+        nimi.setFont(Font.font("Papyrus", 32));
+
+        info.setAlignment(Pos.CENTER);
+        info.getChildren().addAll(nimi);
+        grid.add(info, 0, 1);
+
+        VBox osio2 = new VBox();
+        osio2.setSpacing(20);
+        osio2.setAlignment(Pos.CENTER);
+        Label otsikko2 = new Label("Pelaajat");
+        otsikko2.setFont(Font.font("Papyrus", 18));
+        Taulukko taulukontekija3 = new Taulukko(this);
+
+        pelaajat = taulukontekija3.luoPelaajaTaulukko(joukkue);
+        pelaajat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         VBox alle = new VBox();
         alle.setPadding(new Insets(20, 0, 60, 0));
         Label ohje = new Label("Lisää uusi pelaaja:");
@@ -1407,18 +1606,51 @@ public class Nakyma {
             @Override
             public void handle(ActionEvent e) {
                 boolean ok = true;
-                //tarkistus, onko tyhjä kenttä PITÄÄ TARKISTAA MYÖS MUITA!!!
+                //nimen syöttöjen tarkistus
                 if (etunimi.getText().trim().isEmpty() || sukunimi.getText().trim().isEmpty()) {
 
                     tiedottaja.annaVaroitus("Et voi antaa tyhjää kenttää.");
                     ok = false;
+                } else if (etunimi.getText().length() > 64 || sukunimi.getText().length() > 64) {
+                    tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää korkeintaan 64 merkkiä.");
+                    ok = false;
                 }
-                //TARKISTUKSET!!!
+                for (char c : etunimi.getText().toCharArray()) {
+
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+
+                    }
+                }
+                for (char c : sukunimi.getText().toCharArray()) {
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+                    }
+                }
+                // pelinumeron tarkistus, eli että onko jo käytössä
+
+                for (int i = 0; i < joukkue.annaPelaajat().size(); i++) {
+
+                    if (joukkue.annaPelaajat().get(i).annaPelinumero() == pelinumero.getValue()) {
+                        ok = false;
+                        tiedottaja.annaVaroitus("Valitsemasi pelinumero on jo käytössä toisella joukkueen pelaajalla.");
+                        break;
+                    }
+
+                }
 
                 if (ok) {
                     muuttaja.lisaaPelaaja(etunimi.getText(), sukunimi.getText(), pelipaikka.getText(), pelinumero.getValue(), joukkue);
 
-                    luoJoukkueSivu(joukkue);
+                    luoJoukkueenPelaajaLisays(joukkue);
                 }
             }
         });
@@ -1427,6 +1659,69 @@ public class Nakyma {
         lisays.getChildren().addAll(vbox0, vbox1, vbox2, vbox3, vbox4);
         alle.getChildren().addAll(ohje, lisays);
         osio2.getChildren().addAll(otsikko2, pelaajat, alle);
+
+        HBox rivi4 = new HBox();
+        rivi4.setSpacing(40);
+        rivi4.getChildren().addAll(osio2);
+
+        grid.add(rivi4, 0, 3);
+
+        sb.setContent(grid);
+        VBox peitto = new VBox();
+        peitto.setStyle("-fx-background-color: white;");
+        ikkuna.annaNaytto().getChildren().add(peitto);
+
+        ikkuna.annaNaytto().getChildren().add(sb);
+
+    }
+
+    public void luoJoukkueenToimariLisays(Joukkue joukkue) {
+
+        ScrollPane sb = new ScrollPane();
+        sb.setHbarPolicy(AS_NEEDED);
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20, 10, 40, 10));
+
+        HBox rivi1 = new HBox();
+        rivi1.setPadding(new Insets(20, 10, 20, 80));
+        rivi1.setAlignment(Pos.TOP_RIGHT);
+        rivi1.setSpacing(20);
+
+        Button paluunappula = new Button();
+
+        paluunappula.setText("<< Palaa takaisin");
+        paluunappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                luoJoukkueSivu(joukkue);
+
+            }
+        });
+
+        rivi1.getChildren().addAll(paluunappula);
+        grid.add(rivi1, 0, 0);
+
+        //rivi2
+        VBox info = new VBox();
+        info.setPadding(new Insets(10, 10, 40, 10));
+
+        Label nimi = new Label("Lisää toimihenkilöitä joukkueeseen " + joukkue.toString() + ":");
+        nimi.setFont(Font.font("Papyrus", 32));
+
+        info.setAlignment(Pos.CENTER);
+        info.getChildren().addAll(nimi);
+        grid.add(info, 0, 1);
+
+        VBox osio3 = new VBox();
+        osio3.setSpacing(20);
+
+        Label otsikko3 = new Label("Toimihenkilöt");
+        otsikko3.setFont(Font.font("Papyrus", 18));
+
+        Taulukko taulukontekija4 = new Taulukko(this);
+        toimihenkilot = taulukontekija4.luoToimihenkiloTaulukko(joukkue);
+        toimihenkilot.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         VBox alle2 = new VBox();
         alle2.setPadding(new Insets(20, 0, 60, 0));
@@ -1486,18 +1781,40 @@ public class Nakyma {
             @Override
             public void handle(ActionEvent e) {
                 boolean ok = true;
-                //tarkistus, onko tyhjä kenttä PITÄÄ TARKISTAA MYÖS MUITA!!!
+                //nimen syöttöjen tarkistus
                 if (etunimi2.getText().trim().isEmpty() || sukunimi2.getText().trim().isEmpty()) {
 
                     tiedottaja.annaVaroitus("Et voi antaa tyhjää kenttää.");
                     ok = false;
+                } else if (etunimi2.getText().length() > 64 || sukunimi2.getText().length() > 64) {
+                    tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää korkeintaan 64 merkkiä.");
+                    ok = false;
                 }
-                //TARKISTUKSET!!!
+                for (char c : etunimi2.getText().toCharArray()) {
+
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+
+                    }
+                }
+                for (char c : sukunimi2.getText().toCharArray()) {
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+                    }
+                }
 
                 if (ok) {
                     muuttaja.lisaaToimari(etunimi2.getText(), sukunimi2.getText(), rooli.getText(), sposti.getText(), puh.getText(), joukkue);
 
-                    luoJoukkueSivu(joukkue);
+                    luoJoukkueenToimariLisays(joukkue);
                 }
             }
         });
@@ -1507,17 +1824,10 @@ public class Nakyma {
         alle2.getChildren().addAll(ohje2, lisays2);
         osio3.getChildren().addAll(otsikko3, toimihenkilot, alle2);
 
-        rivi3.getChildren().addAll(osio1);
-        grid.add(rivi3, 0, 2);
-
-        HBox rivi4 = new HBox();
-        rivi4.setSpacing(40);
-        rivi4.getChildren().addAll(osio2, osio4);
-
         HBox rivi5 = new HBox();
         rivi5.setPadding(new Insets(40, 0, 0, 0));
         rivi5.getChildren().addAll(osio3);
-        grid.add(rivi4, 0, 3);
+
         grid.add(rivi5, 0, 4);
 
         sb.setContent(grid);
@@ -1694,17 +2004,59 @@ public class Nakyma {
 
     }
 
-    //PELAAJAN NIMEN KIRJAIMET TARKISTETTAVA!!!
     public void luoPelaajaMuokkaus(Pelaaja pelaaja) {
 
         Button muokkausnappula = new Button("Tallenna");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                boolean ok = true;
+
+                //nimen syöttöjen tarkistus
                 if (etunimi.getText().trim().isEmpty() || sukunimi.getText().trim().isEmpty()) {
 
                     tiedottaja.annaVaroitus("Et voi antaa tyhjää kenttää.");
-                } else {
+                    ok = false;
+                } else if (etunimi.getText().length() > 64 || sukunimi.getText().length() > 64) {
+                    tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää korkeintaan 64 merkkiä.");
+                    ok = false;
+                }
+                for (char c : etunimi.getText().toCharArray()) {
+
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+
+                    }
+                }
+                for (char c : sukunimi.getText().toCharArray()) {
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+                    }
+                }
+
+                // pelinumeron tarkistus, eli että onko jo käytössä
+                Joukkue joukkue = pelaaja.annaJoukkue();
+
+                for (int i = 0; i < joukkue.annaPelaajat().size(); i++) {
+                    if (!joukkue.annaPelaajat().get(i).equals(pelaaja)) {
+                        if (joukkue.annaPelaajat().get(i).annaPelinumero() == pelinumero.getValue()) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Valitsema pelinumero on jo käytössä toisella joukkueen pelaajalla.");
+                            break;
+                        }
+                    }
+
+                }
+
+                if (ok) {
 
                     pelaaja.asetaEtuNimi(etunimi.getText());
                     pelaaja.asetaSukuNimi(sukunimi.getText());
@@ -1874,16 +2226,43 @@ public class Nakyma {
         ikkuna.annaNaytto().getChildren().add(sb);
     }
 
-    //TOIMARIN TIETOJEN TARKISTUS!!!
     public void luoToimariMuokkaus(Toimihenkilo toimari) {
         Button muokkausnappula = new Button("Tallenna");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                boolean ok = true;
+                //nimen syöttöjen tarkistus
                 if (etunimi.getText().trim().isEmpty() || sukunimi.getText().trim().isEmpty()) {
 
                     tiedottaja.annaVaroitus("Et voi antaa tyhjää kenttää.");
-                } else {
+                    ok = false;
+                } else if (etunimi.getText().length() > 64 || sukunimi.getText().length() > 64) {
+                    tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää korkeintaan 64 merkkiä.");
+                    ok = false;
+                }
+                for (char c : etunimi.getText().toCharArray()) {
+
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+
+                    }
+                }
+                for (char c : sukunimi.getText().toCharArray()) {
+                    if (!Character.isLetter(c)) {
+                        if (!Character.toString(c).equals("-")) {
+                            ok = false;
+                            tiedottaja.annaVaroitus("Sekä etu- että sukunimi saa sisältää vain kirjaimia ja tavuviivoja.");
+                            break;
+                        }
+                    }
+                }
+
+                if (ok) {
 
                     toimari.asetaEtuNimi(etunimi.getText());
                     toimari.asetaSukuNimi(sukunimi.getText());
@@ -2165,6 +2544,21 @@ public class Nakyma {
         sb.setHbarPolicy(AS_NEEDED);
         GridPane grid = new GridPane();
 
+        VBox ohjekierros = new VBox();
+        Label ohjeki = new Label("Kierros");
+
+        ComboBox<Integer> kierros = new ComboBox();
+        List<Integer> kierroslista = new ArrayList();
+
+        for (int i = 1; i < 99; i++) {
+            kierroslista.add(i);
+        }
+
+        ObservableList kierrokset = FXCollections.observableList(kierroslista);
+        kierros.setItems(kierrokset);
+        kierros.setValue(ottelu.annaKierros());
+        ohjekierros.getChildren().addAll(ohjeki, kierros);
+        ohjekierros.setPadding(new Insets(20, 0, 0, 0));
         //jos ei vielä pelattu, niin tietoja voi muokata
         ComboBox<Joukkue> koti = new ComboBox();
         List<Joukkue> kotijoukkuelista = new ArrayList();
@@ -2295,46 +2689,62 @@ public class Nakyma {
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                ottelu.asetaAika(ajankohta.getValue(), kellotunnit.getValue(), kellominuutit.getValue());
-                ottelu.asetaPaikka(paikka.getText());
-                ottelu.asetaJoukkueet(koti.getValue(), vieras.getValue());
-                Tuomari erotuomariT = erotuomari.getValue();
-                Tuomari avustava1T = avustava1.getValue();
-                Tuomari avustava2T = avustava2.getValue();
-
-                ottelu.annaRoolit().clear();
-
-                if (erotuomariT != null) {
-                    TuomarinRooli erotuomariR = new TuomarinRooli(erotuomariT, ottelu);
-                    erotuomariR.asetaRooli("Erotuomari");
-
-                    ottelu.annaRoolit().add(erotuomariR);
-                    erotuomariT.annaTuomarinRoolit().add(erotuomariR);
+                boolean ok = true;
+                //TARKISTUKSET!!
+                if (koti.getValue() == null || vieras.getValue() == null) {
+                    tiedottaja.annaVaroitus("Valitse sekä koti- että vierasjoukkue.");
+                    ok = false;
                 }
-
-                if (avustava1T != null) {
-
-                    TuomarinRooli avustava1R = new TuomarinRooli(avustava1T, ottelu);
-                    avustava1R.asetaRooli("1. Avustava erotuomari");
-
-                    ottelu.annaRoolit().add(avustava1R);
-                    avustava1T.annaTuomarinRoolit().add(avustava1R);
+                if (koti.getValue() == vieras.getValue()) {
+                    tiedottaja.annaVaroitus("Koti- ja vierasjoukkue eivät voi olla samoja.");
+                    ok = false;
                 }
-
-                if (avustava2T != null) {
-                    TuomarinRooli avustava2R = new TuomarinRooli(avustava2T, ottelu);
-                    avustava2R.asetaRooli("2. Avustava erotuomari");
-
-                    ottelu.annaRoolit().add(avustava2R);
-                    avustava2T.annaTuomarinRoolit().add(avustava2R);
+                if (erotuomari.getValue() == avustava1.getValue() || erotuomari.getValue() == avustava2.getValue() || avustava2.getValue() == avustava1.getValue()) {
+                    tiedottaja.annaVaroitus("Sama henkilö ei voi olla kuin yhdessä tuomarin roolissa.");
+                    ok = false;
                 }
+                if (ok) {
+                    ottelu.asetaKierros(kierros.getValue());
+                    ottelu.asetaAika(ajankohta.getValue(), kellotunnit.getValue(), kellominuutit.getValue());
+                    ottelu.asetaPaikka(paikka.getText());
+                    ottelu.asetaJoukkueet(koti.getValue(), vieras.getValue());
+                    Tuomari erotuomariT = erotuomari.getValue();
+                    Tuomari avustava1T = avustava1.getValue();
+                    Tuomari avustava2T = avustava2.getValue();
 
-                tiedottaja.kirjoitaLoki("Ottelun tietoja muokattu.");
+                    ottelu.annaRoolit().clear();
 
-                ikkuna.asetaMuutos(true);
+                    if (erotuomariT != null) {
+                        TuomarinRooli erotuomariR = new TuomarinRooli(erotuomariT, ottelu);
+                        erotuomariR.asetaRooli("Erotuomari");
 
-                luoOttelusivu(ottelu);
+                        ottelu.annaRoolit().add(erotuomariR);
+                        erotuomariT.annaTuomarinRoolit().add(erotuomariR);
+                    }
+
+                    if (avustava1T != null) {
+
+                        TuomarinRooli avustava1R = new TuomarinRooli(avustava1T, ottelu);
+                        avustava1R.asetaRooli("1. Avustava erotuomari");
+
+                        ottelu.annaRoolit().add(avustava1R);
+                        avustava1T.annaTuomarinRoolit().add(avustava1R);
+                    }
+
+                    if (avustava2T != null) {
+                        TuomarinRooli avustava2R = new TuomarinRooli(avustava2T, ottelu);
+                        avustava2R.asetaRooli("2. Avustava erotuomari");
+
+                        ottelu.annaRoolit().add(avustava2R);
+                        avustava2T.annaTuomarinRoolit().add(avustava2R);
+                    }
+
+                    tiedottaja.kirjoitaLoki("Ottelun tietoja muokattu.");
+
+                    ikkuna.asetaMuutos(true);
+
+                    luoOttelusivu(ottelu);
+                }
             }
 
         });
@@ -2404,7 +2814,7 @@ public class Nakyma {
         painikkeet.setSpacing(20);
         painikkeet.setPadding(new Insets(20, 0, 0, 0));
         painikkeet.getChildren().addAll(muokkausnappula, peruuta);
-        hbox.getChildren().addAll(vbox1, vbox2, vbox3, vbox4, vbox5, vbox6, vbox7);
+        hbox.getChildren().addAll(ohjekierros, vbox1, vbox2, vbox3, vbox4, vbox5, vbox6, vbox7);
         grid.add(otsikko, 0, 0);
         grid.add(hbox, 0, 1);
         grid.add(painikkeet, 0, 2);
