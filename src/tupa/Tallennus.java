@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tupa;
 
 import java.io.FileOutputStream;
@@ -59,28 +54,32 @@ public class Tallennus {
 		  Class.forName(driver).newInstance();
 		  Connection conn = DriverManager.getConnection(url+dbName,userName,password);
 		  Statement st = conn.createStatement();
-		  ResultSet res = st.executeQuery("SELECT * FROM  tulostaulu");
+		  ResultSet tuomarit = st.executeQuery("SELECT * FROM  tuomarit");
                   int laskin = 0;
-		  while (res.next()) {
-		  int id = res.getInt("idtulostaulu");
+		  while (tuomarit.next()) {
+		  int tid = tuomarit.getInt("tuomariid");
                                    
-		  String msg = res.getString("tulos");
+		  String tEtu = tuomarit.getString("tuomariEtunimi");
+		  String tSuku = tuomarit.getString("tuomariSukunimi");
                       
+		  
                   ++laskin;
-		  System.out.println(id + "\t" + msg);
+		  System.out.println(tid + "\t" + tEtu + "\t" + tSuku);
 		  }
 //                  ResultSet i = st.executeQuery("SELECT COUNT(*) AS idtulostaulu FROM tulostaulu");
 //                  
 //                  
-//                      String kysytietoja = JOptionPane.showInputDialog("Sy√∂t√§ rivitieto"); 
+//                      String kysytietoja = JOptionPane.showInputDialog("Syˆt‰ rivitieto"); 
 //                      int  rivinum = 1 + laskin ;
 //                  
 //                  
 //                      
 //		  int val = st.executeUpdate("INSERT INTO `tulostaulu`(idtulostaulu, tulos) VALUE ("+rivinum+",'"+kysytietoja+"')");
 //		  if(val==1)
-//			  System.out.print("Lis√§ttiin onnistuneesti arvot");
+//			  System.out.print("Lis‰ttiin onnistuneesti arvot");
 //                  
+		  
+		  System.out.println("asd");
 		  conn.close();
 		  } catch (Exception e) {
 		  e.printStackTrace();
@@ -99,28 +98,39 @@ public class Tallennus {
                   
                   
         try {
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
             ulos = new ObjectOutputStream(new FileOutputStream(tallennusTiedosto));
 
             if (!kohdetk.isEmpty()) {
 
                 for (int i = 0; i < kohdetk.size(); i++) {
                     
+                	
+                	// Nopeutetaan koodia 
+                	Kohde tiedot = kohdetk.get(i);
                      
 
-                       if (kohdetk.get(i) instanceof Sarja) {
+                       if (tiedot instanceof Sarja) {
                             Sarja sarja = (Sarja) kohdetk.get(i);
                   
                             sarjatk.add(sarja);
                             ikkuna.annaSarjatk().add(sarja);
 
-                            parent = ikkuna.annaRootSarjat();
-                            TreeItem<Kohde> newItem = new TreeItem<Kohde>(kohdetk.get(i));
-                            parent.getChildren().add(newItem);
-                            System.out.println(kohdetk.get(i));
+                         int sID = sarja.annaID();
+                         Turnaus asd = sarja.annaTurnaus();
+                        
                             
-                            System.out.println("testi-Sarja");
+                          
 
-                        } else if (kohdetk.get(i) instanceof Tuomari) {
+                        } else if (tiedot instanceof Tuomari) {
                             /*
                             Kohdetk.get(i) on olio.
                             TUtkii onko tuomariluokassa muodostettu olio.
@@ -129,21 +139,22 @@ public class Tallennus {
                             */
                             
                             int tuomariID = kohdetk.get(i).annaID();
-                            //String etunimi = kohdetk.get(i).annaEtunimi();
-                           // String sukunimi = kohdetk.get(i).annaSukunimi();
-                            
-                            
                             Tuomari tuomari = (Tuomari) kohdetk.get(i);
                             tuomaritk.add(tuomari);
                             ikkuna.annaTuomaritk().add(tuomari);
-                                                        
                             
-                            //T√§m√§ menee nimi sarakkeeseen
-                            System.out.print(tuomariID +"\t" + kohdetk.get(i)+"\n");
+                            int tID = tuomari.annaJulkinenId();
+                            String etunimi = tuomari.annaEtuNimi();
+                            String sukunimi = tuomari.annaSukuNimi();
+                            
+                            
+                            
+                            //T‰m‰ menee nimi sarakkeeseen
+                            System.out.print(tuomariID +"\t" + tID +"\t" + etunimi + sukunimi + kohdetk.get(i)+"\n");
                             
                             
 
-                        } else if (kohdetk.get(i) instanceof Joukkue) {
+                        } else if (tiedot instanceof Joukkue) {
                             System.out.println("testi-Joukkue");
                             Joukkue joukkue = (Joukkue) kohdetk.get(i);
                             joukkuetk.add(joukkue);
@@ -159,7 +170,7 @@ public class Tallennus {
                        
 
                         } else if (kohdetk.get(i) instanceof Toimihenkilo) {
-                            System.out.println("testi-Toimihenkil√∂");
+                            System.out.println("testi-Toimihenkilˆ");
                             Toimihenkilo toimari = (Toimihenkilo) kohdetk.get(i);
                             toimaritk.add(toimari);
                             ikkuna.annaToimaritk().add(toimari);
@@ -199,7 +210,7 @@ public class Tallennus {
             }
         }
 
-        //p√§ivitet√§√§n tilanne, ett√§ tallennus on suoritettu
+        //p‰ivitet‰‰n tilanne, ett‰ tallennus on suoritettu
         ikkuna.asetaMuutos(false);
 
     }
