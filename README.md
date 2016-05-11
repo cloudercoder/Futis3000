@@ -20,6 +20,8 @@ Tekninen toteutus
 + MySQL palvelin
 + Kirjautuminen
 + Ohjelmaan tallennetut tiedoista saa varmuuskopiot XML tiedostoon
++ Netissä tulokset
+
 
 Teknisiä toiveita
 
