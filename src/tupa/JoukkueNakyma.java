@@ -30,15 +30,6 @@ public class JoukkueNakyma {
     //uusien kohtien lisäystä varten
     private TextField nimi = new TextField();
 
-    private TextField etunimi = new TextField();
-    private TextField sukunimi = new TextField();
-    private TextField pelipaikka = new TextField();
-
-    private ComboBox<Integer> pelinumero = new ComboBox<>();
-    private TextField sposti = new TextField();
-    private TextField puh = new TextField();
-    private TextField rooli = new TextField();
-
     private Label pakollinen = new Label("*");
     private Label pakollinen2 = new Label("*");
     private Label pakollinen3 = new Label("*");
@@ -50,11 +41,9 @@ public class JoukkueNakyma {
     //taulukot
     private TableView ottelut;
     private TableView pisteporssi;
-    private TableView joukkueet;
-    private TableView sarjataulukko;
     private TableView pelaajat;
     private TableView toimihenkilot;
-    private TableView pisteet;
+
 
     private PaaNakyma nakyma;
     private SarjaNakyma sarjanakyma;

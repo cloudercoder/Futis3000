@@ -193,7 +193,7 @@ public class SarjaNakyma {
         HBox rivi3 = new HBox();
         rivi3.setPadding(new Insets(20, 10, 0, 20));
 
-        Taulukko taulukontekija1 = new Taulukko(this);
+        Taulukko taulukontekija1 = new Taulukko(this, varmistaja);
 
         ottelut = taulukontekija1.luoOtteluTaulukko(sarja);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -210,7 +210,7 @@ public class SarjaNakyma {
         Label otsikko2 = new Label("Joukkueet");
         otsikko2.setFont(Font.font("Papyrus", 18));
 
-        Taulukko taulukontekija3 = new Taulukko(this);
+        Taulukko taulukontekija3 = new Taulukko(this, varmistaja);
         joukkueet = taulukontekija3.luoJoukkueTaulukko(sarja);
         joukkueet.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -220,7 +220,7 @@ public class SarjaNakyma {
         Label otsikko3 = new Label("Sarjataulukko");
         otsikko3.setFont(Font.font("Papyrus", 18));
 
-        Taulukko taulukontekija4 = new Taulukko(this);
+        Taulukko taulukontekija4 = new Taulukko(this, varmistaja);
         sarjataulukko = taulukontekija4.luoSarjaTaulukko(sarja);
         sarjataulukko.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -230,7 +230,7 @@ public class SarjaNakyma {
 
         Label otsikko4 = new Label("Pistepörssi");
         otsikko4.setFont(Font.font("Papyrus", 18));
-        Taulukko taulukontekija2 = new Taulukko(this);
+        Taulukko taulukontekija2 = new Taulukko(this, varmistaja);
         pisteporssi = taulukontekija2.luoPisteporssiTaulukko(sarja);
         pisteporssi.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -265,7 +265,7 @@ public class SarjaNakyma {
             @Override
             public void handle(ActionEvent event) {
 
-                luoSarjaSivu3(sarja);
+                luoJoukkueenLisaysSivu(sarja);
 
             }
         });
@@ -361,7 +361,7 @@ public class SarjaNakyma {
         HBox rivi3 = new HBox();
         rivi3.setPadding(new Insets(20, 10, 0, 20));
 
-        Taulukko taulukontekija1 = new Taulukko(this);
+        Taulukko taulukontekija1 = new Taulukko(this, varmistaja);
 
         ottelut = taulukontekija1.luoOtteluTaulukkoMuokattava(sarja);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -476,7 +476,7 @@ public class SarjaNakyma {
         HBox rivi3 = new HBox();
         rivi3.setPadding(new Insets(20, 10, 0, 20));
 
-        Taulukko taulukontekija1 = new Taulukko(this);
+        Taulukko taulukontekija1 = new Taulukko(this, varmistaja);
 
         ottelut = taulukontekija1.luoOtteluTaulukko(sarja);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -725,20 +725,20 @@ public class SarjaNakyma {
 
     }
 
-    public void luoSarjaSivu3(Sarja sarja) {
+    public void luoJoukkueenLisaysSivu(Sarja sarja) {
 
         ScrollPane sb = new ScrollPane();
 
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(20, 10, 40, 10));
+        grid.setPadding(new Insets(20, 10, 40, 300));
 
         VBox rivi1 = new VBox();
         rivi1.setAlignment(Pos.CENTER);
 
-        Button paluunappula = new Button();
+        Button tallennus = new Button();
 
-        paluunappula.setText("<< Palaa takaisin");
-        paluunappula.setOnAction(new EventHandler<ActionEvent>() {
+        tallennus.setText("Tallenna");
+        tallennus.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
 
@@ -760,13 +760,13 @@ public class SarjaNakyma {
         });
 
         HBox painikkeet = new HBox();
-        painikkeet.setPadding(new Insets(20));
+        painikkeet.setPadding(new Insets(20,0,0, 80));
         painikkeet.setSpacing(20);
-        painikkeet.setAlignment(Pos.TOP_RIGHT);
-        painikkeet.getChildren().addAll(paluunappula, joukkuepoistonappula);
+      
+        painikkeet.getChildren().addAll(joukkuepoistonappula);
         rivi1.getChildren().addAll(painikkeet);
 
-        VBox rivi2 = new VBox();
+        HBox rivi2 = new HBox();
         rivi2.setPadding(new Insets(20));
         rivi2.setAlignment(Pos.CENTER);
         Label nimi = new Label("Lisää joukkueita sarjaan " + sarja.toString() + ":");
@@ -774,7 +774,7 @@ public class SarjaNakyma {
 
         rivi2.getChildren().addAll(nimi);
 
-        grid.add(painikkeet, 0, 0);
+    
         grid.add(rivi2, 0, 1);
 
         VBox osio2 = new VBox();
@@ -784,14 +784,13 @@ public class SarjaNakyma {
         Label otsikko2 = new Label("Joukkueet");
         otsikko2.setFont(Font.font("Papyrus", 18));
 
-        Taulukko taulukontekija3 = new Taulukko(this);
-        joukkueet = taulukontekija3.luoJoukkueTaulukko(sarja);
+        Taulukko taulukontekija3 = new Taulukko(this, varmistaja);
+        joukkueet = taulukontekija3.luoJoukkueTaulukkoMuokattava(sarja);
         joukkueet.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         VBox alle2 = new VBox();
         alle2.setSpacing(10);
-        Label ohjej = new Label("Lisää joukkue:");
-        ohjej.setFont(Font.font("Papyrus", 14));
+      
 
         HBox painikeboksi2 = new HBox();
 
@@ -800,7 +799,7 @@ public class SarjaNakyma {
         TextField lisaaJoukkue = new TextField();
         lisaaJoukkue.setPromptText("Joukkueen nimi");
 
-        Button lisaysnappula2 = new Button("Tallenna");
+        Button lisaysnappula2 = new Button("Lisää");
         lisaysnappula2.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -825,22 +824,29 @@ public class SarjaNakyma {
 
                     lisaaJoukkue.clear();
 
-                    luoSarjaSivu3(sarja);
+                    luoJoukkueenLisaysSivu(sarja);
                 }
             }
         });
 
+     
+        
+        
         painikeboksi2.getChildren().addAll(lisaaJoukkue, lisaysnappula2);
-        alle2.getChildren().addAll(ohjej, painikeboksi2);
+        alle2.getChildren().addAll(painikeboksi2);
 
-        osio2.getChildren().addAll(otsikko2, joukkueet, alle2);
+        HBox loppupainikkeet = new HBox();
+        loppupainikkeet.setSpacing(20);
+        loppupainikkeet.getChildren().addAll(tallennus, joukkuepoistonappula);
+        
+        osio2.getChildren().addAll(otsikko2, joukkueet, alle2, loppupainikkeet);
 
         HBox rivi6 = new HBox();
         rivi6.setPadding(new Insets(0));
 
         rivi6.getChildren().addAll(osio2);
 
-        grid.add(rivi6, 0, 5);
+        grid.add(rivi6, 0, 2);
         sb.setContent(grid);
         VBox peitto = new VBox();
         peitto.setStyle("-fx-background-color: white;");

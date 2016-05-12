@@ -36,6 +36,8 @@ public class Varmistus {
     Varmistus(List<Kohde> kohteet, Tupa ikkuna) {
         kohdetk = kohteet;
         this.ikkuna = ikkuna;
+        sarjanakyma = ikkuna.annaPaaNakyma().annaSarjanakyma();
+        joukkuenakyma = ikkuna.annaPaaNakyma().annaJoukkuenakyma();
     }
 
     Varmistus(Tupa ikkuna, PaaNakyma nakyma) {
@@ -44,6 +46,7 @@ public class Varmistus {
         this.nakyma = nakyma;
         sarjanakyma = nakyma.annaSarjanakyma();
         joukkuenakyma = nakyma.annaJoukkuenakyma();
+
     }
 
     public void annaVarmistus() {
@@ -127,8 +130,6 @@ public class Varmistus {
             @Override
             public void handle(ActionEvent event) {
 
-            
-             
                 muuttaja.poistaKohde(arvo);
                 stageV.close();
 
@@ -471,7 +472,7 @@ public class Varmistus {
                 }
 
                 muuttaja.poistaKaikkiOttelut(poistettavat, sarja);
-
+                sarjanakyma = nakyma.annaSarjanakyma();
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
 
                 sarjanakyma.luoSarjaSivu(mihin);
@@ -524,7 +525,7 @@ public class Varmistus {
             public void handle(ActionEvent event) {
 
                 muuttaja.suoritaAutoOtteluLista(sarja);
-
+                sarjanakyma = nakyma.annaSarjanakyma();
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
 
                 sarjanakyma.luoSarjaSivu(mihin);
@@ -579,7 +580,7 @@ public class Varmistus {
                 List<Joukkue> poistettavat = (sarja.annaJoukkueet());
 
                 muuttaja.poistaKaikkiJoukkueet(poistettavat, sarja);
-
+                sarjanakyma = nakyma.annaSarjanakyma();
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
 
                 sarjanakyma.luoSarjaSivu(mihin);
@@ -606,7 +607,60 @@ public class Varmistus {
 
     }
 
-    void annaKaikkienPelaajienPoistoVarmitus(Joukkue joukkue) {
+    public void annaJoukkueenPoistoVarmistus(Joukkue joukkue) {
+        Stage stageV = new Stage();
+        BorderPane alue = new BorderPane();
+
+        VBox vbox = new VBox();
+        vbox.setPadding(new Insets(10));
+        vbox.setSpacing(10);
+
+        HBox hbox1 = new HBox();
+        Label viesti = new Label("Haluatko todella poistaa joukkueen " + joukkue.toString() + "?");
+
+        hbox1.setAlignment(Pos.CENTER);
+        hbox1.getChildren().add(viesti);
+
+        HBox hbox2 = new HBox();
+        hbox2.setPadding(new Insets(10));
+        hbox2.setSpacing(10);
+        Button joo = new Button("Kyllä");
+
+        Button peruuta = new Button("Peruuta");
+
+        joo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                muuttaja.poistaJoukkue(joukkue, joukkue.annaSarja());
+
+                sarjanakyma = nakyma.annaSarjanakyma();
+
+                sarjanakyma.luoJoukkueenLisaysSivu(joukkue.annaSarja());
+                stageV.close();
+
+            }
+        });
+        peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                stageV.close();
+            }
+        });
+        hbox2.setAlignment(Pos.CENTER);
+        hbox2.getChildren().addAll(joo, peruuta);
+        vbox.getChildren().addAll(hbox1, hbox2);
+        alue.setCenter(vbox);
+
+        Scene sceneV = new Scene(alue, 600, 100);
+        stageV.setTitle("TUPA - TULOSPALVELU");
+        stageV.setScene(sceneV);
+        stageV.show();
+
+    }
+
+    public void annaKaikkienPelaajienPoistoVarmitus(Joukkue joukkue) {
         Stage stageV = new Stage();
         BorderPane alue = new BorderPane();
 
@@ -634,7 +688,7 @@ public class Varmistus {
                 List<Pelaaja> poistettavat = (joukkue.annaPelaajat());
 
                 muuttaja.poistaKaikkiPelaajat(poistettavat, joukkue);
-
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
                 joukkuenakyma.luoJoukkueSivu(joukkue);
                 stageV.close();
 
@@ -687,7 +741,7 @@ public class Varmistus {
                 List<Toimihenkilo> poistettavat = (joukkue.annaToimarit());
 
                 muuttaja.poistaKaikkiToimarit(poistettavat, joukkue);
-
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
                 joukkuenakyma.luoJoukkueSivu(joukkue);
                 stageV.close();
 

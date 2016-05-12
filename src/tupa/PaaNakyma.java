@@ -8,11 +8,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
@@ -85,7 +83,18 @@ public class PaaNakyma {
     public TuomariNakyma annaTuomarinakyma() {
         return tuomarinakyma;
     }
+    
+       public OtteluNakyma annaOttelunakyma() {
+        return ottelunakyma;
+    }
 
+        public PelaajaNakyma annaPelaajanakyma() {
+        return pelaajanakyma;
+    }   
+                public ToimariNakyma annaToimarinakyma() {
+        return toimarinakyma;
+    } 
+       
     public void luoOhje(String uusiohje, TreeItem<Kohde> arvo) {
 
         HBox ohjepalkki = new HBox();

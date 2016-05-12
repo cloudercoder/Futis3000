@@ -554,10 +554,7 @@ public class Muuttaja {
         }
 
         ikkuna.asetaMuutos(true);
-        TreeItem<Kohde> mihin = new TreeItem<>(sarja);
-
-        sarjanakyma.luoSarjaSivu(mihin);
-
+       
     }
 
     public void poistaKaikkiOttelut(List<Ottelu> ottelut, Sarja sarja) {

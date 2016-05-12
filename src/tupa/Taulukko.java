@@ -40,7 +40,8 @@ public class Taulukko {
     private OtteluNakyma ottelunakyma;
     private PelaajaNakyma pelaajanakyma;
     private ToimariNakyma toimarinakyma;
-    
+    private Varmistus varmistaja;
+
     Taulukko() {
 
     }
@@ -48,11 +49,12 @@ public class Taulukko {
     Taulukko(PaaNakyma nakyma) {
         this.nakyma = nakyma;
     }
-    
-    Taulukko(SarjaNakyma sarjanakyma) {
+
+    Taulukko(SarjaNakyma sarjanakyma, Varmistus varmistaja) {
         this.sarjanakyma = sarjanakyma;
+        this.varmistaja = varmistaja;
     }
-    
+
     Taulukko(TuomariNakyma tuomarinakyma) {
         this.tuomarinakyma = tuomarinakyma;
     }
@@ -60,20 +62,19 @@ public class Taulukko {
     Taulukko(JoukkueNakyma joukkuenakyma) {
         this.joukkuenakyma = joukkuenakyma;
     }
-    
+
     Taulukko(OtteluNakyma ottelunakyma) {
         this.ottelunakyma = ottelunakyma;
     }
-    
-     Taulukko(PelaajaNakyma pelaajanakyma) {
+
+    Taulukko(PelaajaNakyma pelaajanakyma) {
         this.pelaajanakyma = pelaajanakyma;
     }
-     
-        Taulukko(ToimariNakyma toimarinakyma) {
+
+    Taulukko(ToimariNakyma toimarinakyma) {
         this.toimarinakyma = toimarinakyma;
     }
-      
-    
+
     public TableView luoOtteluTaulukko(Sarja sarja) {
         taulukko.setId("my-table");
 
@@ -139,6 +140,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(kello);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+              ottelunakyma = nakyma.annaOttelunakyma();
             ottelunakyma.luoOttelusivu((Ottelu) newSelection);
         });
 
@@ -248,7 +250,7 @@ public class Taulukko {
         Callback<TableColumn, TableCell> cellFactory
                 = new Callback<TableColumn, TableCell>() {
             public TableCell call(TableColumn p) {
-                return new EditingCell();
+                return new MuokkausSoluOttelu();
             }
         };
 
@@ -295,7 +297,7 @@ public class Taulukko {
                         t.getTablePosition().getRow())).asetaPaikka(t.getNewValue());
 
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
-
+sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoSarjaSivu(mihin);
             }
         }
@@ -309,7 +311,7 @@ public class Taulukko {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaKierros(t.getNewValue());
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
-
+sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoSarjaSivu(mihin);
             }
         }
@@ -329,7 +331,7 @@ public class Taulukko {
                 }
                 System.out.println(t.getNewValue());
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
-
+sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoSarjaSivu(mihin);
             }
         }
@@ -340,7 +342,7 @@ public class Taulukko {
             public void handle(TableColumn.CellEditEvent<Ottelu, Tuomari> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaAvustava1(t.getNewValue());
-
+sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
             }
         }
@@ -351,6 +353,7 @@ public class Taulukko {
             public void handle(TableColumn.CellEditEvent<Ottelu, Tuomari> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaAvustava2(t.getNewValue());
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
             }
         }
@@ -364,6 +367,7 @@ public class Taulukko {
             public void handle(TableColumn.CellEditEvent<Ottelu, String> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaTunnit(t.getNewValue());
+               sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
 
             }
@@ -378,6 +382,7 @@ public class Taulukko {
             public void handle(TableColumn.CellEditEvent<Ottelu, String> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaMinuutit(t.getNewValue());
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
 
             }
@@ -392,6 +397,7 @@ public class Taulukko {
             public void handle(TableColumn.CellEditEvent<Ottelu, Joukkue> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaKotijoukkue(t.getNewValue());
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
 
             }
@@ -404,6 +410,7 @@ public class Taulukko {
             public void handle(TableColumn.CellEditEvent<Ottelu, Joukkue> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaVierasjoukkue(t.getNewValue());
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
             }
         }
@@ -424,7 +431,7 @@ public class Taulukko {
             public void handle(TableColumn.CellEditEvent<Ottelu, Date> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaPaivaDate(t.getNewValue());
-                System.out.println(t.getNewValue());
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
 
             }
@@ -446,7 +453,7 @@ public class Taulukko {
 
             @Override
             public TableCell<Record, Boolean> call(TableColumn<Record, Boolean> p) {
-                return new ButtonCell(data);
+                return new PoistoSoluOttelu(data, varmistaja);
             }
 
         });
@@ -553,6 +560,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(sijoitus);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            joukkuenakyma = nakyma.annaJoukkuenakyma();
             joukkuenakyma.luoJoukkueSivu((Joukkue) newSelection);
         });
 
@@ -674,6 +682,7 @@ public class Taulukko {
         pelaaja.setPrefWidth(50);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            pelaajanakyma = nakyma.annaPelaajanakyma();
             pelaajanakyma.luoPelaajaSivu((Pelaaja) newSelection);
         });
 
@@ -728,7 +737,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(nimi);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-
+toimarinakyma = nakyma.annaToimarinakyma();
             toimarinakyma.luoToimariSivu((Toimihenkilo) newSelection);
         });
 
@@ -771,6 +780,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(joukkue);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            joukkuenakyma = nakyma.annaJoukkuenakyma();
             joukkuenakyma.luoJoukkueSivu((Joukkue) newSelection);
         });
         joukkue.setMinWidth(180);
@@ -784,6 +794,84 @@ public class Taulukko {
 
         taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
         taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
+
+        return taulukko;
+    }
+
+    public TableView luoJoukkueTaulukkoMuokattava(Sarja sarja) {
+        taulukko.setId("ei-klikattava2");
+        taulukko.setPlaceholder(new Label("Ei lisättyjä joukkueita"));
+        List<Joukkue> joukkueet = new ArrayList<>();
+
+        for (int i = 0; i < sarja.annaJoukkueet().size(); i++) {
+            sarja.annaJoukkueet().get(i).asetaTaulukkonimi();
+            joukkueet.add(sarja.annaJoukkueet().get(i));
+
+        }
+
+        ObservableList<Joukkue> data
+                = FXCollections.observableArrayList(joukkueet);
+
+        TableColumn joukkue = new TableColumn("Joukkue");
+        TableColumn col_action = new TableColumn<>("Poista");
+        joukkue.setCellValueFactory(new PropertyValueFactory<Joukkue, String>("taulukkonimi"));
+
+        taulukko.getColumns().addAll(joukkue);
+        taulukko.setItems(data);
+        joukkue.setSortType(TableColumn.SortType.ASCENDING);
+        taulukko.getSortOrder().add(joukkue);
+
+        joukkue.setMinWidth(180);
+        taulukko.setFixedCellSize(25);
+
+        if (taulukko.getItems().size() == 0) {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(2)));
+        } else {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(1.1)));
+        }
+
+        taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
+        taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
+        taulukko.setEditable(true);
+        Callback<TableColumn, TableCell> cellFactory
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new MuokkausSoluOttelu();
+            }
+        };
+
+        joukkue.setCellFactory(cellFactory);
+        joukkue.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Joukkue, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Joukkue, String> t) {
+                ((Joukkue) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaNimi(t.getNewValue());
+sarjanakyma = nakyma.annaSarjanakyma();
+                sarjanakyma.luoJoukkueenLisaysSivu(sarja);
+            }
+        }
+        );
+
+        col_action.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Record, Boolean>, ObservableValue<Boolean>>() {
+
+            @Override
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Record, Boolean> p) {
+                return new SimpleBooleanProperty(p.getValue() != null);
+            }
+        });
+
+        //Adding the Button to the cell
+        col_action.setCellFactory(
+                new Callback<TableColumn<Record, Boolean>, TableCell<Record, Boolean>>() {
+
+            @Override
+            public TableCell<Record, Boolean> call(TableColumn<Record, Boolean> p) {
+                return new PoistoSoluJoukkue(data, varmistaja);
+            }
+
+        });
 
         return taulukko;
     }
@@ -841,6 +929,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(paiva);
         taulukko.getSortOrder().add(kello);
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            ottelunakyma = nakyma.annaOttelunakyma();
             ottelunakyma.luoOttelusivu((Ottelu) newSelection);
         });
 
@@ -967,6 +1056,8 @@ public class Taulukko {
         taulukko.getSortOrder().add(pelinumero);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+           
+            pelaajanakyma = nakyma.annaPelaajanakyma();
             pelaajanakyma.luoPelaajaSivu((Pelaaja) newSelection);
         });
 
@@ -1072,6 +1163,7 @@ public class Taulukko {
         sijoitus.setSortType(TableColumn.SortType.ASCENDING);
         taulukko.getSortOrder().add(sijoitus);
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            pelaajanakyma = nakyma.annaPelaajanakyma();
             pelaajanakyma.luoPelaajaSivu((Pelaaja) newSelection);
         });
         taulukko.setFixedCellSize(25);
@@ -1150,6 +1242,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(kello);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+              ottelunakyma = nakyma.annaOttelunakyma();
             ottelunakyma.luoOttelusivu((Ottelu) newSelection);
         });
 
