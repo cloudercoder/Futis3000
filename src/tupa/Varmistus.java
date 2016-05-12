@@ -127,6 +127,8 @@ public class Varmistus {
             @Override
             public void handle(ActionEvent event) {
 
+            
+             
                 muuttaja.poistaKohde(arvo);
                 stageV.close();
 

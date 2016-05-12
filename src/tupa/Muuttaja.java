@@ -97,7 +97,7 @@ public class Muuttaja {
     }
 
     public void poistaKohde(Kohde arvo) {
-        System.out.println(arvo);
+    
         //jos kyseessä sarja poistetaan turnauksen sarjoista ja tuomari turnauksen tuomareista
         if (arvo instanceof Sarja) {
 
@@ -156,7 +156,7 @@ public class Muuttaja {
 
                 }
 
-                //POISTETTAVA KAIKKI TÄHÄN LIITTYVÄ!
+            
             }
         } else if (arvo instanceof Tuomari) {
 
@@ -168,52 +168,10 @@ public class Muuttaja {
 
                 }
 
-                //MISSÄ MUUALLA ON??!?
+               
             }
 
-        } else if (arvo instanceof Joukkue) {
-
-            for (int i = 0; i < ikkuna.annaJoukkuetk().size(); i++) {
-
-                if (ikkuna.annaJoukkuetk().get(i).annaID() == arvo.annaID()) {
-                    ikkuna.annaJoukkuetk().remove(i);
-                    tiedottaja.kirjoitaLoki("Joukkue poistettu.");
-
-                }
-
-                //POISTETTAVA MYÖS KAIKKI PELAAJAT!!!
-            }
-
-        } else if (arvo instanceof Pelaaja) {
-
-            for (int i = 0; i < ikkuna.annaPelaajatk().size(); i++) {
-                System.out.println("pelaajassa id:Tä ennen");
-                System.out.println("pelaajatkid: " + ikkuna.annaPelaajatk().get(i).annaID());
-                System.out.println("arvoid: " + arvo.annaID());
-                System.out.println("arvo: " + arvo);
-                if (ikkuna.annaPelaajatk().get(i).annaID() == arvo.annaID()) {
-                    System.out.println("id:n jälkeen");
-                    System.out.println(arvo.annaID());
-                    ikkuna.annaPelaajatk().remove(i);
-                    tiedottaja.kirjoitaLoki("Pelaaja poistettu.");
-
-                }
-                //MITÄ MUUTA PITÄÄ POISTAA?!??!
-            }
-
-        } else if (arvo instanceof Toimihenkilo) {
-
-            for (int i = 0; i < ikkuna.annaToimaritk().size(); i++) {
-
-                if (ikkuna.annaToimaritk().get(i).annaID() == arvo.annaID()) {
-                    ikkuna.annaToimaritk().remove(i);
-                    tiedottaja.kirjoitaLoki("Tuomari poistettu.");
-
-                }
-                //MITÄ MUUTA PITÄÄ POISTAA?!??!
-            }
-
-        }
+        } 
 
         // ja lopuksi poisto kohdelistasta
         for (int i = 0; i < ikkuna.annaKohteet().size(); i++) {
@@ -225,6 +183,7 @@ public class Muuttaja {
         }
 
         ikkuna.asetaMuutos(true);
+        nakyma.luoEtusivu();
     }
 
     public void poistaOttelu(Ottelu ottelu) {

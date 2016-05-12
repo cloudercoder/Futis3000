@@ -59,7 +59,7 @@ public class Tupa extends Application {
     //puurakenteen "juuret"
     private TreeItem<Kohde> rootSarjat;
     private TreeItem<Kohde> rootTuomarit;
-
+    private PaaNakyma nakyma;
     //pitää kirjaa, onko muutoksia tehty
     private boolean muutettu;
 
@@ -77,7 +77,7 @@ public class Tupa extends Application {
         
         BorderPane border = new BorderPane();
 
-        PaaNakyma nakyma = new PaaNakyma(this);
+        nakyma = new PaaNakyma(this);
         //keskinäytön tyylittely
         naytto.setStyle("-fx-background-color: white;");
 
@@ -94,6 +94,7 @@ public class Tupa extends Application {
 
         //alaosaan tulee toimintaloki
         Pysyvat osiot = new Pysyvat(this);
+      
         border.setBottom(osiot.rakennaAlaosa());
 
         //muodostetaan ensin sivupuu
@@ -110,9 +111,12 @@ public class Tupa extends Application {
         //jonka jälkeen rakennetaan ikkunan vasen puoli
         border.setLeft(osiot.rakennaVasensivu(sivuPuu));
 
+        
         //ylaosan "logo"
+        
         keski.getChildren().add(osiot.rakennaYlaosa());
         keski.getChildren().add(naytto);
+        
         border.setCenter(keski);
 
         Scene scene = new Scene(border, 940, 500);
@@ -141,6 +145,10 @@ public class Tupa extends Application {
 
     }
 
+    public PaaNakyma annaPaaNakyma(){
+        return nakyma;
+    }
+    
     public boolean muutettu() {
 
         if (muutettu == true) {

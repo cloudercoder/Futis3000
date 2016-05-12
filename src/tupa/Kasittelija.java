@@ -47,13 +47,13 @@ public class Kasittelija {
 
     public void branchExpended(TreeItem.TreeModificationEvent<Kohde> event) {
         String nodeValue = event.getSource().getValue().toString();
-        tiedottaja.kirjoitaLoki("Kohde " + nodeValue + " valittu.");
+
 
     }
 
     public void branchCollapsed(TreeItem.TreeModificationEvent<Kohde> event) {
         String nodeValue = event.getSource().getValue().toString();
-        tiedottaja.kirjoitaLoki("Kohde " + nodeValue + " suljettu.");
+      
 
     }
 

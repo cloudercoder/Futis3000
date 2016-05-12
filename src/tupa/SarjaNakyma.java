@@ -34,15 +34,6 @@ public class SarjaNakyma {
     //uusien kohtien lisäystä varten
     private TextField nimi = new TextField();
 
-    private TextField etunimi = new TextField();
-    private TextField sukunimi = new TextField();
-    private TextField pelipaikka = new TextField();
-
-    private ComboBox<Integer> pelinumero = new ComboBox<>();
-    private TextField sposti = new TextField();
-    private TextField puh = new TextField();
-    private TextField rooli = new TextField();
-
     private Label pakollinen = new Label("*");
     private Label pakollinen2 = new Label("*");
     private Label pakollinen3 = new Label("*");
@@ -56,9 +47,6 @@ public class SarjaNakyma {
     private TableView pisteporssi;
     private TableView joukkueet;
     private TableView sarjataulukko;
-    private TableView pelaajat;
-    private TableView toimihenkilot;
-    private TableView pisteet;
 
     private PaaNakyma nakyma;
     
@@ -79,8 +67,8 @@ public class SarjaNakyma {
 
     }
     
-        public GridPane luoPaanayttoSarjat() {
-
+        public void luoSarjanLisaysSivu() {
+            
         Button lisaysnappula = new Button("Tallenna");
         lisaysnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -95,16 +83,27 @@ public class SarjaNakyma {
                     turnaus.annaSarjat().add((Sarja) uusi);
 
                     muuttaja.lisaaKohde(uusi);
-                    nimi.setText("");
+                   nimi.clear();
                     ikkuna.asetaMuutos(true);
                     tiedottaja.kirjoitaLoki("Uusi sarja lisätty");
-                    TreeItem<Kohde> uusiPuuItem = new TreeItem<>(uusi);
-                    luoSarjaSivu(uusiPuuItem);
+                  
+                    luoSarjanLisaysSivu();
                 }
 
             }
         });
+        
+               Button peruuta = new Button("Peruuta");
+        peruuta.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+             
+               nakyma.luoEtusivu();
+            }
+        });
 
+        VBox lisays = new VBox();
+        lisays.setSpacing(20);
         HBox hbox1 = new HBox();
         Label label1 = new Label("Sarjan nimi: ");
         HBox pakollinen_kentta1 = new HBox();
@@ -112,19 +111,30 @@ public class SarjaNakyma {
         pakollinen_kentta1.getChildren().addAll(label1, pakollinen);
 
         hbox1.setSpacing(10);
-        hbox1.getChildren().addAll(pakollinen_kentta1, nimi, lisaysnappula);
+        hbox1.getChildren().addAll(pakollinen_kentta1, nimi);
+        
+        HBox hbox2 = new HBox();
+        hbox2.setSpacing(10);
+          hbox2.getChildren().addAll(lisaysnappula, peruuta);
+        
+        lisays.getChildren().addAll(hbox1, hbox2);
 
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(40));
-        grid.setAlignment(Pos.TOP_CENTER);
+        grid.setAlignment(Pos. CENTER);
 
-        Label otsikko = new Label("Lisää uusi sarja.");
+        Label otsikko = new Label("Lisää uusi sarja");
         otsikko.setFont(Font.font("Papyrus", 28));
 
-        grid.add(otsikko, 1, 5);
-        grid.add(hbox1, 1, 7);
-        grid.setVgap(20);
-        return grid;
+        grid.add(otsikko, 0, 0);
+        grid.add(lisays, 0, 1);
+        grid.setVgap(40);
+   
+     
+      
+          VBox peitto = new VBox();
+                peitto.setStyle("-fx-background-color: white;");
+                ikkuna.annaNaytto().getChildren().add(peitto);
+                 ikkuna.annaNaytto().getChildren().add(grid);
     }
         
     public void luoSarjaSivu(TreeItem<Kohde> arvo) {
@@ -134,28 +144,26 @@ public class SarjaNakyma {
         Sarja sarja = (Sarja) arvo.getValue();
 
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(20, 10, 40, 10));
+ 
 
         VBox rivi1 = new VBox();
         rivi1.setAlignment(Pos.CENTER);
 
         Button muokkausnappula = new Button();
 
-        muokkausnappula.setText("Muokkaa nimeä");
+        muokkausnappula.setText("\uD83D\uDD89");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
 
-                VBox peitto = new VBox();
-                peitto.setStyle("-fx-background-color: white;");
-                ikkuna.annaNaytto().getChildren().add(peitto);
+               
 
-                ikkuna.annaNaytto().getChildren().add(luoSarjaMuokkaus(sarja));
+                luoSarjaMuokkaus(sarja);
 
             }
         });
 
-        Button poistonappula = new Button("Poista sarja");
+        Button poistonappula = new Button("X");
         poistonappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -165,21 +173,21 @@ public class SarjaNakyma {
             }
         });
         HBox painikkeet = new HBox();
-        painikkeet.setPadding(new Insets(20));
+        painikkeet.setPadding(new Insets(20, 20, 40, 80));
         painikkeet.setSpacing(20);
-        painikkeet.setAlignment(Pos.TOP_RIGHT);
+     
         painikkeet.getChildren().addAll(muokkausnappula, poistonappula);
         rivi1.getChildren().addAll(painikkeet);
 
-        VBox rivi2 = new VBox();
+       HBox rivi2 = new HBox();
         rivi2.setPadding(new Insets(20));
         rivi2.setAlignment(Pos.CENTER);
         Label nimi = new Label(sarja.toString());
         nimi.setFont(Font.font("Papyrus", 32));
 
-        rivi2.getChildren().addAll(nimi);
+        rivi2.getChildren().addAll(nimi, painikkeet);
 
-        grid.add(painikkeet, 0, 0);
+       
         grid.add(rivi2, 0, 1);
 
         HBox rivi3 = new HBox();
@@ -289,6 +297,7 @@ public class SarjaNakyma {
         grid.add(rivi4, 0, 3);
         grid.add(rivi5, 0, 4);
         grid.add(rivi6, 0, 5);
+        grid.setPadding(new Insets(20));
         sb.setContent(grid);
         VBox peitto = new VBox();
         peitto.setStyle("-fx-background-color: white;");
@@ -315,11 +324,9 @@ public class SarjaNakyma {
             @Override
             public void handle(ActionEvent e) {
 
-                VBox peitto = new VBox();
-                peitto.setStyle("-fx-background-color: white;");
-                ikkuna.annaNaytto().getChildren().add(peitto);
+               
 
-                ikkuna.annaNaytto().getChildren().add(luoSarjaMuokkaus(sarja));
+                luoSarjaMuokkaus(sarja);
 
             }
         });
@@ -843,7 +850,7 @@ public class SarjaNakyma {
 
     }
 
-    public GridPane luoSarjaMuokkaus(Sarja arvo) {
+    public void luoSarjaMuokkaus(Sarja arvo) {
         Button muokkausnappula = new Button("Tallenna");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -916,7 +923,10 @@ public class SarjaNakyma {
 
         grid.add(vbox, 0, 7);
 
-        return grid;
+           VBox peitto = new VBox();
+        peitto.setStyle("-fx-background-color: white;");
+        ikkuna.annaNaytto().getChildren().add(peitto);
+        ikkuna.annaNaytto().getChildren().add(grid);
     }
     
         

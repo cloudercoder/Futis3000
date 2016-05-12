@@ -25,7 +25,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-
 /**
  *
  * @author Marianne
@@ -37,15 +36,6 @@ public class PaaNakyma {
     //uusien kohtien lisäystä varten
     private TextField nimi = new TextField();
 
-    private TextField etunimi = new TextField();
-    private TextField sukunimi = new TextField();
-    private TextField pelipaikka = new TextField();
-
-    private ComboBox<Integer> pelinumero = new ComboBox<>();
-    private TextField sposti = new TextField();
-    private TextField puh = new TextField();
-    private TextField rooli = new TextField();
-
     private Label pakollinen = new Label("*");
     private Label pakollinen2 = new Label("*");
     private Label pakollinen3 = new Label("*");
@@ -53,15 +43,6 @@ public class PaaNakyma {
 
     private Tiedottaja tiedottaja;
     private Varmistus varmistaja;
-
-    //taulukot
-    private TableView ottelut;
-    private TableView pisteporssi;
-    private TableView joukkueet;
-    private TableView sarjataulukko;
-    private TableView pelaajat;
-    private TableView toimihenkilot;
-    private TableView pisteet;
 
     //muut näkymät
     private SarjaNakyma sarjanakyma;
@@ -93,22 +74,22 @@ public class PaaNakyma {
 
     }
 
-    public SarjaNakyma annaSarjanakyma(){
+    public SarjaNakyma annaSarjanakyma() {
         return sarjanakyma;
     }
-    
-   public JoukkueNakyma annaJoukkuenakyma(){
+
+    public JoukkueNakyma annaJoukkuenakyma() {
         return joukkuenakyma;
     }
-   
-      public TuomariNakyma annaTuomarinakyma(){
+
+    public TuomariNakyma annaTuomarinakyma() {
         return tuomarinakyma;
     }
-    
+
     public void luoOhje(String uusiohje, TreeItem<Kohde> arvo) {
 
         HBox ohjepalkki = new HBox();
-        ohjepalkki.setStyle("-fx-background-color: blue;");
+
         ohjepalkki.setPadding(new Insets(10, 30, 10, 30));
         Text ohje = new Text(uusiohje);
         ohje.setFont(Font.font("Papyrus", FontWeight.BOLD, 20));
@@ -120,12 +101,12 @@ public class PaaNakyma {
         ikkuna.annaNaytto().getChildren().add(peitto);
 
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(60));
-        grid.setAlignment(Pos.TOP_CENTER);
+     
+    
 
-        grid.setHgap(20);
+        grid.setHgap(40);
 
-        grid.add(ohjepalkki, 1, 3);
+        grid.add(ohjepalkki, 0, 3);
 
         Button uusi = new Button();
 
@@ -140,20 +121,17 @@ public class PaaNakyma {
             @Override
             public void handle(ActionEvent e) {
 
-                VBox peitto = new VBox();
-                peitto.setStyle("-fx-background-color: white;");
-                ikkuna.annaNaytto().getChildren().add(peitto);
-
                 if (arvo.getValue() instanceof Sarja) {
-                    ikkuna.annaNaytto().getChildren().add(sarjanakyma.luoPaanayttoSarjat());
+                    sarjanakyma.luoSarjanLisaysSivu();
                 } else if (arvo.getValue() instanceof Tuomari) {
-                    ikkuna.annaNaytto().getChildren().add(tuomarinakyma.luoPaanayttoTuomarit());
+                   tuomarinakyma.luoTuomarinLisaysSivu();
                 }
 
             }
         });
-
-        grid.add(uusi, 5, 1);
+ grid.setAlignment(Pos. CENTER);
+        grid.add(uusi, 1, 1);
+    
         ikkuna.annaNaytto().getChildren().add(grid);
     }
 
@@ -165,7 +143,7 @@ public class PaaNakyma {
 
         nimipalkki.setPadding(new Insets(20));
         Label nimi = new Label(ikkuna.annaTurnaus().toString());
-        nimi.setFont(Font.font("Papyrus", FontWeight.BOLD, 30));
+        nimi.setFont(Font.font("Papyrus", FontWeight.BOLD, 36));
         nimipalkki.setAlignment(Pos.CENTER);
         nimipalkki.getChildren().addAll(nimi);
 
@@ -173,12 +151,9 @@ public class PaaNakyma {
         peitto.setStyle("-fx-background-color: white;");
         ikkuna.annaNaytto().getChildren().add(peitto);
 
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(40, 10, 40, 300));
-
         Button muokkausnappula = new Button();
 
-        muokkausnappula.setText("Muokkaa");
+        muokkausnappula.setText("\uD83D\uDD89");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -187,18 +162,18 @@ public class PaaNakyma {
                 peitto.setStyle("-fx-background-color: white;");
                 ikkuna.annaNaytto().getChildren().add(peitto);
 
-                ikkuna.annaNaytto().getChildren().add(luoEtusivuMuokkaus());
+                ikkuna.annaNaytto().getChildren().add(luoTurnauksenMuokkaus());
 
             }
         });
 
         VBox rivi1 = new VBox();
-        rivi1.setAlignment(Pos.TOP_RIGHT);
+        rivi1.setPadding(new Insets(20));
         rivi1.getChildren().addAll(muokkausnappula);
 
         VBox hakupalkki = new VBox();
         hakupalkki.setAlignment(Pos.CENTER);
-        hakupalkki.setPadding(new Insets(20));
+
         hakupalkki.setSpacing(20);
         Label otsikko = new Label("Hae sarjaa/joukkuetta/tuomaria: ");
         otsikko.setFont(Font.font("Papyrus", FontWeight.BOLD, 18));
@@ -206,7 +181,7 @@ public class PaaNakyma {
         HBox haku = new HBox();
         Label hakuteksti = new Label("Hae: ");
         hakuteksti.setId("label-haku");
-
+        haku.setAlignment(Pos.CENTER);
         TextField hakukentta = new TextField();
 
         //nappula
@@ -245,11 +220,13 @@ public class PaaNakyma {
 
         hakupalkki.getChildren().addAll(otsikko, haku, tulospalkki);
 
+        GridPane grid = new GridPane();
+        grid.add(muokkausnappula, 2, 1);
         grid.add(nimipalkki, 1, 1);
-        grid.add(muokkausnappula, 2, 0);
-        grid.add(hakupalkki, 1, 2);
-        grid.setAlignment(Pos.CENTER_RIGHT);
 
+        grid.add(hakupalkki, 1, 2);
+        grid.setAlignment(Pos.CENTER);
+        grid.setVgap(40);
         osa.getChildren().addAll(grid);
         osa.setAlignment(Pos.CENTER);
         sb.setContent(osa);
@@ -257,11 +234,11 @@ public class PaaNakyma {
         StackPane uusisp = new StackPane();
         uusisp = ikkuna.annaNaytto();
         uusisp.setAlignment(sb, Pos.CENTER);
-        ikkuna.annaNaytto().getChildren().add(sb);
+        ikkuna.annaNaytto().getChildren().add(grid);
 
     }
 
-    public GridPane luoEtusivuMuokkaus() {
+    public GridPane luoTurnauksenMuokkaus() {
         Button muokkausnappula = new Button("Tallenna");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -274,7 +251,7 @@ public class PaaNakyma {
                     ikkuna.annaTurnaus().asetaNimi(nimi.getText());
 
                     tiedottaja.kirjoitaLoki("Turnauksen nimeä muokattu.");
-                    nimi.setText("");
+                    nimi.clear();
                     ikkuna.asetaMuutos(true);
                     luoEtusivu();
                 }
@@ -302,23 +279,24 @@ public class PaaNakyma {
         hbox1.setSpacing(10);
         hbox1.getChildren().addAll(pakollinen_kentta1, nimi, muokkausnappula, peruuta);
 
+        HBox hbox2 = new HBox();
+        hbox2.setSpacing(10);
+        hbox2.getChildren().addAll(muokkausnappula, peruuta);
+        VBox lisays = new VBox();
+        lisays.setSpacing(20);
+        lisays.getChildren().addAll(hbox1, hbox2);
+
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(40));
+
         grid.setAlignment(Pos.CENTER);
 
-        grid.add(hbox1, 1, 7);
+        Label otsikko = new Label("Muokkaa turnauksen nimeä");
+        otsikko.setFont(Font.font("Papyrus", 28));
+        grid.add(otsikko, 0, 0);
+        grid.add(lisays, 0, 1);
+        grid.setVgap(40);
 
         return grid;
     }
 
-    
-    
-
-}   
-
-    
-
-   
-
-  
-    
+}
