@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tupa;
 
 /**
  *
- * @author Omistaja
+ * @author Marianne
  */
 public class Henkilo extends Kohde {
     
@@ -15,14 +10,11 @@ public class Henkilo extends Kohde {
     private String etunimi;
     // 1-64 kirjainta, vain isot ja pienet kirjaimet, yks tai useampi tavuviiva    
     private String sukunimi;  
-    
     private static int heLaskuri;
 
     
     Henkilo(){
-        
-        heLaskuri++;
-      
+        heLaskuri++;      
     }
   
     Henkilo(String etunimi, String sukunimi, String nimi){
@@ -30,22 +22,14 @@ public class Henkilo extends Kohde {
         this.etunimi = etunimi;
        this.sukunimi = sukunimi;
       
-      
-        
    }
     
     Henkilo(String nimi){
         super(nimi);
-   
-      
-      
-        
    }
     
     public void asetaEtuNimi(String etu){
-        
         etunimi = etu;
-        
     }
     
     public void asetaSukuNimi(String suku){

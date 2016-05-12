@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tupa;
 
 import java.util.ArrayList;
@@ -23,14 +18,16 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author Omistaja
+ * @author Marianne
  */
 public class Varmistus {
 
     private List<Kohde> kohdetk = new ArrayList<>();
     private Tupa ikkuna;
     private Muuttaja muuttaja;
-    private Nakyma nakyma;
+    private PaaNakyma nakyma;
+    private SarjaNakyma sarjanakyma;
+    private JoukkueNakyma joukkuenakyma;
 
     Varmistus() {
 
@@ -41,10 +38,12 @@ public class Varmistus {
         this.ikkuna = ikkuna;
     }
 
-    Varmistus(Tupa ikkuna, Nakyma nakyma) {
+    Varmistus(Tupa ikkuna, PaaNakyma nakyma) {
         muuttaja = new Muuttaja(ikkuna, nakyma);
         this.ikkuna = ikkuna;
         this.nakyma = nakyma;
+        sarjanakyma = nakyma.annaSarjanakyma();
+        joukkuenakyma = nakyma.annaJoukkuenakyma();
     }
 
     public void annaVarmistus() {
@@ -473,7 +472,7 @@ public class Varmistus {
 
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
 
-                nakyma.luoSarjaSivu(mihin);
+                sarjanakyma.luoSarjaSivu(mihin);
                 stageV.close();
 
             }
@@ -526,7 +525,7 @@ public class Varmistus {
 
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
 
-                nakyma.luoSarjaSivu(mihin);
+                sarjanakyma.luoSarjaSivu(mihin);
                 stageV.close();
 
             }
@@ -581,7 +580,7 @@ public class Varmistus {
 
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
 
-                nakyma.luoSarjaSivu(mihin);
+                sarjanakyma.luoSarjaSivu(mihin);
                 stageV.close();
 
             }
@@ -634,7 +633,7 @@ public class Varmistus {
 
                 muuttaja.poistaKaikkiPelaajat(poistettavat, joukkue);
 
-                nakyma.luoJoukkueSivu(joukkue);
+                joukkuenakyma.luoJoukkueSivu(joukkue);
                 stageV.close();
 
             }
@@ -687,7 +686,7 @@ public class Varmistus {
 
                 muuttaja.poistaKaikkiToimarit(poistettavat, joukkue);
 
-                nakyma.luoJoukkueSivu(joukkue);
+                joukkuenakyma.luoJoukkueSivu(joukkue);
                 stageV.close();
 
             }

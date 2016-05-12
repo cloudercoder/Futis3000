@@ -18,7 +18,7 @@ public class LinkkiLabel extends Label  implements EventHandler<MouseEvent>
 {
     private String nimi;
     private Tupa ikkuna;
-    private Nakyma nakyma;
+    private PaaNakyma nakyma;
     
     LinkkiLabel(){
         this.getStyleClass().add("linkkilabel");
@@ -28,7 +28,7 @@ public class LinkkiLabel extends Label  implements EventHandler<MouseEvent>
     LinkkiLabel(Tupa ikkuna){
         this.getStyleClass().add("linkkilabel");
        this.ikkuna = ikkuna;
-       nakyma = new Nakyma(ikkuna);
+       nakyma = new PaaNakyma(ikkuna);
     }
     public void linkkiaKlikattu(){
         setOnMouseClicked(this);

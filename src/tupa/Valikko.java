@@ -25,7 +25,7 @@ public class Valikko implements EventHandler<ActionEvent> {
     private MenuBar menuBar;
     private Tupa ikkuna;
     private Tiedottaja tiedottaja;
-    private Nakyma nakyma;
+    private PaaNakyma nakyma;
 
     public Valikko() {
 
@@ -36,7 +36,7 @@ public class Valikko implements EventHandler<ActionEvent> {
         this.menuBar = menu;
         this.ikkuna = ikkuna;
         tiedottaja = new Tiedottaja(ikkuna);
-        nakyma = new Nakyma(ikkuna);
+        nakyma = new PaaNakyma(ikkuna);
     }
 
     public MenuBar rakennaValikko() {
@@ -219,9 +219,7 @@ public class Valikko implements EventHandler<ActionEvent> {
                 tiedottaja.kirjoitaLoki("Tallennus onnistui.");
                 break;
 
-            case "Tallenna nimellä":
 
-                break;
 
             case "Lopeta": {
 

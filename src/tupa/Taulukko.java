@@ -3,20 +3,28 @@ Erilaisia taulukoita muodostava luokka
  */
 package tupa;
 
+import com.sun.prism.impl.Disposer.Record;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.util.Callback;
 
 /**
  *
@@ -25,17 +33,47 @@ import javafx.scene.text.FontWeight;
 public class Taulukko {
 
     private TableView taulukko = new TableView();
-    private Nakyma nakyma;
-
+    private PaaNakyma nakyma;
+    private SarjaNakyma sarjanakyma;
+    private TuomariNakyma tuomarinakyma;
+    private JoukkueNakyma joukkuenakyma;
+    private OtteluNakyma ottelunakyma;
+    private PelaajaNakyma pelaajanakyma;
+    private ToimariNakyma toimarinakyma;
+    
     Taulukko() {
 
     }
 
-    Taulukko(Nakyma nakyma) {
+    Taulukko(PaaNakyma nakyma) {
         this.nakyma = nakyma;
-
+    }
+    
+    Taulukko(SarjaNakyma sarjanakyma) {
+        this.sarjanakyma = sarjanakyma;
+    }
+    
+    Taulukko(TuomariNakyma tuomarinakyma) {
+        this.tuomarinakyma = tuomarinakyma;
     }
 
+    Taulukko(JoukkueNakyma joukkuenakyma) {
+        this.joukkuenakyma = joukkuenakyma;
+    }
+    
+    Taulukko(OtteluNakyma ottelunakyma) {
+        this.ottelunakyma = ottelunakyma;
+    }
+    
+     Taulukko(PelaajaNakyma pelaajanakyma) {
+        this.pelaajanakyma = pelaajanakyma;
+    }
+     
+        Taulukko(ToimariNakyma toimarinakyma) {
+        this.toimarinakyma = toimarinakyma;
+    }
+      
+    
     public TableView luoOtteluTaulukko(Sarja sarja) {
         taulukko.setId("my-table");
 
@@ -43,7 +81,7 @@ public class Taulukko {
         List<Ottelu> ottelut = new ArrayList<>();
 
         for (int i = 0; i < sarja.annaOttelut().size(); i++) {
-            sarja.annaOttelut().get(i).asetaTaulukkopaiva();
+            sarja.annaOttelut().get(i).asetaTaulukkopaivastring();
             sarja.annaOttelut().get(i).asetaTaulukkokello();
             sarja.annaOttelut().get(i).asetaTaulukkoid();
             sarja.annaOttelut().get(i).asetaTaulukkonimi();
@@ -52,7 +90,7 @@ public class Taulukko {
             sarja.annaOttelut().get(i).asetaTaulukkotuomarit();
             sarja.annaOttelut().get(i).asetaTaulukkokierros();
             ottelut.add(sarja.annaOttelut().get(i));
-
+            sarja.annaOttelut().get(i).annaPaivaDate();
         }
 
         ObservableList<Ottelu> data
@@ -76,7 +114,7 @@ public class Taulukko {
         id.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkoid"));
         kierros.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkokierros"));
         ottelu.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkonimi"));
-        paiva.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaiva"));
+        paiva.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaivastring"));
         kello.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkokello"));
         paikka.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaikka"));
         erotuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoerotuomari"));
@@ -101,7 +139,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(kello);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoOttelusivu((Ottelu) newSelection);
+            ottelunakyma.luoOttelusivu((Ottelu) newSelection);
         });
 
         taulukko.setFixedCellSize(25);
@@ -114,6 +152,304 @@ public class Taulukko {
 
         taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
         taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
+
+        return taulukko;
+    }
+
+    public TableView luoOtteluTaulukkoMuokattava(Sarja sarja) {
+        taulukko.setId("ei-klikattava2");
+
+        taulukko.setPlaceholder(new Label("Ei lisättyjä otteluita"));
+        List<Ottelu> ottelut = new ArrayList<>();
+
+        for (int i = 0; i < sarja.annaOttelut().size(); i++) {
+            sarja.annaOttelut().get(i).asetaTaulukkopaiva();
+            sarja.annaOttelut().get(i).asetaTaulukkokello();
+            sarja.annaOttelut().get(i).asetaTaulukkoid();
+            sarja.annaOttelut().get(i).asetaTaulukkonimi();
+            sarja.annaOttelut().get(i).asetaTaulukkopaikka();
+            sarja.annaOttelut().get(i).asetaTaulukkotulos();
+            sarja.annaOttelut().get(i).asetaTaulukkotuomarit();
+            sarja.annaOttelut().get(i).asetaTaulukkokierros();
+            ottelut.add(sarja.annaOttelut().get(i));
+
+        }
+
+        ObservableList<Ottelu> data
+                = FXCollections.observableArrayList(ottelut);
+
+        TableColumn id = new TableColumn("ID");
+        TableColumn kierros = new TableColumn("Kierros");
+        TableColumn ottelu = new TableColumn("Ottelu");
+        TableColumn koti = new TableColumn("Koti");
+        TableColumn vieras = new TableColumn("Vieras");
+        TableColumn ajankohta = new TableColumn("Ajankohta");
+        TableColumn paiva = new TableColumn("Päivä");
+        TableColumn kello = new TableColumn("Klo");
+        TableColumn tunnit = new TableColumn("h");
+        TableColumn minuutit = new TableColumn("min");
+        kello.setId("ei-klikattava2");
+        kello.getColumns().addAll(tunnit, minuutit);
+        ottelu.getColumns().addAll(koti, vieras);
+        ajankohta.getColumns().addAll(paiva, kello);
+        TableColumn paikka = new TableColumn("Paikka");
+        TableColumn tuomarit = new TableColumn("Tuomarit");
+        TableColumn erotuomari = new TableColumn("Erotuomari");
+        TableColumn avustava1 = new TableColumn("1. Avustava");
+        TableColumn avustava2 = new TableColumn("2. Avustava");
+        tuomarit.getColumns().addAll(erotuomari, avustava1, avustava2);
+
+        TableColumn col_action = new TableColumn<>("Poista");
+
+        id.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkoid"));
+        kierros.setCellValueFactory(new PropertyValueFactory<Ottelu, Integer>("taulukkokierros"));
+        ottelu.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkonimi"));
+        paiva.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaiva"));
+        kello.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkokello"));
+        tunnit.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkotunnit"));
+        minuutit.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkominuutit"));
+        paikka.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkopaikka"));
+        koti.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkokotijoukkue"));
+        vieras.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkovierasjoukkue"));
+        erotuomari.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoerotuomari"));
+        avustava1.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava1"));
+        avustava2.setCellValueFactory(new PropertyValueFactory<Ottelu, String>("taulukkoavustava2"));
+
+        avustava1.prefWidthProperty().bind(avustava1.widthProperty());
+
+        taulukko.getColumns().addAll(id, kierros, ottelu, ajankohta, paikka, tuomarit, col_action);
+        taulukko.setItems(data);
+        id.setPrefWidth(50);
+        kierros.setPrefWidth(70);
+        ottelu.setMinWidth(200);
+        paikka.setMinWidth(200);
+        erotuomari.setMinWidth(150);
+        avustava1.setMinWidth(150);
+        avustava2.setMinWidth(150);
+        paiva.setSortType(TableColumn.SortType.ASCENDING);
+
+        taulukko.getSortOrder().add(paiva);
+        taulukko.getSortOrder().add(tunnit);
+        taulukko.getSortOrder().add(minuutit);
+
+        taulukko.setFixedCellSize(25);
+
+        if (taulukko.getItems().size() == 0) {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(4)));
+        } else {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(3.1)));
+        }
+
+        taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
+        taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
+
+        taulukko.setEditable(true);
+
+        Callback<TableColumn, TableCell> cellFactory
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new EditingCell();
+            }
+        };
+
+        Callback<TableColumn, TableCell> comboBoxCellFactory
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new ComboBoxEditingCell();
+            }
+        };
+
+        Callback<TableColumn, TableCell> comboBoxCellFactory2
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new TuomariCombo(sarja);
+            }
+        };
+
+        Callback<TableColumn, TableCell> comboBoxCellFactory3
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new KloCombo();
+            }
+        };
+
+        Callback<TableColumn, TableCell> comboBoxCellFactory4
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new KloCombo2();
+            }
+        };
+        Callback<TableColumn, TableCell> comboBoxCellFactory5
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new JoukkueCombo(sarja);
+            }
+        };
+
+        paikka.setCellFactory(cellFactory);
+        paikka.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, String> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaPaikka(t.getNewValue());
+
+                TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+
+                sarjanakyma.luoSarjaSivu(mihin);
+            }
+        }
+        );
+
+        kierros.setCellFactory(comboBoxCellFactory);
+        kierros.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, Integer>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, Integer> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaKierros(t.getNewValue());
+                TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+
+                sarjanakyma.luoSarjaSivu(mihin);
+            }
+        }
+        );
+
+        erotuomari.setCellFactory(comboBoxCellFactory2);
+        avustava1.setCellFactory(comboBoxCellFactory2);
+        avustava2.setCellFactory(comboBoxCellFactory2);
+
+        erotuomari.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, Tuomari>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, Tuomari> t) {
+                if (t.getNewValue() != null) {
+                    ((Ottelu) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())).asetaErotuomari(t.getNewValue());
+                }
+                System.out.println(t.getNewValue());
+                TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+
+                sarjanakyma.luoSarjaSivu(mihin);
+            }
+        }
+        );
+        avustava1.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, Tuomari>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, Tuomari> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaAvustava1(t.getNewValue());
+
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
+            }
+        }
+        );
+        avustava2.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, Tuomari>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, Tuomari> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaAvustava2(t.getNewValue());
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
+            }
+        }
+        );
+
+        tunnit.setCellFactory(comboBoxCellFactory3);
+
+        tunnit.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, String> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaTunnit(t.getNewValue());
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
+
+            }
+        }
+        );
+
+        minuutit.setCellFactory(comboBoxCellFactory4);
+
+        minuutit.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, String> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaMinuutit(t.getNewValue());
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
+
+            }
+        }
+        );
+        koti.setCellFactory(comboBoxCellFactory5);
+        vieras.setCellFactory(comboBoxCellFactory5);
+
+        koti.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, Joukkue>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, Joukkue> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaKotijoukkue(t.getNewValue());
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
+
+            }
+        }
+        );
+
+        vieras.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, Joukkue>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, Joukkue> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaVierasjoukkue(t.getNewValue());
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
+            }
+        }
+        );
+
+        Callback<TableColumn, TableCell> dateCellFactory
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new DateEditingCell();
+            }
+        };
+
+        paiva.setCellFactory(dateCellFactory);
+
+        paiva.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Ottelu, Date>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Ottelu, Date> t) {
+                ((Ottelu) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaPaivaDate(t.getNewValue());
+                System.out.println(t.getNewValue());
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
+
+            }
+        }
+        );
+
+        col_action.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Record, Boolean>, ObservableValue<Boolean>>() {
+
+            @Override
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Record, Boolean> p) {
+                return new SimpleBooleanProperty(p.getValue() != null);
+            }
+        });
+
+        //Adding the Button to the cell
+        col_action.setCellFactory(
+                new Callback<TableColumn<Record, Boolean>, TableCell<Record, Boolean>>() {
+
+            @Override
+            public TableCell<Record, Boolean> call(TableColumn<Record, Boolean> p) {
+                return new ButtonCell(data);
+            }
+
+        });
 
         return taulukko;
     }
@@ -217,7 +553,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(sijoitus);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoJoukkueSivu((Joukkue) newSelection);
+            joukkuenakyma.luoJoukkueSivu((Joukkue) newSelection);
         });
 
         if (taulukko.getItems().size() == 0) {
@@ -338,7 +674,7 @@ public class Taulukko {
         pelaaja.setPrefWidth(50);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoPelaajaSivu((Pelaaja) newSelection);
+            pelaajanakyma.luoPelaajaSivu((Pelaaja) newSelection);
         });
 
         taulukko.setFixedCellSize(25);
@@ -393,7 +729,7 @@ public class Taulukko {
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 
-            nakyma.luoToimariSivu((Toimihenkilo) newSelection);
+            toimarinakyma.luoToimariSivu((Toimihenkilo) newSelection);
         });
 
         taulukko.setFixedCellSize(25);
@@ -435,7 +771,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(joukkue);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoJoukkueSivu((Joukkue) newSelection);
+            joukkuenakyma.luoJoukkueSivu((Joukkue) newSelection);
         });
         joukkue.setMinWidth(180);
         taulukko.setFixedCellSize(25);
@@ -505,7 +841,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(paiva);
         taulukko.getSortOrder().add(kello);
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoOttelusivu((Ottelu) newSelection);
+            ottelunakyma.luoOttelusivu((Ottelu) newSelection);
         });
 
         id.setPrefWidth(50);
@@ -631,7 +967,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(pelinumero);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoPelaajaSivu((Pelaaja) newSelection);
+            pelaajanakyma.luoPelaajaSivu((Pelaaja) newSelection);
         });
 
         taulukko.setFixedCellSize(25);
@@ -736,7 +1072,7 @@ public class Taulukko {
         sijoitus.setSortType(TableColumn.SortType.ASCENDING);
         taulukko.getSortOrder().add(sijoitus);
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoPelaajaSivu((Pelaaja) newSelection);
+            pelaajanakyma.luoPelaajaSivu((Pelaaja) newSelection);
         });
         taulukko.setFixedCellSize(25);
 
@@ -814,7 +1150,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(kello);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            nakyma.luoOttelusivu((Ottelu) newSelection);
+            ottelunakyma.luoOttelusivu((Ottelu) newSelection);
         });
 
         taulukko.setFixedCellSize(25);

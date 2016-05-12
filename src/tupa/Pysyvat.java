@@ -97,7 +97,7 @@ public class Pysyvat {
         etusivu.setSpacing(10);
         etusivu.getChildren().addAll(etusivuteksti);
 
-        sivu.setPrefWidth(150);
+        sivu.setPrefWidth(180);
         sivu.getChildren().addAll(etusivu, spuu);
         sivu.setVgrow(spuu, Priority.ALWAYS);
 

@@ -1775,6 +1775,31 @@
   -fx-background: -fx-control-inner-background-alt ;
 }
 
+#ei-klikattava .table-column {
+  -fx-alignment: CENTER;
+   -fx-background: white;
+   -fx-border-color: transparent;
+   -fx-border-width: 0px;
+
+}
+
+#ei-klikattava2 .table-cell {
+  -fx-alignment: CENTER;
+
+}
+
+#ei-klikattava2 .table-row-cell:filled:selected { 
+  -fx-background: -fx-control-inner-background ;
+  -fx-background-color: -fx-table-cell-border-color, -fx-background ;
+  -fx-background-insets: 0, 0 0 1 0 ;
+  -fx-table-cell-border-color: derive(-fx-color, 5%);
+}
+#ei-klikattava2 .table-row-cell:odd:filled:selected {
+  -fx-background: -fx-control-inner-background-alt ;
+}
+
+
+
 .tree-cell > .tree-disclosure-node:disabled,
 .tree-table-row-cell > .tree-disclosure-node:disabled {
     -fx-opacity: -fx-disabled-opacity;

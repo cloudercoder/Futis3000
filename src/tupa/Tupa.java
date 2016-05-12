@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.ListView;
 import javafx.stage.WindowEvent;
 import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
 
 /**
  *
@@ -76,7 +77,7 @@ public class Tupa extends Application {
         
         BorderPane border = new BorderPane();
 
-        Nakyma nakyma = new Nakyma(this);
+        PaaNakyma nakyma = new PaaNakyma(this);
         //keskinäytön tyylittely
         naytto.setStyle("-fx-background-color: white;");
 

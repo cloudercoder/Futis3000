@@ -15,16 +15,18 @@ public class Muuttaja {
 
     private Tupa ikkuna;
     private Tiedottaja tiedottaja;
-    private Nakyma nakyma;
+    private PaaNakyma nakyma;
+    private SarjaNakyma sarjanakyma;
 
     Muuttaja() {
 
     }
 
-    Muuttaja(Tupa ikkuna, Nakyma nakyma) {
+    Muuttaja(Tupa ikkuna, PaaNakyma nakyma) {
         this.ikkuna = ikkuna;
         tiedottaja = new Tiedottaja(ikkuna);
         this.nakyma = nakyma;
+        sarjanakyma = nakyma.annaSarjanakyma();
     }
 
     public void lisaaKohde(Kohde arvo) {
@@ -595,7 +597,7 @@ public class Muuttaja {
         ikkuna.asetaMuutos(true);
         TreeItem<Kohde> mihin = new TreeItem<>(sarja);
 
-        nakyma.luoSarjaSivu(mihin);
+        sarjanakyma.luoSarjaSivu(mihin);
 
     }
 

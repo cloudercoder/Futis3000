@@ -2,10 +2,16 @@ package tupa;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -26,29 +32,35 @@ public class Ottelu implements Serializable {
     private String nimi;
     private Sarja sarja;
     private String paiva;
-    private String kello;
+    private Date paiva_date;
+    private String kello = "0 : 00";
     private LocalDate kalenteriaika;
     private String paikka;
     private List<Maali> maalit = new ArrayList<>();
     private List<TuomarinRooli> roolit = new ArrayList<>();
     private Kokoonpano koti_kokoonpano;
     private Kokoonpano vieras_kokoonpano;
-    private String kellotunnit;
-    private String kellominuutit;
+    private String kellotunnit = "0";
+    private String kellominuutit = "00";
     private int kierros;
-    
 
     //taulukkoattribuutit   
     private transient IntegerProperty taulukkoid = new SimpleIntegerProperty();
     private transient StringProperty taulukkopaikka = new SimpleStringProperty();
     private transient StringProperty taulukkonimi = new SimpleStringProperty();
     private transient StringProperty taulukkotulos = new SimpleStringProperty();
-    private transient StringProperty taulukkopaiva = new SimpleStringProperty();
+    private transient ObjectProperty<Date> taulukkopaiva = new SimpleObjectProperty();
+        private transient StringProperty taulukkopaivastring = new SimpleStringProperty();
     private transient StringProperty taulukkokello = new SimpleStringProperty();
-    private transient StringProperty taulukkoerotuomari = new SimpleStringProperty();
-    private transient StringProperty taulukkoavustava1 = new SimpleStringProperty();
-    private transient StringProperty taulukkoavustava2 = new SimpleStringProperty();
-     private transient IntegerProperty taulukkokierros = new SimpleIntegerProperty();
+    private transient StringProperty taulukkotunnit = new SimpleStringProperty();
+    private transient StringProperty taulukkominuutit = new SimpleStringProperty();
+    private transient ObjectProperty<Tuomari> taulukkoerotuomari = new SimpleObjectProperty();
+
+    private transient ObjectProperty<Tuomari> taulukkoavustava1 = new SimpleObjectProperty();
+    private transient ObjectProperty<Tuomari> taulukkoavustava2 = new SimpleObjectProperty();
+    private transient IntegerProperty taulukkokierros = new SimpleIntegerProperty();
+    private transient ObjectProperty<Joukkue> taulukkokotijoukkue = new SimpleObjectProperty();
+    private transient ObjectProperty<Joukkue> taulukkovierasjoukkue = new SimpleObjectProperty();
 
     Ottelu() {
         laskuri++;
@@ -69,26 +81,30 @@ public class Ottelu implements Serializable {
         this.id = id;
     }
 
+    public void asetaNimi(String nimi) {
+        this.nimi = nimi;
+    }
+
     public String toString() {
         return nimi;
     }
 
-    public int annaKierros(){
+    public int annaKierros() {
         return kierros;
     }
-    
-    public int annaKotimaalit(){
+
+    public int annaKotimaalit() {
         return kotimaalit;
     }
-    
-    public int annaVierasmaalit(){
+
+    public int annaVierasmaalit() {
         return vierasmaalit;
     }
-    
-    public void asetaKierros(int kierros){
+
+    public void asetaKierros(int kierros) {
         this.kierros = kierros;
     }
-    
+
     public int annaMaara() {
         return laskuri;
     }
@@ -99,6 +115,18 @@ public class Ottelu implements Serializable {
 
     public int annaOtteluNumero() {
         return otteluNumero;
+    }
+
+    public void asetaTunnit(String tunnit) {
+        kellotunnit = tunnit;
+        this.kello = kellotunnit + " : " + kellominuutit;
+        asetaTaulukkokello();
+    }
+
+    public void asetaMinuutit(String minuutit) {
+        kellominuutit = minuutit;
+        this.kello = kellotunnit + " : " + kellominuutit;
+        asetaTaulukkokello();
     }
 
     public void asetaTulos(int koti, int vieras) {
@@ -219,12 +247,61 @@ public class Ottelu implements Serializable {
         this.taulukkopaikka = new SimpleStringProperty(this.annaPaikka());
     }
 
-    public StringProperty taulukkopaivaProperty() {
+    public StringProperty taulukkotunnitProperty() {
+        return taulukkotunnit;
+    }
+
+    public void asetaTaulukkotunnit() {
+        this.taulukkotunnit = new SimpleStringProperty(this.annaTunnit());
+    }
+
+    public String annaTunnit() {
+        return kellotunnit;
+    }
+
+    public StringProperty taulukkominuutitProperty() {
+        return taulukkominuutit;
+    }
+
+    public void asetaTaulukkominuutit() {
+        this.taulukkominuutit = new SimpleStringProperty(this.annaMinuutit());
+    }
+
+    public String annaMinuutit() {
+        return kellominuutit;
+    }
+
+ 
+    public ObjectProperty taulukkopaivaProperty() {
         return taulukkopaiva;
     }
 
     public void asetaTaulukkopaiva() {
-        this.taulukkopaiva = new SimpleStringProperty(this.annaPaiva());
+        
+        this.taulukkopaiva = new SimpleObjectProperty(this.annaPaivaDate());
+    }
+
+    private LocalDate getDate() {
+            return paiva_date == null ? LocalDate.now() : paiva_date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+    
+    public Date annaPaivaDate() {
+
+        return paiva_date;
+    }
+
+    public void asetaTaulukkopaivastring(){
+        this.taulukkopaivastring = new SimpleStringProperty(getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+    }
+    
+       public StringProperty taulukkopaivastringProperty() {
+        return taulukkopaivastring;
+    }
+    
+    
+    public void asetaPaivaDate(Date paiva) {
+        this.paiva_date = paiva;
+        asetaTaulukkopaiva();
     }
 
     public StringProperty taulukkokelloProperty() {
@@ -233,6 +310,8 @@ public class Ottelu implements Serializable {
 
     public void asetaTaulukkokello() {
         this.taulukkokello = new SimpleStringProperty(this.annaKello());
+        asetaTaulukkominuutit();
+        asetaTaulukkotunnit();
     }
 
     public IntegerProperty taulukkoidProperty() {
@@ -242,7 +321,7 @@ public class Ottelu implements Serializable {
     public void asetaTaulukkoid() {
         this.taulukkoid = new SimpleIntegerProperty(this.annaOtteluNumero());
     }
-    
+
     public IntegerProperty taulukkokierrosProperty() {
         return taulukkokierros;
     }
@@ -259,16 +338,42 @@ public class Ottelu implements Serializable {
         this.taulukkotulos = new SimpleStringProperty(this.annaTulos());
     }
 
-    public StringProperty taulukkoerotuomariProperty() {
+    public void asetaTaulukkokotijoukkue() {
+        this.taulukkokotijoukkue = new SimpleObjectProperty(this.annaKotijoukkue());
+    }
+
+    public void asetaTaulukkovierasjoukkue() {
+        this.taulukkovierasjoukkue = new SimpleObjectProperty(this.annaVierasjoukkue());
+    }
+
+    public ObjectProperty taulukkoerotuomariProperty() {
         return taulukkoerotuomari;
     }
 
-    public StringProperty taulukkoavustava1Property() {
+    public ObjectProperty taulukkoavustava1Property() {
         return taulukkoavustava1;
     }
 
-    public StringProperty taulukkoavustava2Property() {
+    public ObjectProperty taulukkoavustava2Property() {
         return taulukkoavustava2;
+    }
+
+    public ObjectProperty taulukkokotijoukkueProperty() {
+        return taulukkokotijoukkue;
+    }
+
+    public ObjectProperty taulukkovierasjoukkueProperty() {
+        return taulukkovierasjoukkue;
+    }
+
+    public void asetaKotijoukkue(Joukkue kotijoukkue) {
+        this.kotijoukkue = kotijoukkue;
+        asetaTaulukkokotijoukkue();
+    }
+
+    public void asetaVierasjoukkue(Joukkue vierasjoukkue) {
+        this.vierasjoukkue = vierasjoukkue;
+        asetaTaulukkovierasjoukkue();
     }
 
     public void asetaTaulukkotuomarit() {
@@ -276,11 +381,11 @@ public class Ottelu implements Serializable {
         for (int i = 0; i < this.annaRoolit().size(); i++) {
 
             if (this.annaRoolit().get(i).annaRooli().equals("Erotuomari")) {
-                this.taulukkoerotuomari = new SimpleStringProperty(this.annaRoolit().get(i).annaTuomari().annaKokoNimi());
+                this.taulukkoerotuomari = new SimpleObjectProperty(this.annaRoolit().get(i).annaTuomari());
             } else if (this.annaRoolit().get(i).annaRooli().equals("1. Avustava erotuomari")) {
-                this.taulukkoavustava1 = new SimpleStringProperty(this.annaRoolit().get(i).annaTuomari().annaKokoNimi());
+                this.taulukkoavustava1 = new SimpleObjectProperty(this.annaRoolit().get(i).annaTuomari());
             } else if (this.annaRoolit().get(i).annaRooli().equals("2. Avustava erotuomari")) {
-                this.taulukkoavustava2 = new SimpleStringProperty(this.annaRoolit().get(i).annaTuomari().annaKokoNimi());
+                this.taulukkoavustava2 = new SimpleObjectProperty(this.annaRoolit().get(i).annaTuomari());
             }
         }
 
@@ -307,6 +412,29 @@ public class Ottelu implements Serializable {
         return erotuomari;
     }
 
+    public void asetaErotuomari(Tuomari uusierotuomari) {
+
+        //poistetaan vanha
+        Tuomari erotuomari = new Tuomari();
+
+        for (int i = 0; i < this.annaRoolit().size(); i++) {
+
+            if (this.annaRoolit().get(i).annaRooli().equals("Erotuomari")) {
+                erotuomari = this.annaRoolit().get(i).annaTuomari();
+            }
+        }
+
+        this.annaRoolit().remove(erotuomari);
+
+        TuomarinRooli erotuomariR = new TuomarinRooli(uusierotuomari, this);
+        erotuomariR.asetaRooli("Erotuomari");
+
+        this.annaRoolit().add(erotuomariR);
+        uusierotuomari.annaTuomarinRoolit().add(erotuomariR);
+
+        this.asetaTaulukkotuomarit();
+    }
+
     public Tuomari annaAvustava1() {
         Tuomari avustava = new Tuomari();
 
@@ -319,6 +447,29 @@ public class Ottelu implements Serializable {
         return avustava;
     }
 
+    public void asetaAvustava1(Tuomari uusiavustava) {
+
+        //poistetaan vanha
+        Tuomari avustava = new Tuomari();
+
+        for (int i = 0; i < this.annaRoolit().size(); i++) {
+
+            if (this.annaRoolit().get(i).annaRooli().equals("1. Avustava erotuomari")) {
+                avustava = this.annaRoolit().get(i).annaTuomari();
+            }
+        }
+
+        this.annaRoolit().remove(avustava);
+
+        TuomarinRooli erotuomariR = new TuomarinRooli(uusiavustava, this);
+        erotuomariR.asetaRooli("1. Avustava erotuomari");
+
+        this.annaRoolit().add(erotuomariR);
+        uusiavustava.annaTuomarinRoolit().add(erotuomariR);
+
+        this.asetaTaulukkotuomarit();
+    }
+
     public Tuomari annaAvustava2() {
         Tuomari avustava = new Tuomari();
 
@@ -329,5 +480,28 @@ public class Ottelu implements Serializable {
             }
         }
         return avustava;
+    }
+
+    public void asetaAvustava2(Tuomari uusiavustava) {
+
+        //poistetaan vanha
+        Tuomari avustava = new Tuomari();
+
+        for (int i = 0; i < this.annaRoolit().size(); i++) {
+
+            if (this.annaRoolit().get(i).annaRooli().equals("2. Avustava erotuomari")) {
+                avustava = this.annaRoolit().get(i).annaTuomari();
+            }
+        }
+
+        this.annaRoolit().remove(avustava);
+
+        TuomarinRooli erotuomariR = new TuomarinRooli(uusiavustava, this);
+        erotuomariR.asetaRooli("2. Avustava erotuomari");
+
+        this.annaRoolit().add(erotuomariR);
+        uusiavustava.annaTuomarinRoolit().add(erotuomariR);
+
+        this.asetaTaulukkotuomarit();
     }
 }
