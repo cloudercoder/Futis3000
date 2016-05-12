@@ -217,7 +217,7 @@ public class TuomariNakyma {
 
         grid.add(rivi2, 0, 1);
 
-        Taulukko taulukontekija1 = new Taulukko(this);
+        Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
         ottelut = taulukontekija1.luoTuomarinOtteluTaulukko(tuomari);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

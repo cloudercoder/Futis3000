@@ -156,7 +156,7 @@ public class PelaajaNakyma {
         grid.add(info, 0, 1);
         grid.add(tiedot, 0, 2);
 
-        Taulukko taulukontekija1 = new Taulukko(this);
+        Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
         pisteet = taulukontekija1.luoPelaajanPisteTaulukko(pelaaja);
         pisteet.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

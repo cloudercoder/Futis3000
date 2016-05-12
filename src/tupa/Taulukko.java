@@ -50,6 +50,11 @@ public class Taulukko {
         this.nakyma = nakyma;
     }
 
+     Taulukko(PaaNakyma nakyma, Varmistus varmistaja) {
+        this.nakyma = nakyma;
+        this.varmistaja = varmistaja;
+    }
+    
     Taulukko(SarjaNakyma sarjanakyma, Varmistus varmistaja) {
         this.sarjanakyma = sarjanakyma;
         this.varmistaja = varmistaja;

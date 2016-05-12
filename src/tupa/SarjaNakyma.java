@@ -193,7 +193,7 @@ public class SarjaNakyma {
         HBox rivi3 = new HBox();
         rivi3.setPadding(new Insets(20, 10, 0, 20));
 
-        Taulukko taulukontekija1 = new Taulukko(this, varmistaja);
+        Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
         ottelut = taulukontekija1.luoOtteluTaulukko(sarja);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -210,7 +210,7 @@ public class SarjaNakyma {
         Label otsikko2 = new Label("Joukkueet");
         otsikko2.setFont(Font.font("Papyrus", 18));
 
-        Taulukko taulukontekija3 = new Taulukko(this, varmistaja);
+        Taulukko taulukontekija3 = new Taulukko(nakyma, varmistaja);
         joukkueet = taulukontekija3.luoJoukkueTaulukko(sarja);
         joukkueet.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -220,7 +220,7 @@ public class SarjaNakyma {
         Label otsikko3 = new Label("Sarjataulukko");
         otsikko3.setFont(Font.font("Papyrus", 18));
 
-        Taulukko taulukontekija4 = new Taulukko(this, varmistaja);
+        Taulukko taulukontekija4 = new Taulukko(nakyma, varmistaja);
         sarjataulukko = taulukontekija4.luoSarjaTaulukko(sarja);
         sarjataulukko.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -230,7 +230,7 @@ public class SarjaNakyma {
 
         Label otsikko4 = new Label("Pistepörssi");
         otsikko4.setFont(Font.font("Papyrus", 18));
-        Taulukko taulukontekija2 = new Taulukko(this, varmistaja);
+        Taulukko taulukontekija2 = new Taulukko(nakyma, varmistaja);
         pisteporssi = taulukontekija2.luoPisteporssiTaulukko(sarja);
         pisteporssi.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -361,7 +361,7 @@ public class SarjaNakyma {
         HBox rivi3 = new HBox();
         rivi3.setPadding(new Insets(20, 10, 0, 20));
 
-        Taulukko taulukontekija1 = new Taulukko(this, varmistaja);
+        Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
         ottelut = taulukontekija1.luoOtteluTaulukkoMuokattava(sarja);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -476,7 +476,7 @@ public class SarjaNakyma {
         HBox rivi3 = new HBox();
         rivi3.setPadding(new Insets(20, 10, 0, 20));
 
-        Taulukko taulukontekija1 = new Taulukko(this, varmistaja);
+        Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
         ottelut = taulukontekija1.luoOtteluTaulukko(sarja);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -784,7 +784,7 @@ public class SarjaNakyma {
         Label otsikko2 = new Label("Joukkueet");
         otsikko2.setFont(Font.font("Papyrus", 18));
 
-        Taulukko taulukontekija3 = new Taulukko(this, varmistaja);
+        Taulukko taulukontekija3 = new Taulukko(nakyma, varmistaja);
         joukkueet = taulukontekija3.luoJoukkueTaulukkoMuokattava(sarja);
         joukkueet.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 

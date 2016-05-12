@@ -173,7 +173,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         painikkeet2.setSpacing(40);
         painikkeet2.getChildren().addAll(muokkausnappula, tulosnappula);
 
-        Taulukko taulukontekija1 = new Taulukko(this);
+        Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
         TableView ottelutaulu = taulukontekija1.luoOttelunTaulukko(ottelu);
         ottelutaulu.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -188,9 +188,9 @@ public void luoOttelusivu(Ottelu ottelu) {
         rivi4.setPadding(new Insets(40));
         rivi4.setSpacing(60);
 
-        Taulukko taulukontekija2 = new Taulukko(this);
-        Taulukko taulukontekija3 = new Taulukko(this);
-        Taulukko taulukontekija4 = new Taulukko(this);
+        Taulukko taulukontekija2 = new Taulukko(nakyma, varmistaja);
+        Taulukko taulukontekija3 = new Taulukko(nakyma, varmistaja);
+        Taulukko taulukontekija4 = new Taulukko(nakyma, varmistaja);
         HBox kotikokoonpano = taulukontekija2.luoKokoonpanoTaulukko(ottelu, ottelu.annaKotijoukkue());
         HBox vieraskokoonpano = taulukontekija3.luoKokoonpanoTaulukko(ottelu, ottelu.annaVierasjoukkue());
         TableView maalit = taulukontekija4.luoOttelunMaaliTaulukko(ottelu);
@@ -1045,7 +1045,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         VBox rivi3 = new VBox();
         rivi3.setPadding(new Insets(20));
 
-        Taulukko taulukontekija1 = new Taulukko(this);
+        Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
         TableView ottelutaulu = taulukontekija1.luoOttelunTaulukko(ottelu);
         ottelutaulu.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -1055,7 +1055,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         VBox rivi4 = new VBox();
         rivi4.setPadding(new Insets(20));
 
-        Taulukko taulukontekija2 = new Taulukko(this);
+        Taulukko taulukontekija2 = new Taulukko(nakyma, varmistaja);
 
         TableView maalitaulu = taulukontekija2.luoOttelunMaaliTaulukko(ottelu);
         maalitaulu.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -1192,7 +1192,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         VBox rivi3 = new VBox();
         rivi3.setPadding(new Insets(20));
 
-        Taulukko taulukontekija1 = new Taulukko(this);
+        Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
         TableView ottelutaulu = taulukontekija1.luoOttelunTaulukko(ottelu);
         ottelutaulu.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
