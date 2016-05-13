@@ -19,9 +19,9 @@ public class PoistoSoluJoukkue extends TableCell<Record, Boolean> {
             
         }   
            
-        PoistoSoluJoukkue(ObservableList<Joukkue> data, Varmistus varmistaja){
+        PoistoSoluJoukkue(ObservableList<Joukkue> data, Varmistaja varmistaja){
             
-        	
+        	 cellButton.setId("button-poisto");  
             cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
                 @Override

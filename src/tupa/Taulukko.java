@@ -40,22 +40,26 @@ public class Taulukko {
     private OtteluNakyma ottelunakyma;
     private PelaajaNakyma pelaajanakyma;
     private ToimariNakyma toimarinakyma;
-    private Varmistus varmistaja;
-
+    private Varmistaja varmistaja;
+    private Tarkistaja tarkistaja;
+    private Tupa ikkuna;
     Taulukko() {
 
     }
 
     Taulukko(PaaNakyma nakyma) {
         this.nakyma = nakyma;
+         tarkistaja = new Tarkistaja(nakyma.annaIkkuna());
+         this.ikkuna = nakyma.annaIkkuna();
     }
 
-     Taulukko(PaaNakyma nakyma, Varmistus varmistaja) {
+    Taulukko(PaaNakyma nakyma, Varmistaja varmistaja) {
         this.nakyma = nakyma;
         this.varmistaja = varmistaja;
+        tarkistaja = new Tarkistaja(nakyma.annaIkkuna());
     }
-    
-    Taulukko(SarjaNakyma sarjanakyma, Varmistus varmistaja) {
+
+    Taulukko(SarjaNakyma sarjanakyma, Varmistaja varmistaja) {
         this.sarjanakyma = sarjanakyma;
         this.varmistaja = varmistaja;
     }
@@ -145,7 +149,7 @@ public class Taulukko {
         taulukko.getSortOrder().add(kello);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-              ottelunakyma = nakyma.annaOttelunakyma();
+            ottelunakyma = nakyma.annaOttelunakyma();
             ottelunakyma.luoOttelusivu((Ottelu) newSelection);
         });
 
@@ -262,7 +266,7 @@ public class Taulukko {
         Callback<TableColumn, TableCell> comboBoxCellFactory
                 = new Callback<TableColumn, TableCell>() {
             public TableCell call(TableColumn p) {
-                return new ComboBoxEditingCell();
+                return new ComboBoxOttelu();
             }
         };
 
@@ -298,11 +302,17 @@ public class Taulukko {
                 new EventHandler<TableColumn.CellEditEvent<Ottelu, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Ottelu, String> t) {
-                ((Ottelu) t.getTableView().getItems().get(
+                
+                if(!tarkistaja.onTyhja(t.getNewValue())){
+                    ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaPaikka(t.getNewValue());
-
+                       ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                }
+                
+            
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
-sarjanakyma = nakyma.annaSarjanakyma();
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoSarjaSivu(mihin);
             }
         }
@@ -313,10 +323,17 @@ sarjanakyma = nakyma.annaSarjanakyma();
                 new EventHandler<TableColumn.CellEditEvent<Ottelu, Integer>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Ottelu, Integer> t) {
-                ((Ottelu) t.getTableView().getItems().get(
+               
+               
+                    ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaKierros(t.getNewValue());
+              
+                  ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                 
+                
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
-sarjanakyma = nakyma.annaSarjanakyma();
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoSarjaSivu(mihin);
             }
         }
@@ -333,10 +350,12 @@ sarjanakyma = nakyma.annaSarjanakyma();
                 if (t.getNewValue() != null) {
                     ((Ottelu) t.getTableView().getItems().get(
                             t.getTablePosition().getRow())).asetaErotuomari(t.getNewValue());
+                     ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
                 }
-                System.out.println(t.getNewValue());
+              
                 TreeItem<Kohde> mihin = new TreeItem<>(sarja);
-sarjanakyma = nakyma.annaSarjanakyma();
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoSarjaSivu(mihin);
             }
         }
@@ -345,9 +364,16 @@ sarjanakyma = nakyma.annaSarjanakyma();
                 new EventHandler<TableColumn.CellEditEvent<Ottelu, Tuomari>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Ottelu, Tuomari> t) {
-                ((Ottelu) t.getTableView().getItems().get(
+              
+                
+                 if (t.getNewValue() != null) {
+                   ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaAvustava1(t.getNewValue());
-sarjanakyma = nakyma.annaSarjanakyma();
+                   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                 }
+                
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
             }
         }
@@ -356,8 +382,12 @@ sarjanakyma = nakyma.annaSarjanakyma();
                 new EventHandler<TableColumn.CellEditEvent<Ottelu, Tuomari>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Ottelu, Tuomari> t) {
-                ((Ottelu) t.getTableView().getItems().get(
+                     if (t.getNewValue() != null) {
+                   ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaAvustava2(t.getNewValue());
+                  ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                     }
                 sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
             }
@@ -372,7 +402,9 @@ sarjanakyma = nakyma.annaSarjanakyma();
             public void handle(TableColumn.CellEditEvent<Ottelu, String> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaTunnit(t.getNewValue());
-               sarjanakyma = nakyma.annaSarjanakyma();
+                   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
 
             }
@@ -387,6 +419,8 @@ sarjanakyma = nakyma.annaSarjanakyma();
             public void handle(TableColumn.CellEditEvent<Ottelu, String> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaMinuutit(t.getNewValue());
+                  ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
                 sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
 
@@ -400,8 +434,15 @@ sarjanakyma = nakyma.annaSarjanakyma();
                 new EventHandler<TableColumn.CellEditEvent<Ottelu, Joukkue>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Ottelu, Joukkue> t) {
-                ((Ottelu) t.getTableView().getItems().get(
+             
+                       if (t.getNewValue() != null) {
+                    ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaKotijoukkue(t.getNewValue());
+                   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                       }
+                
+                
                 sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
 
@@ -413,8 +454,15 @@ sarjanakyma = nakyma.annaSarjanakyma();
                 new EventHandler<TableColumn.CellEditEvent<Ottelu, Joukkue>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Ottelu, Joukkue> t) {
-                ((Ottelu) t.getTableView().getItems().get(
+             
+                     if (t.getNewValue() != null) {
+                     ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaVierasjoukkue(t.getNewValue());
+                  ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                     }
+                
+                
                 sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
             }
@@ -436,6 +484,8 @@ sarjanakyma = nakyma.annaSarjanakyma();
             public void handle(TableColumn.CellEditEvent<Ottelu, Date> t) {
                 ((Ottelu) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaPaivaDate(t.getNewValue());
+                   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
                 sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
 
@@ -452,7 +502,6 @@ sarjanakyma = nakyma.annaSarjanakyma();
             }
         });
 
-        //Adding the Button to the cell
         col_action.setCellFactory(
                 new Callback<TableColumn<Record, Boolean>, TableCell<Record, Boolean>>() {
 
@@ -742,7 +791,7 @@ sarjanakyma = nakyma.annaSarjanakyma();
         taulukko.getSortOrder().add(nimi);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-toimarinakyma = nakyma.annaToimarinakyma();
+            toimarinakyma = nakyma.annaToimarinakyma();
             toimarinakyma.luoToimariSivu((Toimihenkilo) newSelection);
         });
 
@@ -757,6 +806,169 @@ toimarinakyma = nakyma.annaToimarinakyma();
         taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
         taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
 
+        return taulukko;
+
+    }
+    
+    public TableView luoToimihenkiloTaulukkoMuokattava(Joukkue joukkue) {
+        taulukko.setId("ei-klikattava2");
+        taulukko.setPlaceholder(new Label("Ei lisättyjä toimihenkilöitä"));
+        List<Toimihenkilo> toimarit = new ArrayList<>();
+
+        for (int i = 0; i < joukkue.annaToimarit().size(); i++) {
+            joukkue.annaToimarit().get(i).asetaTaulukkoetunimi();
+            joukkue.annaToimarit().get(i).asetaTaulukkosukunimi();
+            joukkue.annaToimarit().get(i).asetaTaulukkopuh();
+            joukkue.annaToimarit().get(i).asetaTaulukkorooli();
+            joukkue.annaToimarit().get(i).asetaTaulukkosposti();
+            toimarit.add(joukkue.annaToimarit().get(i));
+
+        }
+
+        ObservableList<Toimihenkilo> data
+                = FXCollections.observableArrayList(toimarit);
+
+        TableColumn etunimi = new TableColumn("Etunimi");
+        TableColumn sukunimi = new TableColumn("Sukunimi");
+        TableColumn rooli = new TableColumn("Rooli");
+        TableColumn sposti = new TableColumn("Sähköposti");
+        TableColumn puh = new TableColumn("Puh.");
+   TableColumn col_action = new TableColumn<>("Poista");
+        etunimi.setCellValueFactory(new PropertyValueFactory<Toimihenkilo, String>("taulukkoetunimi"));
+        sukunimi.setCellValueFactory(new PropertyValueFactory<Toimihenkilo, String>("taulukkosukunimi"));
+        rooli.setCellValueFactory(new PropertyValueFactory<Toimihenkilo, String>("taulukkorooli"));
+        sposti.setCellValueFactory(new PropertyValueFactory<Toimihenkilo, String>("taulukkosposti"));
+        puh.setCellValueFactory(new PropertyValueFactory<Toimihenkilo, String>("taulukkopuh"));
+        taulukko.getColumns().addAll(etunimi, sukunimi, rooli, sposti, puh, col_action);
+        taulukko.setItems(data);
+
+        etunimi.setMinWidth(100);
+         sukunimi.setMinWidth(100);
+        rooli.setMinWidth(120);
+        sposti.setMinWidth(180);
+        puh.setMinWidth(120);
+   
+
+        taulukko.setFixedCellSize(25);
+
+        if (taulukko.getItems().size() == 0) {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(2)));
+        } else {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(1.1)));
+        }
+
+        taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
+        taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
+
+               taulukko.setEditable(true);
+
+        Callback<TableColumn, TableCell> cellFactory
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new MuokkausSoluToimari();
+            }
+        };
+            etunimi.setCellFactory(cellFactory);
+        etunimi.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Toimihenkilo, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Toimihenkilo, String> t) {
+                if(tarkistaja.nimiOK(t.getNewValue())){
+                       ((Toimihenkilo) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaEtuNimi(t.getNewValue());
+                  ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                }
+             
+
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
+                joukkuenakyma.luoJoukkueenToimariLisays(joukkue);
+            }
+        }
+        );
+        
+                 sukunimi.setCellFactory(cellFactory);
+        sukunimi.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Toimihenkilo, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Toimihenkilo, String> t) {
+                  if(tarkistaja.nimiOK(t.getNewValue())){
+                            ((Toimihenkilo) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaSukuNimi(t.getNewValue());
+                   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                  }
+                
+                
+           
+
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
+                joukkuenakyma.luoJoukkueenToimariLisays(joukkue);
+            }
+        }
+        );
+        
+        sposti.setCellFactory(cellFactory);
+        sposti.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Toimihenkilo, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Toimihenkilo, String> t) {
+                ((Toimihenkilo) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaSposti(t.getNewValue());
+   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
+                joukkuenakyma.luoJoukkueenToimariLisays(joukkue);
+            }
+        }
+        );
+             rooli.setCellFactory(cellFactory);
+        rooli.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Toimihenkilo, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Toimihenkilo, String> t) {
+                ((Toimihenkilo) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaRooli(t.getNewValue());
+   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
+                joukkuenakyma.luoJoukkueenToimariLisays(joukkue);
+            }
+        }
+        );
+             puh.setCellFactory(cellFactory);
+        puh.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Toimihenkilo, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Toimihenkilo, String> t) {
+                ((Toimihenkilo) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaPuh(t.getNewValue());
+   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
+                joukkuenakyma.luoJoukkueenToimariLisays(joukkue);
+            }
+        }
+        );
+                      col_action.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Record, Boolean>, ObservableValue<Boolean>>() {
+
+            @Override
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Record, Boolean> p) {
+                return new SimpleBooleanProperty(p.getValue() != null);
+            }
+        });
+
+     
+        col_action.setCellFactory(
+                new Callback<TableColumn<Record, Boolean>, TableCell<Record, Boolean>>() {
+
+            @Override
+            public TableCell<Record, Boolean> call(TableColumn<Record, Boolean> p) {
+                return new PoistoSoluToimari(data, varmistaja);
+            }
+
+        });
         return taulukko;
 
     }
@@ -821,7 +1033,7 @@ toimarinakyma = nakyma.annaToimarinakyma();
         TableColumn col_action = new TableColumn<>("Poista");
         joukkue.setCellValueFactory(new PropertyValueFactory<Joukkue, String>("taulukkonimi"));
 
-        taulukko.getColumns().addAll(joukkue);
+        taulukko.getColumns().addAll(joukkue, col_action);
         taulukko.setItems(data);
         joukkue.setSortType(TableColumn.SortType.ASCENDING);
         taulukko.getSortOrder().add(joukkue);
@@ -850,9 +1062,15 @@ toimarinakyma = nakyma.annaToimarinakyma();
                 new EventHandler<TableColumn.CellEditEvent<Joukkue, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Joukkue, String> t) {
-                ((Joukkue) t.getTableView().getItems().get(
+                if(!tarkistaja.onTyhja(t.getNewValue())){
+                     ((Joukkue) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())).asetaNimi(t.getNewValue());
-sarjanakyma = nakyma.annaSarjanakyma();
+                  ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                }
+                
+               
+                sarjanakyma = nakyma.annaSarjanakyma();
                 sarjanakyma.luoJoukkueenLisaysSivu(sarja);
             }
         }
@@ -1061,7 +1279,7 @@ sarjanakyma = nakyma.annaSarjanakyma();
         taulukko.getSortOrder().add(pelinumero);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-           
+
             pelaajanakyma = nakyma.annaPelaajanakyma();
             pelaajanakyma.luoPelaajaSivu((Pelaaja) newSelection);
         });
@@ -1076,6 +1294,157 @@ sarjanakyma = nakyma.annaSarjanakyma();
 
         taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
         taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
+
+        return taulukko;
+    }
+
+    public TableView luoPelaajaTaulukkoMuokattava(Joukkue joukkue) {
+        taulukko.setPlaceholder(new Label("Ei lisättyjä pelaajia"));
+        taulukko.setId("ei-klikattava2");
+        List<Pelaaja> pelaajat = new ArrayList<>();
+
+        for (int i = 0; i < joukkue.annaPelaajat().size(); i++) {
+            joukkue.annaPelaajat().get(i).asetaTaulukkoetunimi();
+            joukkue.annaPelaajat().get(i).asetaTaulukkosukunimi();
+            joukkue.annaPelaajat().get(i).asetaTaulukkonumero();
+            joukkue.annaPelaajat().get(i).asetaTaulukkopelipaikka();
+            pelaajat.add(joukkue.annaPelaajat().get(i));
+
+        }
+
+        ObservableList<Pelaaja> data
+                = FXCollections.observableArrayList(pelaajat);
+
+        TableColumn etunimi = new TableColumn("Etunimi");
+        TableColumn sukunimi = new TableColumn("Sukunimi");
+        TableColumn pelinumero = new TableColumn("Nro");
+        TableColumn pelipaikka = new TableColumn("Pelipaikka");
+        TableColumn col_action = new TableColumn<>("Poista");
+        etunimi.setMinWidth(100);
+        sukunimi.setMinWidth(100);
+        pelinumero.setPrefWidth(50);
+        etunimi.setCellValueFactory(new PropertyValueFactory<Pelaaja, String>("taulukkoetunimi"));
+        sukunimi.setCellValueFactory(new PropertyValueFactory<Pelaaja, String>("taulukkosukunimi"));
+        pelinumero.setCellValueFactory(new PropertyValueFactory<Pelaaja, Integer>("taulukkonumero"));
+        pelipaikka.setCellValueFactory(new PropertyValueFactory<Pelaaja, String>("taulukkopelipaikka"));
+
+        pelipaikka.setPrefWidth(100);
+        taulukko.getColumns().addAll(pelinumero, etunimi, sukunimi, pelipaikka, col_action);
+        taulukko.setItems(data);
+        pelinumero.setSortType(TableColumn.SortType.ASCENDING);
+        taulukko.getSortOrder().add(pelinumero);
+
+        taulukko.setFixedCellSize(25);
+
+        if (taulukko.getItems().size() == 0) {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(2)));
+        } else {
+            taulukko.prefHeightProperty().bind(taulukko.fixedCellSizeProperty().multiply(Bindings.size(taulukko.getItems()).add(1.1)));
+        }
+
+        taulukko.minHeightProperty().bind(taulukko.prefHeightProperty());
+        taulukko.maxHeightProperty().bind(taulukko.prefHeightProperty());
+        taulukko.setEditable(true);
+
+        Callback<TableColumn, TableCell> cellFactory
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new MuokkausSoluPelaaja();
+            }
+        };
+
+        Callback<TableColumn, TableCell> comboBoxCellFactory
+                = new Callback<TableColumn, TableCell>() {
+            public TableCell call(TableColumn p) {
+                return new ComboBoxPelaaja();
+            }
+        };
+
+        etunimi.setCellFactory(cellFactory);
+        etunimi.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Pelaaja, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Pelaaja, String> t) {
+                
+                if(tarkistaja.nimiOK(t.getNewValue())){
+                     ((Pelaaja) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaEtuNimi(t.getNewValue()); 
+                   ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                }
+                
+                
+              
+
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
+                joukkuenakyma.luoJoukkueenPelaajaLisays(joukkue);
+            }
+        }
+        );
+             sukunimi.setCellFactory(cellFactory);
+        sukunimi.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Pelaaja, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Pelaaja, String> t) {
+                
+                   if(tarkistaja.nimiOK(t.getNewValue())){
+                     ((Pelaaja) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaSukuNimi(t.getNewValue());
+                       
+                    ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                   }
+                
+             
+
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
+                joukkuenakyma.luoJoukkueenPelaajaLisays(joukkue);
+            }
+        }
+        );
+        
+                pelinumero.setCellFactory(comboBoxCellFactory);
+        pelinumero.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Pelaaja, Integer>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Pelaaja, Integer> t) {
+                 
+                if(tarkistaja.pelinumeroOK(t.getNewValue(), joukkue)){
+                    
+                      ((Pelaaja) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())).asetaPelinumero(t.getNewValue());
+                   
+                    ikkuna = nakyma.annaIkkuna();   
+                     ikkuna.asetaMuutos(true);
+                }
+              
+              
+                joukkuenakyma = nakyma.annaJoukkuenakyma();
+                joukkuenakyma.luoJoukkueenPelaajaLisays(joukkue);
+            }
+        }
+        );
+        
+                col_action.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Record, Boolean>, ObservableValue<Boolean>>() {
+
+            @Override
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Record, Boolean> p) {
+                return new SimpleBooleanProperty(p.getValue() != null);
+            }
+        });
+
+     
+        col_action.setCellFactory(
+                new Callback<TableColumn<Record, Boolean>, TableCell<Record, Boolean>>() {
+
+            @Override
+            public TableCell<Record, Boolean> call(TableColumn<Record, Boolean> p) {
+                return new PoistoSoluPelaaja(data, varmistaja);
+            }
+
+        });
+        
 
         return taulukko;
     }
@@ -1247,7 +1616,7 @@ sarjanakyma = nakyma.annaSarjanakyma();
         taulukko.getSortOrder().add(kello);
 
         taulukko.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-              ottelunakyma = nakyma.annaOttelunakyma();
+            ottelunakyma = nakyma.annaOttelunakyma();
             ottelunakyma.luoOttelusivu((Ottelu) newSelection);
         });
 

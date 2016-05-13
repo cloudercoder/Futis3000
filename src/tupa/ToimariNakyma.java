@@ -40,7 +40,7 @@ public class ToimariNakyma {
     private Label pakollinen4 = new Label("*");
 
     private Tiedottaja tiedottaja;
-    private Varmistus varmistaja;
+    private Varmistaja varmistaja;
 
     //taulukot
     private TableView ottelut;
@@ -64,7 +64,7 @@ public class ToimariNakyma {
         joukkuenakyma = nakyma.annaJoukkuenakyma();
         muuttaja = new Muuttaja(ikkuna, nakyma);
         tiedottaja = new Tiedottaja(ikkuna);
-        varmistaja = new Varmistus(ikkuna, nakyma);
+        varmistaja = new Varmistaja(ikkuna, nakyma);
         pakollinen.setId("label-pakko");
         pakollinen2.setId("label-pakko");
         pakollinen3.setId("label-pakko");
@@ -84,7 +84,7 @@ public class ToimariNakyma {
 
         Button muokkausnappula = new Button();
 
-        muokkausnappula.setText("Muokkaa");
+        muokkausnappula.setText("\uD83D\uDD89");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -98,11 +98,11 @@ public class ToimariNakyma {
             }
         });
 
-        Button poistonappula = new Button("Poista toimihenkilö");
+        Button poistonappula = new Button("X");
         poistonappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                varmistaja.annaPoistoVarmistus(toimari);
+                varmistaja.annaToimarinPoistoVarmistus(toimari);
 
             }
         });

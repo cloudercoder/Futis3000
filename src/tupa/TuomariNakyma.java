@@ -37,7 +37,7 @@ public class TuomariNakyma {
     private Label pakollinen4 = new Label("*");
 
     private Tiedottaja tiedottaja;
-    private Varmistus varmistaja;
+    private Varmistaja varmistaja;
 
     //taulukot
     private TableView ottelut;
@@ -53,7 +53,7 @@ public class TuomariNakyma {
         this.nakyma = nakyma;
         muuttaja = new Muuttaja(ikkuna, nakyma);
         tiedottaja = new Tiedottaja(ikkuna);
-        varmistaja = new Varmistus(ikkuna, nakyma);
+        varmistaja = new Varmistaja(ikkuna, nakyma);
         pakollinen.setId("label-pakko");
         pakollinen2.setId("label-pakko");
         pakollinen3.setId("label-pakko");

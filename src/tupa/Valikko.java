@@ -103,7 +103,7 @@ public class Valikko implements EventHandler<ActionEvent> {
             case "Uusi": {
                 //tsekataan ensin, onko käyttäjä tehnyt muutoksia
                 if (ikkuna.muutettu()) {
-                    Varmistus varmista = new Varmistus(ikkuna.annaKohteet(), ikkuna);
+                    Varmistaja varmista = new Varmistaja(ikkuna.annaKohteet(), ikkuna);
                     varmista.annaUudenVarmistus();
                 } else {
                     //tyhjennetään kaikki tiedot 
@@ -126,7 +126,7 @@ public class Valikko implements EventHandler<ActionEvent> {
                 //tsekataan ensin, onko käyttäjä tehnyt muutoksia
 
                 if (ikkuna.muutettu()) {
-                    Varmistus varmista = new Varmistus(ikkuna.annaKohteet(), ikkuna);
+                    Varmistaja varmista = new Varmistaja(ikkuna.annaKohteet(), ikkuna);
                     varmista.annaUudenVarmistus();
                 } else {
                     //tyhjennetään kaikki tiedot 
@@ -161,7 +161,7 @@ public class Valikko implements EventHandler<ActionEvent> {
 
                         if (kohdetk.get(i) instanceof Sarja) {
                             Sarja sarja = (Sarja) kohdetk.get(i);
-                   
+
                             sarjatk.add(sarja);
                             ikkuna.annaSarjatk().add(sarja);
 
@@ -173,8 +173,6 @@ public class Valikko implements EventHandler<ActionEvent> {
                             Tuomari tuomari = (Tuomari) kohdetk.get(i);
                             tuomaritk.add(tuomari);
                             ikkuna.annaTuomaritk().add(tuomari);
-
-                      
 
                             parent = ikkuna.annaRootTuomarit();
                             TreeItem<Kohde> uusiKohde = new TreeItem<Kohde>(kohdetk.get(i));
@@ -189,7 +187,6 @@ public class Valikko implements EventHandler<ActionEvent> {
                             Pelaaja pelaaja = (Pelaaja) kohdetk.get(i);
                             pelaajatk.add(pelaaja);
                             ikkuna.annaPelaajatk().add(pelaaja);
-                       
 
                         } else if (kohdetk.get(i) instanceof Toimihenkilo) {
                             Toimihenkilo toimari = (Toimihenkilo) kohdetk.get(i);
@@ -213,30 +210,39 @@ public class Valikko implements EventHandler<ActionEvent> {
                 break;
             }
 
-            case "Tallenna":
+            case "Tallenna": {
                 Tallennus tallenna = new Tallennus(ikkuna);
                 tallenna.suoritaTallennus();
                 tiedottaja.kirjoitaLoki("Tallennus onnistui.");
                 break;
-
-
+            }
+                
 
             case "Lopeta": {
 
                 if (ikkuna.muutettu()) {
 
-                    Varmistus varmista = new Varmistus(ikkuna.annaKohteet(), ikkuna);
+                    Varmistaja varmista = new Varmistaja(ikkuna.annaKohteet(), ikkuna);
                     varmista.annaVarmistus();
                 } else {
                     Platform.exit();
                 }
+                break;
+            }
+            case "Ohje": {
 
+                Ohje ohje = new Ohje();
+                ohje.annaYleisOhje();
+                break;
+            }
+            case "Tietoa ohjelmasta": {
+
+                Ohje ohje = new Ohje();
+                ohje.annaTietoa();
+                 break;
             }
 
-            break;
-            default:
-                System.out.println("Valikosta " + teksti);
-                break;
+      
         }
     }
 }

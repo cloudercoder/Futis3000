@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.ListView;
 import javafx.stage.WindowEvent;
 import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
 
 /**
  *
@@ -126,7 +127,7 @@ public class Tupa extends Application {
         primaryStage.setScene(scene);
         Platform.setImplicitExit(false);
         primaryStage.show();
-        Varmistus varmista = new Varmistus(kohdetk, this);
+        Varmistaja varmista = new Varmistaja(kohdetk, this);
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
             public void handle(WindowEvent we) {

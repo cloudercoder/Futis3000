@@ -40,7 +40,7 @@ public class PaaNakyma {
     private Label pakollinen4 = new Label("*");
 
     private Tiedottaja tiedottaja;
-    private Varmistus varmistaja;
+    private Varmistaja varmistaja;
 
     //muut näkymät
     private SarjaNakyma sarjanakyma;
@@ -58,7 +58,7 @@ public class PaaNakyma {
         this.ikkuna = ikkuna;
         muuttaja = new Muuttaja(ikkuna, this);
         tiedottaja = new Tiedottaja(ikkuna);
-        varmistaja = new Varmistus(ikkuna, this);
+        varmistaja = new Varmistaja(ikkuna, this);
         pakollinen.setId("label-pakko");
         pakollinen2.setId("label-pakko");
         pakollinen3.setId("label-pakko");
@@ -71,7 +71,9 @@ public class PaaNakyma {
         toimarinakyma = new ToimariNakyma(ikkuna, this);
 
     }
-
+    public Tupa annaIkkuna(){
+        return ikkuna;
+    }
     public SarjaNakyma annaSarjanakyma() {
         return sarjanakyma;
     }

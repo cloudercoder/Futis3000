@@ -43,7 +43,7 @@ public class PelaajaNakyma {
     private Label pakollinen4 = new Label("*");
 
     private Tiedottaja tiedottaja;
-    private Varmistus varmistaja;
+    private Varmistaja varmistaja;
 
     //taulukot
     private TableView ottelut;
@@ -67,7 +67,7 @@ public class PelaajaNakyma {
         joukkuenakyma = nakyma.annaJoukkuenakyma();
         muuttaja = new Muuttaja(ikkuna, nakyma);
         tiedottaja = new Tiedottaja(ikkuna);
-        varmistaja = new Varmistus(ikkuna, nakyma);
+        varmistaja = new Varmistaja(ikkuna, nakyma);
         pakollinen.setId("label-pakko");
         pakollinen2.setId("label-pakko");
         pakollinen3.setId("label-pakko");
@@ -79,15 +79,15 @@ public class PelaajaNakyma {
         ScrollPane sb = new ScrollPane();
 
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(20, 10, 40, 300));
+        grid.setPadding(new Insets(20, 10, 40, 550));
 
         //riville 1
         HBox painike = new HBox();
         painike.setSpacing(20);
-
+painike.setSpacing(100);
         Button muokkausnappula = new Button();
 
-        muokkausnappula.setText("Muokkaa");
+        muokkausnappula.setText("\uD83D\uDD89");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -101,16 +101,16 @@ public class PelaajaNakyma {
             }
         });
 
-        Button poistonappula = new Button("Poista pelaaja");
+        Button poistonappula = new Button("X");
         poistonappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                varmistaja.annaPoistoVarmistus(pelaaja);
+                varmistaja.annaPelaajanPoistoVarmistus(pelaaja);
 
             }
         });
 
-        Button paluunappula = new Button("<< Palaa");
+        Button paluunappula = new Button("<< Palaa takaisin");
         paluunappula.setPadding(new Insets(0, 400, 0, 0));
         paluunappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override

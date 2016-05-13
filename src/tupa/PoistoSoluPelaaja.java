@@ -11,27 +11,29 @@ import javafx.scene.control.TableCell;
  *
  * @author Marianne
  */
-public class PoistoSoluOttelu extends TableCell<Record, Boolean> {
+public class PoistoSoluPelaaja extends TableCell<Record, Boolean> {
         final Button cellButton = new Button("X");
           
         
-        PoistoSoluOttelu(){
+         PoistoSoluPelaaja(){
             
         }   
            
-        PoistoSoluOttelu(ObservableList<Ottelu> data, Varmistaja varmistaja){
+        PoistoSoluPelaaja(ObservableList<Pelaaja> data, Varmistaja varmistaja){
              cellButton.setId("button-poisto");  
+        	
             cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
                 @Override
                 public void handle(ActionEvent t) {
-                
-                	Ottelu ottelu = (Ottelu) PoistoSoluOttelu.this.getTableView().getItems().get(PoistoSoluOttelu.this.getIndex());
+                 
+                	Pelaaja pelaaja = (Pelaaja) PoistoSoluPelaaja.this.getTableView().getItems().get(PoistoSoluPelaaja.this.getIndex());
                 	
-                	varmistaja.annaOtteluPoistoVarmistus(ottelu);
+                	varmistaja.annaPelaajanPoistoVarmistus(pelaaja);
                 }
             });
         }
+  
 
         @Override
         protected void updateItem(Boolean t, boolean empty) {

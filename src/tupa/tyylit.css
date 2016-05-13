@@ -516,6 +516,7 @@
     -fx-text-fill: -fx-text-base-color;
     -fx-alignment: CENTER;
     -fx-content-display: LEFT;
+ -fx-cursor: hand;
 }
 
 #button-haku{
@@ -523,6 +524,40 @@
  -fx-cursor: hand;
  -fx-background-color: white;
   -fx-padding: 2 5 2 5; 
+}
+
+#button-poisto{
+  -fx-cursor: hand;
+
+  -fx-text-align: center;
+  -fx-padding: 4px;
+  -fx-font-size: 12px;
+-fx-min-width: 20px;
+-fx-min-height: 20px;
+-fx-max-width: 20px;
+
+-fx-max-height: 20px;
+-fx-background-radius: 5em; 
+-fx-background-color: linear-gradient(to right, #00b300, 	 #33ff33);
+   -fx-text-fill: white;
+
+}
+
+#button-ohje{
+  -fx-cursor: hand;
+
+  -fx-text-align: center;
+  -fx-padding: 4px;
+  -fx-font-size: 12px;
+-fx-min-width: 20px;
+-fx-min-height: 20px;
+-fx-max-width: 20px;
+
+-fx-max-height: 20px;
+-fx-background-radius: 5em; 
+   -fx-background-color: blue;
+   -fx-text-fill: white;
+
 }
 
 .button:focused {
@@ -1649,7 +1684,7 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0, 1;
     -fx-padding: 1; 
--fx-font: 15px "Papyrus";
+-fx-font: 13px "Papyrus";
  -fx-cursor: hand;
 }
 
@@ -1743,6 +1778,7 @@
 #my-table .table-column {
   -fx-alignment: CENTER;
 -fx-text-fill: blue;
+
 }
 #my-table .table-cell {
     -fx-alignment: CENTER;
@@ -1755,6 +1791,12 @@
     
     
 }
+
+.table-view .column-header {
+    -fx-background-color: #ccffcc;
+}
+
+
 
 #ei-klikattava .table-column {
   -fx-alignment: CENTER;
@@ -1778,7 +1820,7 @@
 
 #ei-klikattava .table-column {
   -fx-alignment: CENTER;
-   -fx-background: white;
+
    -fx-border-color: transparent;
    -fx-border-width: 0px;
 
@@ -1799,7 +1841,13 @@
   -fx-background: -fx-control-inner-background-alt ;
 }
 
+#ei-klikattava2 .table-column {
+  -fx-alignment: CENTER;
 
+   -fx-border-color: transparent;
+   -fx-border-width: 0px;
+
+}
 
 .tree-cell > .tree-disclosure-node:disabled,
 .tree-table-row-cell > .tree-disclosure-node:disabled {

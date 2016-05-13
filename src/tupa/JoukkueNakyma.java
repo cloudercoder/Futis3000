@@ -25,9 +25,10 @@ import javafx.scene.text.Font;
  * @author Marianne
  */
 public class JoukkueNakyma {
-        private Tupa ikkuna;
+
+    private Tupa ikkuna;
     private Muuttaja muuttaja;
-    //uusien kohtien lisäystä varten
+    
     private TextField nimi = new TextField();
 
     private Label pakollinen = new Label("*");
@@ -36,18 +37,17 @@ public class JoukkueNakyma {
     private Label pakollinen4 = new Label("*");
 
     private Tiedottaja tiedottaja;
-    private Varmistus varmistaja;
+    private Varmistaja varmistaja;
 
-    //taulukot
+ 
     private TableView ottelut;
     private TableView pisteporssi;
     private TableView pelaajat;
     private TableView toimihenkilot;
 
-
     private PaaNakyma nakyma;
     private SarjaNakyma sarjanakyma;
-    
+
     JoukkueNakyma() {
 
     }
@@ -58,14 +58,14 @@ public class JoukkueNakyma {
         sarjanakyma = nakyma.annaSarjanakyma();
         muuttaja = new Muuttaja(ikkuna, nakyma);
         tiedottaja = new Tiedottaja(ikkuna);
-        varmistaja = new Varmistus(ikkuna, nakyma);
+        varmistaja = new Varmistaja(ikkuna, nakyma);
         pakollinen.setId("label-pakko");
         pakollinen2.setId("label-pakko");
         pakollinen3.setId("label-pakko");
         pakollinen4.setId("label-pakko");
 
     }
-    
+
     public void luoJoukkueSivu(Joukkue joukkue) {
 
         ScrollPane sb = new ScrollPane();
@@ -75,12 +75,12 @@ public class JoukkueNakyma {
 
         HBox rivi1 = new HBox();
         rivi1.setPadding(new Insets(20, 10, 20, 80));
-        rivi1.setAlignment(Pos.TOP_RIGHT);
+        rivi1.setAlignment(Pos.TOP_CENTER);
         rivi1.setSpacing(20);
 
         Button muokkausnappula = new Button();
 
-        muokkausnappula.setText("Muokkaa nimeä");
+        muokkausnappula.setText("\uD83D\uDD89");
         muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -94,28 +94,19 @@ public class JoukkueNakyma {
             }
         });
 
-        Button poistonappula = new Button("Poista joukkue");
+  
+        Button poistonappula = new Button("X");
         poistonappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 
-                varmistaja.annaPoistoVarmistus(joukkue);
+                varmistaja.annaJoukkueenPoistoVarmistus(joukkue);
 
             }
         });
 
-        Button paluunappula = new Button("<< Palaa takaisin");
-        paluunappula.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                TreeItem<Kohde> mihin = new TreeItem<>(joukkue.annaSarja());
-                sarjanakyma.luoSarjaSivu(mihin);
-
-            }
-        });
-
-        rivi1.getChildren().addAll(paluunappula, muokkausnappula, poistonappula);
+  
+        rivi1.getChildren().addAll(muokkausnappula, poistonappula);
         grid.add(rivi1, 0, 0);
 
         //rivi2
@@ -131,7 +122,7 @@ public class JoukkueNakyma {
 
         HBox rivi3 = new HBox();
         rivi3.setSpacing(40);
-        rivi3.setPadding(new Insets(10, 10, 60, 10));
+        rivi3.setPadding(new Insets(10, 10, 60, 0));
         Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
         ottelut = taulukontekija1.luoJoukkueenOtteluTaulukko(joukkue);
         ottelut.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -140,15 +131,50 @@ public class JoukkueNakyma {
         osio1.setSpacing(20);
         osio1.setPadding(new Insets(0, 0, 10, 0));
         osio1.setAlignment(Pos.CENTER);
+        
+         HBox otsikkorivi1 = new HBox();
+        otsikkorivi1.setSpacing(20);
         Label otsikko1 = new Label("Joukkueen ottelut");
         otsikko1.setFont(Font.font("Papyrus", 18));
-        osio1.getChildren().addAll(otsikko1, ottelut);
+                Button ottelunappula = new Button();
+                ottelunappula.setId("button-ohje");
+        ottelunappula.setText("\u003F");
+        ottelunappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus otteluopastus = new Opastus();
+                otteluopastus.annaOhjeOtteluLuettelo();
+
+            }
+        });
+        otsikkorivi1.getChildren().addAll(otsikko1, ottelunappula);
+        osio1.getChildren().addAll(otsikkorivi1, ottelut);
 
         VBox osio2 = new VBox();
         osio2.setSpacing(20);
         osio2.setAlignment(Pos.CENTER);
+       
+         HBox otsikkorivi2 = new HBox();
+        otsikkorivi2.setSpacing(20);
         Label otsikko2 = new Label("Pelaajat");
         otsikko2.setFont(Font.font("Papyrus", 18));
+         Button pelaajanappula = new Button();
+             pelaajanappula.setId("button-ohje");
+        pelaajanappula.setText("\u003F");
+        pelaajanappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus pelaajaopastus = new Opastus();
+                pelaajaopastus.annaOhjePelaajaLuettelo();
+
+            }
+        });
+        otsikkorivi2.getChildren().addAll(otsikko2, pelaajanappula);
+        
+        
+        
+        
+        
         Taulukko taulukontekija3 = new Taulukko(nakyma, varmistaja);
 
         pelaajat = taulukontekija3.luoPelaajaTaulukko(joukkue);
@@ -157,9 +183,25 @@ public class JoukkueNakyma {
         VBox osio3 = new VBox();
         osio3.setSpacing(20);
 
+          HBox otsikkorivi3 = new HBox();
+        otsikkorivi3.setSpacing(20);
         Label otsikko3 = new Label("Toimihenkilöt");
         otsikko3.setFont(Font.font("Papyrus", 18));
 
+             Button toimarinappula = new Button();
+                  toimarinappula.setId("button-ohje");
+        toimarinappula.setText("\u003F");
+        toimarinappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus toimariopastus = new Opastus();
+                toimariopastus.annaOhjeToimariLuettelo();
+
+            }
+        });
+        otsikkorivi3.getChildren().addAll(otsikko3, toimarinappula);
+        
+        
         Taulukko taulukontekija4 = new Taulukko(nakyma, varmistaja);
         toimihenkilot = taulukontekija4.luoToimihenkiloTaulukko(joukkue);
         toimihenkilot.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -180,7 +222,7 @@ public class JoukkueNakyma {
         pelaajienalle.setPadding(new Insets(20, 0, 0, 0));
         pelaajienalle.setSpacing(30);
 
-        Button plisaysnappula = new Button("Lisää pelaajia");
+        Button plisaysnappula = new Button("Muokkaa pelaajia");
         plisaysnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -190,23 +232,15 @@ public class JoukkueNakyma {
             }
         });
 
-        Button pepoistonappula = new Button("Poista kaikki pelaajat");
-        pepoistonappula.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+ 
 
-                varmistaja.annaKaikkienPelaajienPoistoVarmitus(joukkue);
-
-            }
-        });
-
-        pelaajienalle.getChildren().addAll(plisaysnappula, pepoistonappula);
+        pelaajienalle.getChildren().addAll(plisaysnappula);
 
         HBox toimarienalle = new HBox();
         toimarienalle.setPadding(new Insets(20, 0, 0, 0));
         toimarienalle.setSpacing(30);
 
-        Button tlisaysnappula = new Button("Lisää toimihenkilöitä");
+        Button tlisaysnappula = new Button("Muokkaa toimihenkilöitä");
         tlisaysnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -216,20 +250,12 @@ public class JoukkueNakyma {
             }
         });
 
-        Button tpoistonappula = new Button("Poista kaikki toimihenkilöt");
-        tpoistonappula.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+  
 
-                varmistaja.annaKaikkienToimarienPoistoVarmitus(joukkue);
+        toimarienalle.getChildren().addAll(tlisaysnappula);
 
-            }
-        });
-
-        toimarienalle.getChildren().addAll(tlisaysnappula, tpoistonappula);
-
-        osio3.getChildren().addAll(otsikko3, toimihenkilot, toimarienalle);
-        osio2.getChildren().addAll(otsikko2, pelaajat, pelaajienalle);
+        osio3.getChildren().addAll(otsikkorivi3, toimihenkilot, toimarienalle);
+        osio2.getChildren().addAll(otsikkorivi2, pelaajat, pelaajienalle);
         rivi3.getChildren().addAll(osio1);
         grid.add(rivi3, 0, 2);
 
@@ -257,10 +283,10 @@ public class JoukkueNakyma {
         ScrollPane sb = new ScrollPane();
         sb.setHbarPolicy(AS_NEEDED);
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(20, 10, 40, 10));
+        grid.setPadding(new Insets(20, 10, 40, 200));
 
         HBox rivi1 = new HBox();
-        rivi1.setPadding(new Insets(20, 10, 20, 80));
+        rivi1.setPadding(new Insets(20, 10, 20, 150));
         rivi1.setAlignment(Pos.TOP_RIGHT);
         rivi1.setSpacing(20);
 
@@ -283,7 +309,7 @@ public class JoukkueNakyma {
         VBox info = new VBox();
         info.setPadding(new Insets(10, 10, 40, 10));
 
-        Label nimi = new Label("Lisää pelaajia joukkueeseen " + joukkue.toString() + ":");
+        Label nimi = new Label("Muokkaa joukkueen " + joukkue.toString() + " pelaajia:");
         nimi.setFont(Font.font("Papyrus", 32));
 
         info.setAlignment(Pos.CENTER);
@@ -293,11 +319,30 @@ public class JoukkueNakyma {
         VBox osio2 = new VBox();
         osio2.setSpacing(20);
         osio2.setAlignment(Pos.CENTER);
+        
+         HBox otsikkorivi2 = new HBox();
+        otsikkorivi2.setSpacing(20);
+        
         Label otsikko2 = new Label("Pelaajat");
         otsikko2.setFont(Font.font("Papyrus", 18));
+                 Button pelaajanappula = new Button();
+                  pelaajanappula.setId("button-ohje");
+        pelaajanappula.setText("\u003F");
+        pelaajanappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus pelaajaopastus = new Opastus();
+                pelaajaopastus.annaOhjePelaajaLuetteloMuokkaus();
+
+            }
+        });
+        otsikkorivi2.getChildren().addAll(otsikko2, pelaajanappula);
+        
+        
+        
         Taulukko taulukontekija3 = new Taulukko(nakyma, varmistaja);
 
-        pelaajat = taulukontekija3.luoPelaajaTaulukko(joukkue);
+        pelaajat = taulukontekija3.luoPelaajaTaulukkoMuokattava(joukkue);
         pelaajat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         VBox alle = new VBox();
@@ -409,7 +454,7 @@ public class JoukkueNakyma {
 
         lisays.getChildren().addAll(vbox0, vbox1, vbox2, vbox3, vbox4);
         alle.getChildren().addAll(ohje, lisays);
-        osio2.getChildren().addAll(otsikko2, pelaajat, alle);
+        osio2.getChildren().addAll(otsikkorivi2, pelaajat, alle);
 
         HBox rivi4 = new HBox();
         rivi4.setSpacing(40);
@@ -425,13 +470,14 @@ public class JoukkueNakyma {
         ikkuna.annaNaytto().getChildren().add(sb);
 
     }
+    
 
     public void luoJoukkueenToimariLisays(Joukkue joukkue) {
 
         ScrollPane sb = new ScrollPane();
         sb.setHbarPolicy(AS_NEEDED);
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(20, 10, 40, 10));
+        grid.setPadding(new Insets(20, 10, 40, 150));
 
         HBox rivi1 = new HBox();
         rivi1.setPadding(new Insets(20, 10, 20, 80));
@@ -457,7 +503,7 @@ public class JoukkueNakyma {
         VBox info = new VBox();
         info.setPadding(new Insets(10, 10, 40, 10));
 
-        Label nimi = new Label("Lisää toimihenkilöitä joukkueeseen " + joukkue.toString() + ":");
+        Label nimi = new Label("Muokkaa joukkueen " + joukkue.toString() + " toimihenkilöitä:");
         nimi.setFont(Font.font("Papyrus", 32));
 
         info.setAlignment(Pos.CENTER);
@@ -467,11 +513,27 @@ public class JoukkueNakyma {
         VBox osio3 = new VBox();
         osio3.setSpacing(20);
 
+           HBox otsikkorivi3 = new HBox();
+        otsikkorivi3.setSpacing(20);
         Label otsikko3 = new Label("Toimihenkilöt");
         otsikko3.setFont(Font.font("Papyrus", 18));
 
+               Button toimarinappula = new Button();
+                toimarinappula.setId("button-ohje");
+        toimarinappula.setText("\u003F");
+        toimarinappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus toimariopastus = new Opastus();
+                toimariopastus.annaOhjeToimariLuetteloMuokkaus();
+
+            }
+        });
+        otsikkorivi3.getChildren().addAll(otsikko3, toimarinappula);
+        
+        
         Taulukko taulukontekija4 = new Taulukko(nakyma, varmistaja);
-        toimihenkilot = taulukontekija4.luoToimihenkiloTaulukko(joukkue);
+        toimihenkilot = taulukontekija4.luoToimihenkiloTaulukkoMuokattava(joukkue);
         toimihenkilot.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         VBox alle2 = new VBox();
@@ -651,5 +713,5 @@ public class JoukkueNakyma {
 
         return grid;
     }
-    
+
 }

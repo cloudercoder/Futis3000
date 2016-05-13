@@ -82,7 +82,7 @@ public class Pysyvat {
 
         VBox sivu = new VBox();
         sivu.setStyle("-fx-background-color: linear-gradient(to right, #00b300, 	 #33ff33);");
-        sivu.setPadding(new Insets(100, 10, 0, 10));
+        sivu.setPadding(new Insets(70, 5, 0, 5));
         sivu.setSpacing(10);
 
         //hakutoiminto HBox
@@ -97,7 +97,7 @@ public class Pysyvat {
         etusivu.setSpacing(10);
         etusivu.getChildren().addAll(etusivuteksti);
 
-        sivu.setPrefWidth(250);
+        sivu.setPrefWidth(180);
         sivu.getChildren().addAll(etusivu, spuu);
         sivu.setVgrow(spuu, Priority.ALWAYS);
 

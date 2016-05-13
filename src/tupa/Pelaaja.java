@@ -29,6 +29,8 @@ public class Pelaaja extends Henkilo {
         private transient StringProperty taulukkojoukkue = new SimpleStringProperty();
     private transient IntegerProperty taulukkosijoitus = new SimpleIntegerProperty();
     private transient StringProperty taulukkorooli = new SimpleStringProperty();
+        private transient StringProperty taulukkosukunimi = new SimpleStringProperty();
+    private transient StringProperty taulukkoetunimi = new SimpleStringProperty();
 
     private List<Kokoonpano> kokoonpanot = new ArrayList<>();
     private List<Maali> maalit = new ArrayList<>();
@@ -180,6 +182,25 @@ public class Pelaaja extends Henkilo {
     public void asetaTaulukkonimi() {
         this.taulukkonimi = new SimpleStringProperty(this.annaKokoNimi());
     }
+
+    public StringProperty taulukkoetunimiProperty() {
+        return taulukkoetunimi;
+    }
+
+    public void asetaTaulukkoetunimi() {
+        
+        this.taulukkoetunimi = new SimpleStringProperty(this.annaEtuNimi());
+    }
+    
+       public StringProperty taulukkosukunimiProperty() {
+        return taulukkosukunimi;
+    }
+
+    public void asetaTaulukkosukunimi() {
+        
+        this.taulukkosukunimi = new SimpleStringProperty(this.annaSukuNimi());
+    }
+    
     
     public StringProperty taulukkojoukkueProperty() {
         return taulukkojoukkue;

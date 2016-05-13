@@ -30,11 +30,11 @@ public class Kasittelija {
 
         String ohje = "";
         if (arvo == ikkuna.annaRootSarjat()) {
-            ohje = ("Valitse vasemmalta haluamasi sarja.");
+            ohje = ("Valitse vasemmalta haluamasi sarja tai lisää uusi.");
             nakyma.luoOhje(ohje, arvo);
 
         } else if (arvo == ikkuna.annaRootTuomarit()) {
-            ohje = ("Valitse vasemmalta haluamasi tuomari.");
+            ohje = ("Valitse vasemmalta haluamasi tuomari tai lisää uusi.");
             nakyma.luoOhje(ohje, arvo);
 
         } else if (arvo.getParent().getValue() instanceof Sarja) {

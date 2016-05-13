@@ -65,7 +65,7 @@ public class PuuSolu extends TreeCell<Kohde> {
         MenuItem item5 = new MenuItem("Poista");
         menu.getItems().add(item5);
 
-        Varmistus varmistaja = new Varmistus(ikkuna, ikkuna.annaPaaNakyma());
+        Varmistaja varmistaja = new Varmistaja(ikkuna, ikkuna.annaPaaNakyma());
         
         
           item5.setOnAction(new EventHandler<ActionEvent>() {
