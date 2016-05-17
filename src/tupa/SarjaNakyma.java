@@ -86,7 +86,7 @@ public class SarjaNakyma {
                     muuttaja.lisaaKohde(uusi);
                     nimi.clear();
                     ikkuna.asetaMuutos(true);
-                    tiedottaja.kirjoitaLoki("Uusi sarja lisätty");
+                
 
                     luoSarjanLisaysSivu();
                 }
@@ -339,10 +339,32 @@ public class SarjaNakyma {
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(20, 10, 40, 10));
 
+           VBox rivi1 = new VBox();
+
+        Button paluunappula = new Button("<< Palaa sarjasivulle");
+        paluunappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                
+                TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+                luoSarjaSivu(mihin);
+
+            }
+        });
+
+        HBox painikkeet = new HBox();
+        painikkeet.setPadding(new Insets(20));
+        painikkeet.setSpacing(20);
+        painikkeet.setAlignment(Pos.TOP_LEFT);
+        painikkeet.getChildren().addAll(paluunappula);
+        rivi1.getChildren().addAll(painikkeet);
+        grid.add(rivi1, 0, 0);
+
+        
         VBox rivi2 = new VBox();
         rivi2.setPadding(new Insets(20));
         rivi2.setAlignment(Pos.CENTER);
-        Label nimi = new Label("Muokkaa sarjan " + sarja.toString() + "otteluita:");
+        Label nimi = new Label("Muokkaa sarjan " + sarja.toString() + " otteluita:");
         nimi.setFont(Font.font("Papyrus", 32));
 
         rivi2.getChildren().addAll(nimi);
@@ -398,8 +420,15 @@ public class SarjaNakyma {
         autonappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                varmistaja.annaAutoVarmistus(sarja);
+                if(sarja.annaOttelut().size() != 0){
+                     varmistaja.annaAutoVarmistus(sarja);
+                }
+               
+                else{
+                      muuttaja.suoritaAutoOtteluLista(sarja);
+                      luoOtteluLuetteloMuokkaus(sarja);
+                }
+                  
 
             }
         });
@@ -462,7 +491,7 @@ public class SarjaNakyma {
         HBox painikkeet = new HBox();
         painikkeet.setPadding(new Insets(20));
         painikkeet.setSpacing(20);
-        painikkeet.setAlignment(Pos.TOP_RIGHT);
+        painikkeet.setAlignment(Pos.TOP_LEFT);
         painikkeet.getChildren().addAll(paluunappula);
         rivi1.getChildren().addAll(painikkeet);
 
@@ -707,9 +736,9 @@ public class SarjaNakyma {
 
                 if (ok) {
                     muuttaja.lisaaOttelu(koti.getValue(), vieras.getValue(), ajankohta.getValue(), kellotunnit.getValue(), kellominuutit.getValue(), paikka.getText(), erotuomari.getValue(), avustava1.getValue(), avustava2.getValue(), sarja);
+                   tiedottaja.kirjoitaLoki("Otteluluetteloa muokattu.");
                     ikkuna.asetaMuutos(true);
-                    TreeItem<Kohde> sarjak = new TreeItem<>((Kohde) sarja);
-                    luoSarjaSivu(sarjak);
+                    luoOttelunLisaysSivu(sarja);
                 }
 
             }
@@ -753,19 +782,6 @@ public class SarjaNakyma {
 
         VBox rivi1 = new VBox();
         rivi1.setAlignment(Pos.CENTER);
-
-        Button tallennus = new Button();
-
-        tallennus.setText("Tallenna");
-        tallennus.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-
-                TreeItem<Kohde> mihin = new TreeItem<>(sarja);
-
-                luoSarjaSivu(mihin);
-            }
-        });
 
  
 
@@ -840,7 +856,7 @@ public class SarjaNakyma {
                     muuttaja.lisaaJoukkue(lisaaJoukkue.getText(), sarja);
 
                     lisaaJoukkue.clear();
-
+tiedottaja.kirjoitaLoki("Joukkueluetteloa muokattu.");
                     luoJoukkueenLisaysSivu(sarja);
                 }
             }
@@ -849,11 +865,9 @@ public class SarjaNakyma {
         painikeboksi2.getChildren().addAll(lisaaJoukkue, lisaysnappula2);
         alle2.getChildren().addAll(painikeboksi2);
 
-        HBox loppupainikkeet = new HBox();
-        loppupainikkeet.setSpacing(20);
-        loppupainikkeet.getChildren().addAll(tallennus);
 
-        osio2.getChildren().addAll(otsikkorivi2, joukkueet, alle2, loppupainikkeet);
+
+        osio2.getChildren().addAll(otsikkorivi2, joukkueet, alle2);
 
         HBox rivi6 = new HBox();
         rivi6.setPadding(new Insets(0));

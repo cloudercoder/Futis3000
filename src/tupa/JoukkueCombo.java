@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tupa;
 
 import java.util.ArrayList;
@@ -17,7 +12,7 @@ import javafx.scene.control.TableCell;
 
 /**
  *
- * @author Omistaja
+ * @author Marianne
  */
 public class JoukkueCombo extends TableCell<Ottelu, Joukkue>{
  private ComboBox<Joukkue> comboBox;
@@ -89,11 +84,7 @@ private Sarja sarja;
         
         comboBox.setValue(getItem());
         comboBox.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-//        comboBox.setOnAction((e) -> {
-//            System.out.println("Committed: " + comboBox.getSelectionModel().getSelectedItem());
-//            commitEdit(comboBox.getSelectionModel().getSelectedItem());
-//        });
-         
+
         comboBox.focusedProperty().addListener(new ChangeListener<Boolean>(){
                 @Override
                 public void changed(ObservableValue<? extends Boolean> arg0, 
@@ -106,7 +97,7 @@ private Sarja sarja;
     }
     
     private void comboBoxConverter(ComboBox<Joukkue> comboBox) {
-        // Define rendering of the list of values in ComboBox drop down. 
+    
         comboBox.setCellFactory((c) -> {
             return new ListCell<Joukkue>() {
                 @Override

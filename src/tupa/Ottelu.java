@@ -63,9 +63,7 @@ public class Ottelu implements Serializable {
     private transient ObjectProperty<Joukkue> taulukkovierasjoukkue = new SimpleObjectProperty();
 
     Ottelu() {
-        laskuri++;
-        id = laskuri;
-        otteluNumero = 88 + laskuri;
+    
     }
 
     Ottelu(Sarja sarja) {
@@ -86,6 +84,7 @@ public class Ottelu implements Serializable {
     }
 
     public String toString() {
+           this.nimi = (this.kotijoukkue.toString() + " - " + this.vierasjoukkue.toString());
         return nimi;
     }
 
@@ -129,6 +128,16 @@ public class Ottelu implements Serializable {
         asetaTaulukkokello();
     }
 
+    public void asetaKotimaalit(int kotimaalit){
+        this.kotimaalit = kotimaalit;
+        
+    }
+    
+     public void asetaVierasmaalit(int vierasmaalit){
+        this.vierasmaalit = vierasmaalit;
+        
+    }
+    
     public void asetaTulos(int koti, int vieras) {
         kotimaalit = koti;
         vierasmaalit = vieras;
@@ -164,9 +173,9 @@ public class Ottelu implements Serializable {
         this.vierasjoukkue = vieras;
         kotijoukkue.annaOttelut().add(this);
         vierasjoukkue.annaOttelut().add(this);
-        this.nimi = (koti.toString() + " - " + vieras.toString());
-        koti_kokoonpano = new Kokoonpano(this, koti);
-        vieras_kokoonpano = new Kokoonpano(this, vieras);
+        this.nimi = (this.kotijoukkue.toString() + " - " + this.vierasjoukkue.toString());
+        koti_kokoonpano = new Kokoonpano(this, this.kotijoukkue);
+        vieras_kokoonpano = new Kokoonpano(this, this.vierasjoukkue);
     }
 
     public Joukkue annaKotijoukkue() {

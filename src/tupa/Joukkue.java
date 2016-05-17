@@ -26,6 +26,8 @@ public class Joukkue extends Kohde {
     private transient IntegerProperty taulukkosijoitus = new SimpleIntegerProperty();
     private transient StringProperty taulukkomaalisuhde = new SimpleStringProperty();
 
+    
+    
     private Sarja sarja;
     private List<Ottelu> ottelut = new ArrayList<Ottelu>();
     private List<Toimihenkilo> toimarit = new ArrayList<Toimihenkilo>();

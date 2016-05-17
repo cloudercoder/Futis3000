@@ -29,8 +29,7 @@ public class Tallennus {
     public void suoritaTallennus() {
         ObjectOutputStream ulos = null;
         kohdetk = ikkuna.annaKohteet();
-    
- 
+
         
         try {
             ulos = new ObjectOutputStream(new FileOutputStream(tallennusTiedosto));

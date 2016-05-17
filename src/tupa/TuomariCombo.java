@@ -59,7 +59,7 @@ private Sarja sarja;
             setGraphic(comboBox);
         } else if(item != null) {
             //näytetään voimassa oleva arvo
-            setText("eee2");
+            setText(getTyp().toString());
             setGraphic(null);
         }
     }
@@ -83,10 +83,7 @@ private Sarja sarja;
          System.out.println(getTyp());
         comboBox.setValue(getItem());
         comboBox.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-//        comboBox.setOnAction((e) -> {
-//            System.out.println("Committed: " + comboBox.getSelectionModel().getSelectedItem());
-//            commitEdit(comboBox.getSelectionModel().getSelectedItem());
-//        });
+
          
         comboBox.focusedProperty().addListener(new ChangeListener<Boolean>(){
                 @Override
@@ -100,7 +97,7 @@ private Sarja sarja;
     }
     
     private void comboBoxConverter(ComboBox<Tuomari> comboBox) {
-        // Define rendering of the list of values in ComboBox drop down. 
+        
         comboBox.setCellFactory((c) -> {
             return new ListCell<Tuomari>() {
                 @Override

@@ -21,15 +21,14 @@ import javafx.scene.text.Font;
  * @author Marianne
  */
 public class TuomariNakyma {
-    
-        private Tupa ikkuna;
+
+    private Tupa ikkuna;
     private Muuttaja muuttaja;
     //uusien kohtien lisäystä varten
     private TextField nimi = new TextField();
 
     private TextField etunimi = new TextField();
     private TextField sukunimi = new TextField();
-
 
     private Label pakollinen = new Label("*");
     private Label pakollinen2 = new Label("*");
@@ -43,7 +42,7 @@ public class TuomariNakyma {
     private TableView ottelut;
 
     private PaaNakyma nakyma;
-    
+
     TuomariNakyma() {
 
     }
@@ -60,7 +59,7 @@ public class TuomariNakyma {
         pakollinen4.setId("label-pakko");
 
     }
-    
+
     public void luoTuomarinLisaysSivu() {
 
         Button lisaysnappula = new Button("Tallenna");
@@ -101,12 +100,15 @@ public class TuomariNakyma {
                 if (ok) {
 
                     Kohde uusi = new Tuomari(etunimi.getText(), sukunimi.getText());
+                    Turnaus turnaus = (Turnaus) ikkuna.annaTurnaus();
 
+                    turnaus.annaTuomarit().add((Tuomari) uusi);
                     muuttaja.lisaaKohde(uusi);
-                     etunimi.clear();
-                   sukunimi.clear();
-                      ikkuna.asetaMuutos(true);
-                    tiedottaja.kirjoitaLoki("Uusi tuomari lisätty");
+                    etunimi.clear();
+                    sukunimi.clear();
+                    ikkuna.asetaMuutos(true);
+                    luoTuomarinLisaysSivu();
+
                 }
 
             }
@@ -140,10 +142,10 @@ public class TuomariNakyma {
         hbox2.setSpacing(10);
         hbox2.getChildren().addAll(pakollinen_kentta2, sukunimi);
 
-             HBox hbox3 = new HBox();
+        HBox hbox3 = new HBox();
         hbox3.setSpacing(10);
-          hbox3.getChildren().addAll(lisaysnappula, peruuta);
-        
+        hbox3.getChildren().addAll(lisaysnappula, peruuta);
+
         vbox.getChildren().addAll(hbox1, hbox2, hbox3);
 
         GridPane grid = new GridPane();
@@ -156,7 +158,7 @@ public class TuomariNakyma {
         grid.add(otsikko, 1, 5);
         grid.add(vbox, 1, 7);
 
-     VBox peitto = new VBox();
+        VBox peitto = new VBox();
         peitto.setStyle("-fx-background-color: white;");
         ikkuna.annaNaytto().getChildren().add(peitto);
         ikkuna.annaNaytto().getChildren().add(grid);
@@ -168,8 +170,8 @@ public class TuomariNakyma {
         Tuomari tuomari = (Tuomari) arvo.getValue();
 
         GridPane grid = new GridPane();
- 
-
+        System.out.println("Tuomari: " + tuomari.toString());
+        System.out.println("Tuomarin turnaus: " + tuomari.annaTurnaus());
         //riville 1
         HBox painike = new HBox();
         painike.setSpacing(20);
@@ -180,8 +182,7 @@ public class TuomariNakyma {
             @Override
             public void handle(ActionEvent e) {
 
-
-             luoTuomariMuokkaus(tuomari);
+                luoTuomariMuokkaus(tuomari);
 
             }
         });
@@ -196,23 +197,22 @@ public class TuomariNakyma {
         });
 
         painike.setPadding(new Insets(20, 20, 40, 80));
-      
+
         painike.getChildren().addAll(muokkausnappula, poistonappula);
-       
 
         //riville 2
         HBox rivi2 = new HBox();
-    rivi2.setAlignment(Pos.CENTER);
-      rivi2.setPadding(new Insets(40,40,40,240));  
-    VBox info = new VBox();
-      
+        rivi2.setAlignment(Pos.CENTER);
+        rivi2.setPadding(new Insets(40, 40, 40, 240));
+        VBox info = new VBox();
+
         Label nimi = new Label(tuomari.toString());
         nimi.setFont(Font.font("Papyrus", 28));
         Label id = new Label("TuomariID: " + tuomari.annaJulkinenId());
         id.setFont(Font.font("Papyrus", 14));
         info.setAlignment(Pos.CENTER);
         info.getChildren().addAll(nimi, id);
-        
+
         rivi2.getChildren().addAll(info, painike);
 
         grid.add(rivi2, 0, 1);
@@ -225,12 +225,12 @@ public class TuomariNakyma {
         //riville 3
         VBox osio1 = new VBox();
         osio1.setSpacing(20);
-osio1.setPadding(new Insets(20)); 
+        osio1.setPadding(new Insets(20));
         osio1.setAlignment(Pos.CENTER);
         Label otsikko1 = new Label("Ottelut:");
         otsikko1.setFont(Font.font("Papyrus", 18));
         osio1.getChildren().addAll(otsikko1, ottelut);
-grid.setPadding(new Insets(20));
+        grid.setPadding(new Insets(20));
         grid.add(osio1, 0, 2);
         sb.setContent(grid);
         VBox peitto = new VBox();
@@ -354,11 +354,9 @@ grid.setPadding(new Insets(20));
 
         grid.add(vbox, 1, 7);
 
-            VBox peitto = new VBox();
+        VBox peitto = new VBox();
         peitto.setStyle("-fx-background-color: white;");
         ikkuna.annaNaytto().getChildren().add(peitto);
         ikkuna.annaNaytto().getChildren().add(grid);
     }
 }
-
-

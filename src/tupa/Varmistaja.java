@@ -191,7 +191,7 @@ public class Varmistaja {
                 TreeItem<Kohde> parentTuomarit = ikkuna.annaRootTuomarit();
                 parentSarjat.getChildren().clear();
                 parentTuomarit.getChildren().clear();
-
+                ikkuna.annaPaaNakyma().luoEtusivu();
                 stageV.close();
             }
         });
@@ -214,7 +214,7 @@ public class Varmistaja {
                 TreeItem<Kohde> parentTuomarit = ikkuna.annaRootTuomarit();
                 parentSarjat.getChildren().clear();
                 parentTuomarit.getChildren().clear();
-
+ ikkuna.annaPaaNakyma().luoEtusivu();
                 stageV.close();
             }
         });
@@ -309,7 +309,7 @@ public class Varmistaja {
 
                     }
                 }
-
+ ikkuna.annaPaaNakyma().luoEtusivu();
                 stageV.close();
             }
         });
@@ -370,7 +370,7 @@ public class Varmistaja {
 
                     }
                 }
-
+ ikkuna.annaPaaNakyma().luoEtusivu();
                 stageV.close();
             }
         });
@@ -394,6 +394,8 @@ public class Varmistaja {
     }
 
     public void annaOtteluPoistoVarmistus(Ottelu ottelu) {
+        
+        Sarja sarja = ottelu.annaSarja();
         Stage stageV = new Stage();
         BorderPane alue = new BorderPane();
 
@@ -419,7 +421,8 @@ public class Varmistaja {
             public void handle(ActionEvent event) {
 
                 muuttaja.poistaOttelu(ottelu);
-
+                sarjanakyma = nakyma.annaSarjanakyma();
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
                 stageV.close();
 
             }
@@ -470,9 +473,7 @@ public class Varmistaja {
 
                 List<Ottelu> poistettavat = (sarja.annaOttelut());
 
-                for (int i = 0; i < poistettavat.size(); i++) {
-                    System.out.println(poistettavat.get(i));
-                }
+         
 
                 muuttaja.poistaKaikkiOttelut(poistettavat, sarja);
                 sarjanakyma = nakyma.annaSarjanakyma();
@@ -529,9 +530,9 @@ public class Varmistaja {
 
                 muuttaja.suoritaAutoOtteluLista(sarja);
                 sarjanakyma = nakyma.annaSarjanakyma();
-                TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+             
 
-                sarjanakyma.luoSarjaSivu(mihin);
+                sarjanakyma.luoOtteluLuetteloMuokkaus(sarja);
                 stageV.close();
 
             }

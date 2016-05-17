@@ -2,13 +2,12 @@ package tupa;
 
 import java.util.ArrayList;
 import java.util.List;
-import javafx.event.EventHandler;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.scene.layout.HBox;
+
+/**
+ *
+ * @author Marianne
+ */
 
 public class PuuTehdas {
 

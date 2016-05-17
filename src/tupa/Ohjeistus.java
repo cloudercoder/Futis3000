@@ -19,9 +19,9 @@ import javafx.stage.Stage;
  *
  * @author Marianne
  */
-public class Ohje{ 
+public class Ohjeistus{ 
         
-        Ohje(){
+        Ohjeistus(){
             
         }
         

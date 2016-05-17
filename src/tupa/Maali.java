@@ -24,6 +24,7 @@ public class Maali implements Serializable {
     private transient IntegerProperty taulukkoaika = new SimpleIntegerProperty();
     private transient StringProperty taulukkomaalintekija = new SimpleStringProperty();
      private transient StringProperty taulukkosyottaja = new SimpleStringProperty();
+          private transient StringProperty taulukkojoukkue = new SimpleStringProperty();
     
     Maali(){
         laskuri++;
@@ -95,6 +96,7 @@ public class Maali implements Serializable {
     }
 
     public void asetaTaulukkomaalintekija() {
+        
         this.taulukkomaalintekija = new SimpleStringProperty(this.annaMaalinTekija().toString());
     }
     
@@ -105,6 +107,21 @@ public class Maali implements Serializable {
     public void asetaTaulukkosyottaja() {
         this.taulukkosyottaja = new SimpleStringProperty(this.annaSyottaja().toString());
     }
+    
+    public StringProperty taulukkojoukkueProperty() {
+        return taulukkojoukkue;
+    }
+
+    public void asetaTaulukkojoukkue() {
+        if(annaMaalinTekija().equals("Oma maali")){
+            this.taulukkojoukkue = new SimpleStringProperty("-");
+        }
+        else{
+            this.taulukkojoukkue = new SimpleStringProperty(this.annaMaalinTekija().annaJoukkue().toString());
+        }
+        
+    }
+    
     
     
     public IntegerProperty taulukkoaikaProperty() {

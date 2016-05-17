@@ -125,4 +125,29 @@ public class Opastus {
 
     }
 
+      public void annaOhjeMaalitilasto() {
+
+        String msg = "Ottelun maalintekijäksi/syöttäjäksi voi merkitä vain sellaisen pelaajan, joka on merkitty ottelun kokoonpanoon.";
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("TUPA - TULOSPALVELU");
+        alert.setHeaderText("MAALITILASTON MUOKKAUS");
+        alert.setContentText(msg);
+
+        alert.showAndWait();
+
+    }
+      
+      
+      public void annaOhjeKokoonpano() {
+
+        String msg = "Ottelun kokoonpanoluettelossa on vain ne pelaajat, jotka on lisätty joukkueen pelaajaluetteloon.";
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("TUPA - TULOSPALVELU");
+        alert.setHeaderText("OTTELUN KOKOONPANOLUETTELO");
+        alert.setContentText(msg);
+
+        alert.showAndWait();
+
+    }
+    
 }

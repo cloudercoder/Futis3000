@@ -1821,8 +1821,8 @@
 #ei-klikattava .table-column {
   -fx-alignment: CENTER;
 
-   -fx-border-color: transparent;
-   -fx-border-width: 0px;
+
+ 
 
 }
 
@@ -1844,8 +1844,7 @@
 #ei-klikattava2 .table-column {
   -fx-alignment: CENTER;
 
-   -fx-border-color: transparent;
-   -fx-border-width: 0px;
+
 
 }
 

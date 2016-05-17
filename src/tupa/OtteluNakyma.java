@@ -1,7 +1,5 @@
 package tupa;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
@@ -14,7 +12,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import static javafx.scene.control.ScrollPane.ScrollBarPolicy.AS_NEEDED;
@@ -26,14 +23,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.util.StringConverter;
 
 /**
  *
  * @author Marianne
  */
 public class OtteluNakyma {
-         private Tupa ikkuna;
+
+    private Tupa ikkuna;
     private Muuttaja muuttaja;
     //uusien kohtien lisäystä varten
     private TextField nimi = new TextField();
@@ -66,7 +63,7 @@ public class OtteluNakyma {
 
     private PaaNakyma nakyma;
     private SarjaNakyma sarjanakyma;
-    
+
     OtteluNakyma() {
 
     }
@@ -84,7 +81,8 @@ public class OtteluNakyma {
         pakollinen4.setId("label-pakko");
 
     }
-public void luoOttelusivu(Ottelu ottelu) {
+
+    public void luoOttelusivu(Ottelu ottelu) {
         ScrollPane sb = new ScrollPane();
         sb.setHbarPolicy(AS_NEEDED);
         GridPane grid = new GridPane();
@@ -92,30 +90,9 @@ public void luoOttelusivu(Ottelu ottelu) {
 
         VBox rivi1 = new VBox();
         rivi1.setAlignment(Pos.CENTER);
+       
 
-        Button muokkausnappula = new Button();
-
-        muokkausnappula.setText("Muokkaa ottelun tietoja");
-        muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-
-                luoOtteluMuokkaus(ottelu, ottelu.annaSarja());
-
-            }
-        });
-
-        Button poistonappula = new Button("Poista ottelu");
-        poistonappula.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                varmistaja.annaOtteluPoistoVarmistus(ottelu);
-
-            }
-        });
-
-        Button paluunappula = new Button("<< Palaa takaisin");
+        Button paluunappula = new Button("<< Palaa sarjasivulle");
         paluunappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -129,14 +106,23 @@ public void luoOttelusivu(Ottelu ottelu) {
         maalinappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                luoOttelunMaalisivu(ottelu);
+                if (ottelu.annaTulos().equals("-")) {
+                    tiedottaja.annaVaroitus("Maalitilastoa voi muokata vasta, kun ottelun tulos on syötetty.");
+                } else {
+                    luoOttelunMaalisivu(ottelu);
+                }
 
             }
 
         });
+        Button tulosnappula = new Button();
+        if (ottelu.annaTulos().equals("-")) {
 
-        Button tulosnappula = new Button("Muokkaa tulosta");
+            tulosnappula.setText("Lisää tulos");
+        } else {
+            tulosnappula.setText("Muokkaa tulosta");
+        }
+
         tulosnappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -147,10 +133,10 @@ public void luoOttelusivu(Ottelu ottelu) {
         });
 
         HBox painikkeet = new HBox();
-        painikkeet.setPadding(new Insets(20));
+        painikkeet.setPadding(new Insets(30));
         painikkeet.setSpacing(20);
-        painikkeet.setAlignment(Pos.TOP_RIGHT);
-        painikkeet.getChildren().addAll(paluunappula, poistonappula);
+        painikkeet.setAlignment(Pos.TOP_LEFT);
+        painikkeet.getChildren().addAll(paluunappula);
         rivi1.getChildren().addAll(painikkeet);
 
         VBox rivi2 = new VBox();
@@ -165,13 +151,13 @@ public void luoOttelusivu(Ottelu ottelu) {
         grid.add(rivi2, 0, 1);
 
         VBox rivi3 = new VBox();
-        rivi3.setPadding(new Insets(20));
+        rivi3.setPadding(new Insets(10));
         rivi3.setSpacing(20);
 
         HBox painikkeet2 = new HBox();
         painikkeet2.setPadding(new Insets(20, 0, 0, 0));
         painikkeet2.setSpacing(40);
-        painikkeet2.getChildren().addAll(muokkausnappula, tulosnappula);
+        painikkeet2.getChildren().addAll(tulosnappula);
 
         Taulukko taulukontekija1 = new Taulukko(nakyma, varmistaja);
 
@@ -181,12 +167,12 @@ public void luoOttelusivu(Ottelu ottelu) {
         rivi3.getChildren().addAll(ottelutaulu, painikkeet2);
 
         HBox oikearivi3 = new HBox();
-        oikearivi3.setPadding(new Insets(40));
+        oikearivi3.setPadding(new Insets(20));
         oikearivi3.setSpacing(40);
 
-        HBox rivi4 = new HBox();
-        rivi4.setPadding(new Insets(40));
-        rivi4.setSpacing(60);
+        HBox rivi5 = new HBox();
+        rivi5.setPadding(new Insets(60));
+        rivi5.setSpacing(60);
 
         Taulukko taulukontekija2 = new Taulukko(nakyma, varmistaja);
         Taulukko taulukontekija3 = new Taulukko(nakyma, varmistaja);
@@ -200,53 +186,83 @@ public void luoOttelusivu(Ottelu ottelu) {
         VBox kotiosio = new VBox();
         kotiosio.setPadding(new Insets(0, 0, 0, 40));
 
+        HBox koko_otsake_koti = new HBox();
+         koko_otsake_koti.setPadding(new Insets(0, 0, 0, 20));
+        koko_otsake_koti.setSpacing(20);
+
+        Button otsikkonappula = new Button();
+        otsikkonappula.setId("button-ohje");
+        otsikkonappula.setText("\u003F");
+        otsikkonappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus otteluopastus = new Opastus();
+                otteluopastus.annaOhjeKokoonpano();
+
+            }
+        });
+
         Label kotiotsikko = new Label(ottelu.annaKotijoukkue().toString() + ":n kokoonpano:");
         kotiotsikko.setFont(Font.font("Papyrus", 18));
-        kotiosio.getChildren().addAll(kotiotsikko, kotikokoonpano);
+
+        koko_otsake_koti.getChildren().addAll(kotiotsikko, otsikkonappula);
+        kotiosio.getChildren().addAll(koko_otsake_koti, kotikokoonpano);
 
         //mahdollinen vain kotijoukkeen henkilölle
-        if (ottelu.annaTulos().equals("-")) {
+        HBox kotialle = new HBox();
+        kotialle.setPadding(new Insets(20));
+        Button lisayskoti = new Button("Muokkaa kokoonpanoa");
+        lisayskoti.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
 
-            HBox kotialle = new HBox();
-            kotialle.setPadding(new Insets(20));
-            Button lisayskoti = new Button("Muokkaa kokoonpanoa");
-            lisayskoti.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e) {
-
-                    Joukkue koti = ottelu.annaKotijoukkue();
-                    luoKokoonpanosivu(ottelu, koti);
-                }
-            });
-            kotialle.getChildren().add(lisayskoti);
-            kotiosio.getChildren().add(kotialle);
-        }
+                Joukkue koti = ottelu.annaKotijoukkue();
+                luoKokoonpanosivu(ottelu, koti);
+            }
+        });
+        kotialle.getChildren().add(lisayskoti);
+        kotiosio.getChildren().add(kotialle);
 
         VBox vierasosio = new VBox();
         vierasosio.setPadding(new Insets(0, 0, 0, 40));
+
+        HBox koko_otsake_vieras = new HBox();
+        koko_otsake_vieras.setSpacing(20);
+  koko_otsake_vieras.setPadding(new Insets(0, 0, 0, 20));
+        Button otsikkonappula2 = new Button();
+        otsikkonappula2.setId("button-ohje");
+        otsikkonappula2.setText("\u003F");
+        otsikkonappula2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus otteluopastus = new Opastus();
+                otteluopastus.annaOhjeKokoonpano();
+
+            }
+        });
+
         Label vierasotsikko = new Label(ottelu.annaVierasjoukkue().toString() + ":n kokoonpano:");
         vierasotsikko.setFont(Font.font("Papyrus", 18));
+        koko_otsake_vieras.getChildren().addAll(vierasotsikko, otsikkonappula2);
+        vierasosio.getChildren().addAll(koko_otsake_vieras, vieraskokoonpano);
 
-        vierasosio.getChildren().addAll(vierasotsikko, vieraskokoonpano);
-
-        rivi4.getChildren().addAll(kotiosio, vierasosio);
+        rivi5.getChildren().addAll(kotiosio, vierasosio);
         //mahdollinen vain vierasjoukkeen henkilölle
-        if (ottelu.annaTulos().equals("-")) {
 
-            HBox vierasalle = new HBox();
-            vierasalle.setPadding(new Insets(0, 0, 0, 40));
-            Button lisaysvieras = new Button("Muokkaa kokoonpanoa");
-            lisaysvieras.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e) {
+        HBox vierasalle = new HBox();
+        vierasalle.setPadding(new Insets(20));
+        Button lisaysvieras = new Button("Muokkaa kokoonpanoa");
+        lisaysvieras.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
 
-                    Joukkue vieras = ottelu.annaVierasjoukkue();
-                    luoKokoonpanosivu(ottelu, vieras);
-                }
-            });
-            vierasalle.getChildren().add(lisaysvieras);
-            vierasosio.getChildren().add(vierasalle);
-        }
+                Joukkue vieras = ottelu.annaVierasjoukkue();
+                luoKokoonpanosivu(ottelu, vieras);
+            }
+        });
+        vierasalle.getChildren().add(lisaysvieras);
+        vierasosio.getChildren().add(vierasalle);
+
         VBox maaliosio = new VBox();
 
         Label maaliotsikko = new Label("Maalit: ");
@@ -258,10 +274,16 @@ public void luoOttelusivu(Ottelu ottelu) {
         // kenelle oikeudet?!?
         maaliosio.getChildren().addAll(maaliotsikko, maalit, painikkeet3);
 
-        oikearivi3.getChildren().addAll(rivi3, maaliosio);
+        HBox rivi4 = new HBox();
+        rivi4.setPadding(new Insets(30));
+
+        rivi4.getChildren().addAll(maaliosio);
+
+        oikearivi3.getChildren().addAll(rivi3);
 
         grid.add(oikearivi3, 0, 2);
         grid.add(rivi4, 0, 3);
+        grid.add(rivi5, 0, 4);
 
         sb.setContent(grid);
         VBox peitto = new VBox();
@@ -269,594 +291,19 @@ public void luoOttelusivu(Ottelu ottelu) {
         ikkuna.annaNaytto().getChildren().add(peitto);
         ikkuna.annaNaytto().getChildren().add(sb);
 
-    }
-
-    public void luoOtteluMuokkaus(Ottelu ottelu, Sarja sarja) {
-        ScrollPane sb = new ScrollPane();
-        sb.setHbarPolicy(AS_NEEDED);
-        GridPane grid = new GridPane();
-
-        VBox ohjekierros = new VBox();
-        Label ohjeki = new Label("Kierros");
-
-        ComboBox<Integer> kierros = new ComboBox();
-        List<Integer> kierroslista = new ArrayList();
-
-        for (int i = 0; i < 99; i++) {
-            kierroslista.add(i);
-        }
-
-        ObservableList kierrokset = FXCollections.observableList(kierroslista);
-        kierros.setItems(kierrokset);
-        kierros.setValue(ottelu.annaKierros());
-        ohjekierros.getChildren().addAll(ohjeki, kierros);
-        ohjekierros.setPadding(new Insets(20, 0, 0, 0));
-        //jos ei vielä pelattu, niin tietoja voi muokata
-        ComboBox<Joukkue> koti = new ComboBox();
-        List<Joukkue> kotijoukkuelista = new ArrayList();
-
-        for (int i = 0; i < sarja.annaJoukkueet().size(); i++) {
-            kotijoukkuelista.add(sarja.annaJoukkueet().get(i));
-        }
-
-        ObservableList joukkueet1 = FXCollections.observableList(kotijoukkuelista);
-        koti.setItems(joukkueet1);
-        koti.setValue(ottelu.annaKotijoukkue());
-        ComboBox<Joukkue> vieras = new ComboBox();
-        List<Joukkue> vierasjoukkuelista = new ArrayList();
-
-        for (int i = 0; i < sarja.annaJoukkueet().size(); i++) {
-            vierasjoukkuelista.add(sarja.annaJoukkueet().get(i));
-        }
-
-        ObservableList joukkueet2 = FXCollections.observableList(vierasjoukkuelista);
-        vieras.setItems(joukkueet2);
-
-        vieras.setValue(ottelu.annaVierasjoukkue());
-
-        DatePicker ajankohta = new DatePicker();
-        String pattern = "dd.MM.yyyy";
-
-        StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
-
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        };
-
-        ajankohta.setConverter(converter);
-        ajankohta.setValue(ottelu.annaKalenteriAika());
-
-        ComboBox<String> kellotunnit = new ComboBox();
-        List<String> tuntilista = new ArrayList();
-
-        for (int i = 0; i < 24; i++) {
-            tuntilista.add("" + i);
-        }
-
-        ObservableList tunnit = FXCollections.observableList(tuntilista);
-        kellotunnit.setItems(tunnit);
-        kellotunnit.setValue(ottelu.annaKellotunnit());
-
-        ComboBox<String> kellominuutit = new ComboBox();
-        List<String> minuuttilista = new ArrayList();
-
-        for (int i = 0; i < 10; i++) {
-            minuuttilista.add("0" + i);
-        }
-
-        for (int i = 10; i < 60; i++) {
-            minuuttilista.add("" + i);
-        }
-
-        ObservableList minuutit = FXCollections.observableList(minuuttilista);
-        kellominuutit.setItems(minuutit);
-        kellominuutit.setValue(ottelu.annaKellominuutit());
-
-        TextField paikka = new TextField();
-        paikka.setText(ottelu.annaPaikka());
-
-        TextField tulos = new TextField();
-        tulos.setText(ottelu.annaTulos());
-
-        List<Tuomari> tuomarilista1 = new ArrayList<Tuomari>();
-
-        for (int i = 0; i < sarja.annaTurnaus().annaTuomarit().size(); i++) {
-            tuomarilista1.add(sarja.annaTurnaus().annaTuomarit().get(i));
-
-        }
-
-        List<Tuomari> tuomarilista2 = new ArrayList<Tuomari>();
-
-        for (int i = 0; i < sarja.annaTurnaus().annaTuomarit().size(); i++) {
-            tuomarilista2.add(sarja.annaTurnaus().annaTuomarit().get(i));
-        }
-
-        List<Tuomari> tuomarilista3 = new ArrayList<Tuomari>();
-
-        for (int i = 0; i < sarja.annaTurnaus().annaTuomarit().size(); i++) {
-            tuomarilista3.add(sarja.annaTurnaus().annaTuomarit().get(i));
-        }
-
-        ObservableList erotuomarit = FXCollections.observableList(tuomarilista1);
-        ObservableList avustavat1 = FXCollections.observableList(tuomarilista2);
-        ObservableList avustavat2 = FXCollections.observableList(tuomarilista3);
-
-        ComboBox<Tuomari> erotuomari = new ComboBox();
-        erotuomari.setItems(erotuomarit);
-
-        ComboBox<Tuomari> avustava1 = new ComboBox();
-        avustava1.setItems(avustavat1);
-
-        ComboBox<Tuomari> avustava2 = new ComboBox();
-        avustava2.setItems(avustavat2);
-
-        for (int i = 0; i < ottelu.annaRoolit().size(); i++) {
-            if (ottelu.annaRoolit().get(i).annaRooli().equals("1. Avustava erotuomari")) {
-                avustava1.setValue(ottelu.annaRoolit().get(i).annaTuomari());
-            } else if (ottelu.annaRoolit().get(i).annaRooli().equals("2. Avustava erotuomari")) {
-                avustava2.setValue(ottelu.annaRoolit().get(i).annaTuomari());
-            } else if (ottelu.annaRoolit().get(i).annaRooli().equals("Erotuomari")) {
-                erotuomari.setValue(ottelu.annaRoolit().get(i).annaTuomari());
-            }
-
-        }
-
-        Button muokkausnappula = new Button("Tallenna");
-        muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                boolean ok = true;
-                //TARKISTUKSET!!
-                if (koti.getValue() == null || vieras.getValue() == null) {
-                    tiedottaja.annaVaroitus("Valitse sekä koti- että vierasjoukkue.");
-                    ok = false;
-                }
-                if (koti.getValue() == vieras.getValue()) {
-                    tiedottaja.annaVaroitus("Koti- ja vierasjoukkue eivät voi olla samoja.");
-                    ok = false;
-                }
-                if (erotuomari.getValue() == avustava1.getValue() || erotuomari.getValue() == avustava2.getValue() || avustava2.getValue() == avustava1.getValue()) {
-                    tiedottaja.annaVaroitus("Sama henkilö ei voi olla kuin yhdessä tuomarin roolissa.");
-                    ok = false;
-                }
-                if (ok) {
-                    ottelu.asetaKierros(kierros.getValue());
-                    ottelu.asetaAika(ajankohta.getValue(), kellotunnit.getValue(), kellominuutit.getValue());
-                    ottelu.asetaPaikka(paikka.getText());
-                    ottelu.asetaJoukkueet(koti.getValue(), vieras.getValue());
-                    Tuomari erotuomariT = erotuomari.getValue();
-                    Tuomari avustava1T = avustava1.getValue();
-                    Tuomari avustava2T = avustava2.getValue();
-
-                    ottelu.annaRoolit().clear();
-
-                    if (erotuomariT != null) {
-                        TuomarinRooli erotuomariR = new TuomarinRooli(erotuomariT, ottelu);
-                        erotuomariR.asetaRooli("Erotuomari");
-
-                        ottelu.annaRoolit().add(erotuomariR);
-                        erotuomariT.annaTuomarinRoolit().add(erotuomariR);
-                    }
-
-                    if (avustava1T != null) {
-
-                        TuomarinRooli avustava1R = new TuomarinRooli(avustava1T, ottelu);
-                        avustava1R.asetaRooli("1. Avustava erotuomari");
-
-                        ottelu.annaRoolit().add(avustava1R);
-                        avustava1T.annaTuomarinRoolit().add(avustava1R);
-                    }
-
-                    if (avustava2T != null) {
-                        TuomarinRooli avustava2R = new TuomarinRooli(avustava2T, ottelu);
-                        avustava2R.asetaRooli("2. Avustava erotuomari");
-
-                        ottelu.annaRoolit().add(avustava2R);
-                        avustava2T.annaTuomarinRoolit().add(avustava2R);
-                    }
-
-                    tiedottaja.kirjoitaLoki("Ottelun tietoja muokattu.");
-
-                    ikkuna.asetaMuutos(true);
-
-                    luoOttelusivu(ottelu);
-                }
-            }
-
-        });
-
-        Button peruuta = new Button("Peruuta");
-        peruuta.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                luoOttelusivu(ottelu);
-
-            }
-        });
-
-        HBox hbox = new HBox();
-        hbox.setSpacing(20);
-
-        Label otsikko = new Label("Muokkaa ottelun " + ottelu.toString() + " tietoja: ");
-        otsikko.setFont(Font.font("Papyrus", 22));
-
-        VBox vbox1 = new VBox();
-        vbox1.setPadding(new Insets(20, 0, 0, 0));
-        Label label1 = new Label("Kotijoukkue: ");
-        vbox1.getChildren().addAll(label1, koti);
-
-        VBox vbox2 = new VBox();
-        Label label2 = new Label("Vierasjoukkue: ");
-        vbox2.setPadding(new Insets(20, 0, 0, 0));
-        vbox2.getChildren().addAll(label2, vieras);
-
-        VBox vbox3 = new VBox();
-        Label label3 = new Label("Paiva:");
-        vbox3.setPadding(new Insets(20, 0, 0, 0));
-        vbox3.getChildren().addAll(label3, ajankohta);
-
-        VBox vbox8 = new VBox();
-        Label label8 = new Label("Kello:");
-        vbox8.setAlignment(Pos.CENTER);
-        vbox8.setPadding(new Insets(20, 0, 0, 0));
-        HBox kellovalinnat = new HBox();
-        kellovalinnat.setSpacing(5);
-        Label pisteet = new Label(":");
-        kellovalinnat.getChildren().addAll(kellotunnit, pisteet, kellominuutit);
-        vbox8.getChildren().addAll(label8, kellovalinnat);
-
-        VBox vbox4 = new VBox();
-        Label label4 = new Label("Paikka:");
-        vbox4.setPadding(new Insets(20, 0, 0, 0));
-        vbox4.getChildren().addAll(label4, paikka);
-
-        VBox vbox5 = new VBox();
-        Label label5 = new Label("Erotuomari:");
-        vbox5.setPadding(new Insets(20, 0, 0, 0));
-        vbox5.getChildren().addAll(label5, erotuomari);
-
-        VBox vbox6 = new VBox();
-        Label label6 = new Label("1. Avustava:");
-        vbox6.setPadding(new Insets(20, 0, 0, 0));
-        vbox6.getChildren().addAll(label6, avustava1);
-
-        VBox vbox7 = new VBox();
-        Label label7 = new Label("2. Avustava:");
-        vbox7.setPadding(new Insets(20, 0, 0, 0));
-        vbox7.getChildren().addAll(label7, avustava2);
-
-        HBox painikkeet = new HBox();
-        painikkeet.setSpacing(20);
-        painikkeet.setPadding(new Insets(20, 0, 0, 0));
-        painikkeet.getChildren().addAll(muokkausnappula, peruuta);
-        hbox.getChildren().addAll(ohjekierros, vbox1, vbox2, vbox3, vbox4, vbox5, vbox6, vbox7);
-        grid.add(otsikko, 0, 0);
-        grid.add(hbox, 0, 1);
-        grid.add(painikkeet, 0, 2);
-        sb.setContent(grid);
-        VBox peitto = new VBox();
-        peitto.setStyle("-fx-background-color: white;");
-        ikkuna.annaNaytto().getChildren().add(peitto);
-
-        ikkuna.annaNaytto().getChildren().add(sb);
-    }
-
-    public void luoOtteluMuokkaus2(Ottelu ottelu, Sarja sarja) {
-        ScrollPane sb = new ScrollPane();
-        sb.setHbarPolicy(AS_NEEDED);
-        GridPane grid = new GridPane();
-
-        VBox ohjekierros = new VBox();
-        Label ohjeki = new Label("Kierros");
-
-        ComboBox<Integer> kierros = new ComboBox();
-        List<Integer> kierroslista = new ArrayList();
-
-        for (int i = 0; i < 99; i++) {
-            kierroslista.add(i);
-        }
-
-        ObservableList kierrokset = FXCollections.observableList(kierroslista);
-        kierros.setItems(kierrokset);
-        kierros.setValue(ottelu.annaKierros());
-        ohjekierros.getChildren().addAll(ohjeki, kierros);
-        ohjekierros.setPadding(new Insets(20, 0, 0, 0));
-        //jos ei vielä pelattu, niin tietoja voi muokata
-        ComboBox<Joukkue> koti = new ComboBox();
-        List<Joukkue> kotijoukkuelista = new ArrayList();
-
-        for (int i = 0; i < sarja.annaJoukkueet().size(); i++) {
-            kotijoukkuelista.add(sarja.annaJoukkueet().get(i));
-        }
-
-        ObservableList joukkueet1 = FXCollections.observableList(kotijoukkuelista);
-        koti.setItems(joukkueet1);
-        koti.setValue(ottelu.annaKotijoukkue());
-        ComboBox<Joukkue> vieras = new ComboBox();
-        List<Joukkue> vierasjoukkuelista = new ArrayList();
-
-        for (int i = 0; i < sarja.annaJoukkueet().size(); i++) {
-            vierasjoukkuelista.add(sarja.annaJoukkueet().get(i));
-        }
-
-        ObservableList joukkueet2 = FXCollections.observableList(vierasjoukkuelista);
-        vieras.setItems(joukkueet2);
-
-        vieras.setValue(ottelu.annaVierasjoukkue());
-
-        DatePicker ajankohta = new DatePicker();
-        String pattern = "dd.MM.yyyy";
-
-        StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
-
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        };
-
-        ajankohta.setConverter(converter);
-        ajankohta.setValue(ottelu.annaKalenteriAika());
-
-        ComboBox<String> kellotunnit = new ComboBox();
-        List<String> tuntilista = new ArrayList();
-
-        for (int i = 0; i < 24; i++) {
-            tuntilista.add("" + i);
-        }
-
-        ObservableList tunnit = FXCollections.observableList(tuntilista);
-        kellotunnit.setItems(tunnit);
-        kellotunnit.setValue(ottelu.annaKellotunnit());
-
-        ComboBox<String> kellominuutit = new ComboBox();
-        List<String> minuuttilista = new ArrayList();
-
-        for (int i = 0; i < 10; i++) {
-            minuuttilista.add("0" + i);
-        }
-
-        for (int i = 10; i < 60; i++) {
-            minuuttilista.add("" + i);
-        }
-
-        ObservableList minuutit = FXCollections.observableList(minuuttilista);
-        kellominuutit.setItems(minuutit);
-        kellominuutit.setValue(ottelu.annaKellominuutit());
-
-        TextField paikka = new TextField();
-        paikka.setText(ottelu.annaPaikka());
-
-        TextField tulos = new TextField();
-        tulos.setText(ottelu.annaTulos());
-
-        List<Tuomari> tuomarilista1 = new ArrayList<Tuomari>();
-
-        for (int i = 0; i < sarja.annaTurnaus().annaTuomarit().size(); i++) {
-            tuomarilista1.add(sarja.annaTurnaus().annaTuomarit().get(i));
-
-        }
-
-        List<Tuomari> tuomarilista2 = new ArrayList<Tuomari>();
-
-        for (int i = 0; i < sarja.annaTurnaus().annaTuomarit().size(); i++) {
-            tuomarilista2.add(sarja.annaTurnaus().annaTuomarit().get(i));
-        }
-
-        List<Tuomari> tuomarilista3 = new ArrayList<Tuomari>();
-
-        for (int i = 0; i < sarja.annaTurnaus().annaTuomarit().size(); i++) {
-            tuomarilista3.add(sarja.annaTurnaus().annaTuomarit().get(i));
-        }
-
-        ObservableList erotuomarit = FXCollections.observableList(tuomarilista1);
-        ObservableList avustavat1 = FXCollections.observableList(tuomarilista2);
-        ObservableList avustavat2 = FXCollections.observableList(tuomarilista3);
-
-        ComboBox<Tuomari> erotuomari = new ComboBox();
-        erotuomari.setItems(erotuomarit);
-
-        ComboBox<Tuomari> avustava1 = new ComboBox();
-        avustava1.setItems(avustavat1);
-
-        ComboBox<Tuomari> avustava2 = new ComboBox();
-        avustava2.setItems(avustavat2);
-
-        for (int i = 0; i < ottelu.annaRoolit().size(); i++) {
-            if (ottelu.annaRoolit().get(i).annaRooli().equals("1. Avustava erotuomari")) {
-                avustava1.setValue(ottelu.annaRoolit().get(i).annaTuomari());
-            } else if (ottelu.annaRoolit().get(i).annaRooli().equals("2. Avustava erotuomari")) {
-                avustava2.setValue(ottelu.annaRoolit().get(i).annaTuomari());
-            } else if (ottelu.annaRoolit().get(i).annaRooli().equals("Erotuomari")) {
-                erotuomari.setValue(ottelu.annaRoolit().get(i).annaTuomari());
-            }
-
-        }
-
-        Button muokkausnappula = new Button("Tallenna");
-        muokkausnappula.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                boolean ok = true;
-                //TARKISTUKSET!!
-                if (koti.getValue() == null || vieras.getValue() == null) {
-                    tiedottaja.annaVaroitus("Valitse sekä koti- että vierasjoukkue.");
-                    ok = false;
-                }
-                if (koti.getValue() == vieras.getValue()) {
-                    tiedottaja.annaVaroitus("Koti- ja vierasjoukkue eivät voi olla samoja.");
-                    ok = false;
-                }
-                if (erotuomari.getValue() == avustava1.getValue() || erotuomari.getValue() == avustava2.getValue() || avustava2.getValue() == avustava1.getValue()) {
-                    tiedottaja.annaVaroitus("Sama henkilö ei voi olla kuin yhdessä tuomarin roolissa.");
-                    ok = false;
-                }
-                if (ok) {
-                    ottelu.asetaKierros(kierros.getValue());
-                    ottelu.asetaAika(ajankohta.getValue(), kellotunnit.getValue(), kellominuutit.getValue());
-                    ottelu.asetaPaikka(paikka.getText());
-                    ottelu.asetaJoukkueet(koti.getValue(), vieras.getValue());
-                    Tuomari erotuomariT = erotuomari.getValue();
-                    Tuomari avustava1T = avustava1.getValue();
-                    Tuomari avustava2T = avustava2.getValue();
-
-                    ottelu.annaRoolit().clear();
-
-                    if (erotuomariT != null) {
-                        TuomarinRooli erotuomariR = new TuomarinRooli(erotuomariT, ottelu);
-                        erotuomariR.asetaRooli("Erotuomari");
-
-                        ottelu.annaRoolit().add(erotuomariR);
-                        erotuomariT.annaTuomarinRoolit().add(erotuomariR);
-                    }
-
-                    if (avustava1T != null) {
-
-                        TuomarinRooli avustava1R = new TuomarinRooli(avustava1T, ottelu);
-                        avustava1R.asetaRooli("1. Avustava erotuomari");
-
-                        ottelu.annaRoolit().add(avustava1R);
-                        avustava1T.annaTuomarinRoolit().add(avustava1R);
-                    }
-
-                    if (avustava2T != null) {
-                        TuomarinRooli avustava2R = new TuomarinRooli(avustava2T, ottelu);
-                        avustava2R.asetaRooli("2. Avustava erotuomari");
-
-                        ottelu.annaRoolit().add(avustava2R);
-                        avustava2T.annaTuomarinRoolit().add(avustava2R);
-                    }
-
-                    tiedottaja.kirjoitaLoki("Ottelun tietoja muokattu.");
-
-                    ikkuna.asetaMuutos(true);
-
-                    luoOttelusivu(ottelu);
-                }
-            }
-
-        });
-
-        Button peruuta = new Button("Peruuta");
-        peruuta.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                luoOttelusivu(ottelu);
-
-            }
-        });
-
-        HBox hbox = new HBox();
-        hbox.setSpacing(20);
-
-        Label otsikko = new Label("Muokkaa ottelun " + ottelu.toString() + " tietoja: ");
-        otsikko.setFont(Font.font("Papyrus", 22));
-
-        VBox vbox1 = new VBox();
-        vbox1.setPadding(new Insets(20, 0, 0, 0));
-        Label label1 = new Label("Kotijoukkue: ");
-        vbox1.getChildren().addAll(label1, koti);
-
-        VBox vbox2 = new VBox();
-        Label label2 = new Label("Vierasjoukkue: ");
-        vbox2.setPadding(new Insets(20, 0, 0, 0));
-        vbox2.getChildren().addAll(label2, vieras);
-
-        VBox vbox3 = new VBox();
-        Label label3 = new Label("Paiva:");
-        vbox3.setPadding(new Insets(20, 0, 0, 0));
-        vbox3.getChildren().addAll(label3, ajankohta);
-
-        VBox vbox8 = new VBox();
-        Label label8 = new Label("Kello:");
-        vbox8.setAlignment(Pos.CENTER);
-        vbox8.setPadding(new Insets(20, 0, 0, 0));
-        HBox kellovalinnat = new HBox();
-        kellovalinnat.setSpacing(5);
-        Label pisteet = new Label(":");
-        kellovalinnat.getChildren().addAll(kellotunnit, pisteet, kellominuutit);
-        vbox8.getChildren().addAll(label8, kellovalinnat);
-
-        VBox vbox4 = new VBox();
-        Label label4 = new Label("Paikka:");
-        vbox4.setPadding(new Insets(20, 0, 0, 0));
-        vbox4.getChildren().addAll(label4, paikka);
-
-        VBox vbox5 = new VBox();
-        Label label5 = new Label("Erotuomari:");
-        vbox5.setPadding(new Insets(20, 0, 0, 0));
-        vbox5.getChildren().addAll(label5, erotuomari);
-
-        VBox vbox6 = new VBox();
-        Label label6 = new Label("1. Avustava:");
-        vbox6.setPadding(new Insets(20, 0, 0, 0));
-        vbox6.getChildren().addAll(label6, avustava1);
-
-        VBox vbox7 = new VBox();
-        Label label7 = new Label("2. Avustava:");
-        vbox7.setPadding(new Insets(20, 0, 0, 0));
-        vbox7.getChildren().addAll(label7, avustava2);
-
-        HBox painikkeet = new HBox();
-        painikkeet.setSpacing(20);
-        painikkeet.setPadding(new Insets(20, 0, 0, 0));
-        painikkeet.getChildren().addAll(muokkausnappula, peruuta);
-        hbox.getChildren().addAll(ohjekierros, vbox1, vbox2, vbox3, vbox4, vbox5, vbox6, vbox7);
-        grid.add(otsikko, 0, 0);
-        grid.add(hbox, 0, 1);
-        grid.add(painikkeet, 0, 2);
-        sb.setContent(grid);
-        VBox peitto = new VBox();
-        peitto.setStyle("-fx-background-color: white;");
-        ikkuna.annaNaytto().getChildren().add(peitto);
-
-        ikkuna.annaNaytto().getChildren().add(sb);
     }
 
     public void luoKokoonpanosivu(Ottelu ottelu, Joukkue joukkue) {
         ScrollPane sb = new ScrollPane();
         sb.setHbarPolicy(AS_NEEDED);
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(20, 10, 40, 10));
+        grid.setPadding(new Insets(20, 10, 40, 100));
 
         VBox rivi1 = new VBox();
-        rivi1.setAlignment(Pos.CENTER);
 
         Button paluu = new Button();
 
-        paluu.setText("<< Palaa takaisin");
+        paluu.setText("<< Palaa ottelusivulle");
         paluu.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -867,14 +314,14 @@ public void luoOttelusivu(Ottelu ottelu) {
         });
 
         HBox painikkeet = new HBox();
-        painikkeet.setPadding(new Insets(20));
+     
         painikkeet.setSpacing(20);
-        painikkeet.setAlignment(Pos.TOP_RIGHT);
+        painikkeet.setAlignment(Pos.TOP_LEFT);
         painikkeet.getChildren().addAll(paluu);
         rivi1.getChildren().addAll(painikkeet);
 
         VBox rivi2 = new VBox();
-        rivi2.setPadding(new Insets(20));
+        rivi2.setPadding(new Insets(30, 20, 60, 20));
         rivi2.setAlignment(Pos.CENTER);
         Label nimi = new Label(ottelu.toString());
         nimi.setFont(Font.font("Papyrus", 32));
@@ -886,8 +333,26 @@ public void luoOttelusivu(Ottelu ottelu) {
 
         VBox rivi3 = new VBox();
         rivi3.setSpacing(20);
-        Label otsake = new Label("Lisää kokoonpano otteluun:");
+
+        HBox koko_otsake = new HBox();
+        koko_otsake.setSpacing(20);
+
+        Button otsikkonappula = new Button();
+        otsikkonappula.setId("button-ohje");
+        otsikkonappula.setText("\u003F");
+        otsikkonappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus otteluopastus = new Opastus();
+                otteluopastus.annaOhjeKokoonpano();
+
+            }
+        });
+
+        Label otsake = new Label("Lisää joukkueen " + joukkue.toString() + " kokoonpano otteluun:");
         otsake.setFont(Font.font("Papyrus", FontWeight.BOLD, 18));
+
+        koko_otsake.getChildren().addAll(otsake, otsikkonappula);
 
         HBox kokoonpanoluettelo = new HBox();
         kokoonpanoluettelo.setSpacing(10);
@@ -904,7 +369,7 @@ public void luoOttelusivu(Ottelu ottelu) {
 
         VBox sarake1 = new VBox();
         sarake1.setSpacing(10);
-        sarake1.setPadding(new Insets(20));
+        sarake1.setPadding(new Insets(20, 20, 20, 0));
         sarake1.getChildren().add(otnro);
 
         VBox sarake2 = new VBox();
@@ -987,6 +452,9 @@ public void luoOttelusivu(Ottelu ottelu) {
             @Override
             public void handle(ActionEvent e) {
 
+                for (int i = 0; i < roolitaulukko.length; i++) {
+                    System.out.println(roolitaulukko[i]);
+                }
                 muuttaja.lisaaKokoonpano(pelaajataulukko, roolitaulukko, joukkue, ottelu);
                 ikkuna.asetaMuutos(true);
                 luoOttelusivu(ottelu);
@@ -996,7 +464,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         painikeboksi.getChildren().addAll(lisaysnappula);
         kokoonpanoluettelo.getChildren().addAll(sarake1, sarake2, sarake3, sarake4);
 
-        rivi3.getChildren().addAll(otsake, kokoonpanoluettelo, painikeboksi);
+        rivi3.getChildren().addAll(koko_otsake, kokoonpanoluettelo, painikeboksi);
 
         grid.add(rivi3, 0, 2);
 
@@ -1015,9 +483,8 @@ public void luoOttelusivu(Ottelu ottelu) {
         grid.setPadding(new Insets(20, 10, 40, 10));
 
         VBox rivi1 = new VBox();
-        rivi1.setAlignment(Pos.CENTER);
 
-        Button paluunappula = new Button("<< Palaa takaisin");
+        Button paluunappula = new Button("<< Palaa ottelusivulle");
         paluunappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -1030,12 +497,12 @@ public void luoOttelusivu(Ottelu ottelu) {
         HBox painikkeet = new HBox();
         painikkeet.setPadding(new Insets(20));
         painikkeet.setSpacing(20);
-        painikkeet.setAlignment(Pos.TOP_RIGHT);
+        painikkeet.setAlignment(Pos.TOP_LEFT);
         painikkeet.getChildren().addAll(paluunappula);
         rivi1.getChildren().addAll(painikkeet);
 
         VBox rivi2 = new VBox();
-        rivi2.setPadding(new Insets(20, 20, 0, 20));
+        rivi2.setPadding(new Insets(20));
         rivi2.setAlignment(Pos.CENTER);
 
         Label otsikko = new Label("Muokkaa ottelun " + ottelu.toString() + " maalitilastoa: ");
@@ -1053,16 +520,24 @@ public void luoOttelusivu(Ottelu ottelu) {
         rivi3.getChildren().addAll(ottelutaulu);
 
         VBox rivi4 = new VBox();
-        rivi4.setPadding(new Insets(20));
+        rivi4.setPadding(new Insets(40, 20, 20, 20));
 
         Taulukko taulukontekija2 = new Taulukko(nakyma, varmistaja);
 
-        TableView maalitaulu = taulukontekija2.luoOttelunMaaliTaulukko(ottelu);
+        TableView maalitaulu = taulukontekija2.luoOttelunMaaliTaulukkoMuokattava(ottelu);
         maalitaulu.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        HBox maalialle = new HBox();
-        maalialle.setSpacing(20);
-        maalialle.setPadding(new Insets(20, 0, 0, 0));
+        HBox rivi5 = new HBox();
+        rivi5.setPadding(new Insets(20, 0, 0, 20));
+        rivi5.setSpacing(60);
+
+        VBox kotiboxi = new VBox();
+        kotiboxi.setPadding(new Insets(20, 0, 0, 0));
+        kotiboxi.setSpacing(20);
+
+        HBox maalialle1 = new HBox();
+        maalialle1.setSpacing(20);
+        maalialle1.setPadding(new Insets(20, 0, 0, 0));
 
         VBox alle7 = new VBox();
 
@@ -1080,48 +555,94 @@ public void luoOttelusivu(Ottelu ottelu) {
 
         VBox alle8 = new VBox();
 
+        HBox otsikkokoti_koko = new HBox();
+        otsikkokoti_koko.setSpacing(20);
+
+        Label otsikkokoti = new Label("Kotijoukkueen maalit:");
+        otsikkokoti.setFont(Font.font("Papyrus", 14));
+
+        Button otsikkonappula = new Button();
+        otsikkonappula.setId("button-ohje");
+        otsikkonappula.setText("\u003F");
+        otsikkonappula.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus otteluopastus = new Opastus();
+                otteluopastus.annaOhjeMaalitilasto();
+
+            }
+        });
+        otsikkokoti_koko.getChildren().addAll(otsikkokoti, otsikkonappula);
+
+        Label eimahd = new Label("Kotijoukkueen maalit on jo syötetty");
+
         Label ohjepelaaja3 = new Label("Maalintekijä");
 
-        ComboBox<Pelaaja> maalintekija = new ComboBox();
-        List<Pelaaja> kaikkipelaajalista = new ArrayList();
+        ComboBox<Pelaaja> maalintekija1 = new ComboBox();
+        List<Pelaaja> kotipelaajalista1 = new ArrayList();
         Pelaaja ohjeistus3 = new Pelaaja("Valitse", " ");
-        kaikkipelaajalista.add(ohjeistus3);
+        kotipelaajalista1.add(ohjeistus3);
+        Pelaaja oma1 = new Pelaaja("Oma ", "maali");
+        kotipelaajalista1.add(oma1);
 
         for (int i = 0; i < ottelu.annaKotijoukkue().annaPelaajat().size(); i++) {
-            kaikkipelaajalista.add(ottelu.annaKotijoukkue().annaPelaajat().get(i));
-        }
-        for (int i = 0; i < ottelu.annaVierasjoukkue().annaPelaajat().size(); i++) {
-            kaikkipelaajalista.add(ottelu.annaVierasjoukkue().annaPelaajat().get(i));
+
+            Kokoonpano koti = ottelu.annaKotiKokoonpano();
+            boolean kokoonpanossa = false;
+
+            for (int j = 0; j < koti.annaPelaajat().size(); j++) {
+                if (koti.annaPelaajat().get(j).equals(ottelu.annaKotijoukkue().annaPelaajat().get(i))) {
+                    kokoonpanossa = true;
+                }
+            }
+            if (kokoonpanossa) {
+                kotipelaajalista1.add(ottelu.annaKotijoukkue().annaPelaajat().get(i));
+            }
         }
 
-        ObservableList kaikkipelaajat1 = FXCollections.observableList(kaikkipelaajalista);
-        maalintekija.setItems(kaikkipelaajat1);
-        maalintekija.getSelectionModel().selectFirst();
-        alle8.getChildren().addAll(ohjepelaaja3, maalintekija);
+        ObservableList kotipelaajat1 = FXCollections.observableList(kotipelaajalista1);
+        maalintekija1.setItems(kotipelaajat1);
+        maalintekija1.getSelectionModel().selectFirst();
+        alle8.getChildren().addAll(ohjepelaaja3, maalintekija1);
 
         VBox alle9 = new VBox();
 
         Label ohjepelaaja4 = new Label("Syöttäjä");
 
-        ComboBox<Pelaaja> syottaja = new ComboBox();
-        List<Pelaaja> kaikkipelaajalista2 = new ArrayList();
+        ComboBox<Pelaaja> syottaja1 = new ComboBox();
+        List<Pelaaja> kotipelaajalista2 = new ArrayList();
         Pelaaja ohjeistus4 = new Pelaaja("Valitse", " ");
-        kaikkipelaajalista2.add(ohjeistus4);
+        kotipelaajalista2.add(ohjeistus4);
         Pelaaja ohjeistus5 = new Pelaaja("Ei ", "syöttäjää");
-        kaikkipelaajalista2.add(ohjeistus5);
+        kotipelaajalista2.add(ohjeistus5);
         for (int i = 0; i < ottelu.annaKotijoukkue().annaPelaajat().size(); i++) {
-            kaikkipelaajalista2.add(ottelu.annaKotijoukkue().annaPelaajat().get(i));
-        }
-        for (int i = 0; i < ottelu.annaVierasjoukkue().annaPelaajat().size(); i++) {
-            kaikkipelaajalista2.add(ottelu.annaVierasjoukkue().annaPelaajat().get(i));
+            Kokoonpano koti = ottelu.annaKotiKokoonpano();
+            boolean kokoonpanossa = false;
+
+            for (int j = 0; j < koti.annaPelaajat().size(); j++) {
+                if (koti.annaPelaajat().get(j).equals(ottelu.annaKotijoukkue().annaPelaajat().get(i))) {
+                    kokoonpanossa = true;
+                }
+            }
+            if (kokoonpanossa) {
+                kotipelaajalista2.add(ottelu.annaKotijoukkue().annaPelaajat().get(i));
+            }
         }
 
-        ObservableList kaikkipelaajat2 = FXCollections.observableList(kaikkipelaajalista2);
-        syottaja.setItems(kaikkipelaajat2);
-        syottaja.getSelectionModel().selectFirst();
-        alle9.getChildren().addAll(ohjepelaaja4, syottaja);
+        ObservableList kotipelaajat2 = FXCollections.observableList(kotipelaajalista2);
+        syottaja1.setItems(kotipelaajat2);
+        syottaja1.getSelectionModel().selectFirst();
+        alle9.getChildren().addAll(ohjepelaaja4, syottaja1);
 
-        maalialle.getChildren().addAll(alle7, alle8, alle9);
+        int syotetyt_koti = 0;
+
+        for (int i = 0; i < ottelu.annaMaalit().size(); i++) {
+            if (ottelu.annaMaalit().get(i).annaMaalinTekija().annaJoukkue().equals(ottelu.annaKotijoukkue())) {
+                syotetyt_koti++;
+            }
+        }
+
+        maalialle1.getChildren().addAll(alle7, alle8, alle9);
 
         HBox painikeboksi3 = new HBox();
         painikeboksi3.setPadding(new Insets(30, 0, 0, 0));
@@ -1131,7 +652,7 @@ public void luoOttelusivu(Ottelu ottelu) {
             @Override
             public void handle(ActionEvent e) {
 
-                muuttaja.lisaaMaali(aika.getValue(), maalintekija.getValue(), syottaja.getValue(), ottelu);
+                muuttaja.lisaaMaali(aika.getValue(), maalintekija1.getValue(), syottaja1.getValue(), ottelu);
                 ikkuna.asetaMuutos(true);
                 luoOttelusivu(ottelu);
             }
@@ -1139,12 +660,152 @@ public void luoOttelusivu(Ottelu ottelu) {
 
         painikeboksi3.getChildren().addAll(lisaysnappula3);
 
-        rivi4.getChildren().addAll(maalitaulu, maalialle, painikeboksi3);
+        rivi4.getChildren().addAll(maalitaulu);
+        if (syotetyt_koti < ottelu.annaKotimaalit()) {
+            kotiboxi.getChildren().addAll(otsikkokoti_koko, maalialle1, painikeboksi3);
+        } else {
+            kotiboxi.getChildren().addAll(otsikkokoti, eimahd);
+        }
+
+        VBox vierasboxi = new VBox();
+        vierasboxi.setPadding(new Insets(20, 0, 0, 0));
+        vierasboxi.setSpacing(20);
+
+        HBox maalialle2 = new HBox();
+        maalialle2.setSpacing(20);
+        maalialle2.setPadding(new Insets(20, 0, 0, 0));
+
+        VBox alle82 = new VBox();
+
+        HBox otsikkovieras_koko = new HBox();
+        otsikkovieras_koko.setSpacing(20);
+
+        Button otsikkonappula2 = new Button();
+        otsikkonappula2.setId("button-ohje");
+        otsikkonappula2.setText("\u003F");
+        otsikkonappula2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                Opastus otteluopastus = new Opastus();
+                otteluopastus.annaOhjeMaalitilasto();
+
+            }
+        });
+        Label otsikkovieras = new Label("Vierasjoukkueen maalit:");
+        Label eimahd2 = new Label("Vierasjoukkueen maalit on jo syötetty");
+        otsikkovieras.setFont(Font.font("Papyrus", 14));
+
+        otsikkovieras_koko.getChildren().addAll(otsikkovieras, otsikkonappula2);
+
+        Label ohjepelaaja32 = new Label("Maalintekijä");
+
+        ComboBox<Pelaaja> maalintekija2 = new ComboBox();
+        List<Pelaaja> vieraspelaajalista1 = new ArrayList();
+        Pelaaja ohjeistus32 = new Pelaaja("Valitse", " ");
+        vieraspelaajalista1.add(ohjeistus32);
+        Pelaaja oma2 = new Pelaaja("Oma ", "maali");
+        vieraspelaajalista1.add(oma2);
+
+        for (int i = 0; i < ottelu.annaVierasjoukkue().annaPelaajat().size(); i++) {
+
+            Kokoonpano vieras = ottelu.annaVierasKokoonpano();
+            boolean kokoonpanossa = false;
+
+            for (int j = 0; j < vieras.annaPelaajat().size(); j++) {
+                if (vieras.annaPelaajat().get(j).equals(ottelu.annaVierasjoukkue().annaPelaajat().get(i))) {
+                    kokoonpanossa = true;
+                }
+            }
+            if (kokoonpanossa) {
+                vieraspelaajalista1.add(ottelu.annaVierasjoukkue().annaPelaajat().get(i));
+            }
+        }
+
+        ObservableList vieraspelaajat1 = FXCollections.observableList(vieraspelaajalista1);
+        maalintekija2.setItems(vieraspelaajat1);
+        maalintekija2.getSelectionModel().selectFirst();
+        alle82.getChildren().addAll(ohjepelaaja32, maalintekija2);
+
+        VBox alle92 = new VBox();
+
+        Label ohjepelaaja42 = new Label("Syöttäjä");
+
+        ComboBox<Pelaaja> syottaja2 = new ComboBox();
+        List<Pelaaja> vieraspelaajalista2 = new ArrayList();
+        Pelaaja ohjeistus42 = new Pelaaja("Valitse", " ");
+        vieraspelaajalista2.add(ohjeistus42);
+        Pelaaja ohjeistus52 = new Pelaaja("Ei ", "syöttäjää");
+        vieraspelaajalista2.add(ohjeistus52);
+        for (int i = 0; i < ottelu.annaVierasjoukkue().annaPelaajat().size(); i++) {
+            Kokoonpano vieras = ottelu.annaVierasKokoonpano();
+            boolean kokoonpanossa = false;
+
+            for (int j = 0; j < vieras.annaPelaajat().size(); j++) {
+                if (vieras.annaPelaajat().get(j).equals(ottelu.annaVierasjoukkue().annaPelaajat().get(i))) {
+                    kokoonpanossa = true;
+                }
+            }
+            if (kokoonpanossa) {
+                vieraspelaajalista2.add(ottelu.annaVierasjoukkue().annaPelaajat().get(i));
+            }
+        }
+
+        ObservableList vieraspelaajat2 = FXCollections.observableList(vieraspelaajalista2);
+        syottaja2.setItems(vieraspelaajat2);
+        syottaja2.getSelectionModel().selectFirst();
+        alle92.getChildren().addAll(ohjepelaaja42, syottaja2);
+
+        VBox alle72 = new VBox();
+
+        Label ohjeaika2 = new Label("Min");
+        ComboBox<Integer> aika2 = new ComboBox();
+        List<Integer> aikalista2 = new ArrayList();
+        for (int i = 1; i <= 200; i++) {
+            aikalista2.add(i);
+        }
+
+        aika2.setItems(FXCollections.observableArrayList(aikalista2));
+        aika2.getSelectionModel().selectFirst();
+
+        alle72.getChildren().addAll(ohjeaika2, aika2);
+
+        int syotetyt_vieras = 0;
+
+        for (int i = 0; i < ottelu.annaMaalit().size(); i++) {
+            if (ottelu.annaMaalit().get(i).annaMaalinTekija().annaJoukkue().equals(ottelu.annaVierasjoukkue())) {
+                syotetyt_vieras++;
+            }
+        }
+
+        maalialle2.getChildren().addAll(alle72, alle82, alle92);
+        HBox painikeboksi32 = new HBox();
+        painikeboksi32.setPadding(new Insets(30, 0, 0, 0));
+
+        Button lisaysnappula32 = new Button("Tallenna");
+        lisaysnappula32.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                muuttaja.lisaaMaali(aika.getValue(), maalintekija1.getValue(), syottaja1.getValue(), ottelu);
+                ikkuna.asetaMuutos(true);
+                luoOttelusivu(ottelu);
+            }
+        });
+
+        painikeboksi32.getChildren().addAll(lisaysnappula32);
+        if (syotetyt_vieras < ottelu.annaVierasmaalit()) {
+            vierasboxi.getChildren().addAll(otsikkovieras_koko, maalialle2, painikeboksi32);
+        } else {
+            kotiboxi.getChildren().addAll(otsikkovieras, eimahd2);
+        }
+
+        rivi5.getChildren().addAll(kotiboxi, vierasboxi);
 
         grid.add(rivi1, 0, 0);
         grid.add(rivi2, 0, 1);
         grid.add(rivi3, 0, 2);
         grid.add(rivi4, 0, 3);
+        grid.add(rivi5, 0, 4);
 
         sb.setContent(grid);
         VBox peitto = new VBox();
@@ -1162,9 +823,8 @@ public void luoOttelusivu(Ottelu ottelu) {
         grid.setPadding(new Insets(20, 10, 40, 10));
 
         VBox rivi1 = new VBox();
-        rivi1.setAlignment(Pos.CENTER);
 
-        Button paluunappula = new Button("<< Palaa takaisin");
+        Button paluunappula = new Button("<< Palaa ottelusivulle");
         paluunappula.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -1177,7 +837,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         HBox painikkeet = new HBox();
         painikkeet.setPadding(new Insets(20));
         painikkeet.setSpacing(20);
-        painikkeet.setAlignment(Pos.TOP_RIGHT);
+        painikkeet.setAlignment(Pos.TOP_LEFT);
         painikkeet.getChildren().addAll(paluunappula);
         rivi1.getChildren().addAll(painikkeet);
 
@@ -1206,6 +866,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         kotimaalit.setSpacing(10);
 
         Label ohjekoti = new Label("Kotijoukkueen maalit");
+
         ComboBox<Integer> maalitkoti = new ComboBox();
         List<Integer> kotimaalilista = new ArrayList();
         for (int i = 0; i <= 99; i++) {
@@ -1213,7 +874,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         }
 
         maalitkoti.setItems(FXCollections.observableArrayList(kotimaalilista));
-        maalitkoti.getSelectionModel().selectFirst();
+        maalitkoti.setValue(ottelu.annaKotimaalit());
 
         kotimaalit.getChildren().addAll(ohjekoti, maalitkoti);
 
@@ -1228,7 +889,7 @@ public void luoOttelusivu(Ottelu ottelu) {
         }
 
         maalitvieras.setItems(FXCollections.observableArrayList(vierasmaalilista));
-        maalitvieras.getSelectionModel().selectFirst();
+        maalitvieras.setValue(ottelu.annaVierasmaalit());
 
         vierasmaalit.getChildren().addAll(ohjevieras, maalitvieras);
 

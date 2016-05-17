@@ -13,11 +13,11 @@ import javafx.scene.control.TableCell;
  * @author Marianne
  */
 
- class DateEditingCell extends TableCell<Ottelu, Date> {
+ class PaivaMuokkausSolu extends TableCell<Ottelu, Date> {
 
         private DatePicker datePicker;
 
-        public DateEditingCell() {
+        public PaivaMuokkausSolu() {
         }
 
         @Override
@@ -34,7 +34,7 @@ import javafx.scene.control.TableCell;
         public void cancelEdit() {
             super.cancelEdit();
 
-            setText(getDate().toString());
+            setText(getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
             setGraphic(null);
         }
 
@@ -63,14 +63,11 @@ import javafx.scene.control.TableCell;
             datePicker = new DatePicker(getDate());
             datePicker.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
             datePicker.setOnAction((e) -> {
-                System.out.println("Committed: " + datePicker.getValue().toString());
+               
                 commitEdit(Date.from(datePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             });
-//            datePicker.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-//                if (!newValue) {
-//                    commitEdit(Date.from(datePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-//                }
-//            });
+
+           
         }
 
         private LocalDate getDate() {

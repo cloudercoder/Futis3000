@@ -1,23 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tupa;
 
 import java.util.ArrayList;
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseEvent;
 
 /**
  *
- * @author Omistaja
+ * @author Marianne
  */
 public class Puurakenne {
 
     private Tupa ikkuna;
-    private Kasittelija kasittelija;
 
     Puurakenne() {
 
@@ -26,7 +21,7 @@ public class Puurakenne {
     Puurakenne(Tupa ikkuna) {
 
         this.ikkuna = ikkuna;
-        kasittelija = new Kasittelija(ikkuna);
+
     }
 
     public TreeView<Kohde> rakennaPuu() {
@@ -58,36 +53,44 @@ public class Puurakenne {
         rootSivuPuu.getChildren().addAll(rs, keinoVali, rt);
 
         TreeView<Kohde> sivuPuu = new TreeView<>();
+        sivuPuu.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                String ohje = "";
+                TreeItem<Kohde> klikattu = sivuPuu.getSelectionModel().getSelectedItem();
+                if (klikattu != null) {
+                    if ((!klikattu.equals(ikkuna.annaRootSarjat())) && (klikattu.getValue() instanceof Sarja)) {
+
+                        Sarja sarja = (Sarja) klikattu.getValue();
+                        TreeItem<Kohde> mihin = new TreeItem<>(sarja);
+                        PaaNakyma nakyma = ikkuna.annaPaaNakyma();
+                        SarjaNakyma sarjanakyma = nakyma.annaSarjanakyma();
+                        sarjanakyma.luoSarjaSivu(mihin);
+
+                    } else if ((!klikattu.equals(ikkuna.annaRootTuomarit())) && (klikattu.getValue() instanceof Tuomari)) {
+
+                        Tuomari tuomari = (Tuomari) klikattu.getValue();
+                        TreeItem<Kohde> mihin = new TreeItem<>(tuomari);
+                        PaaNakyma nakyma = ikkuna.annaPaaNakyma();
+                        TuomariNakyma tuomarinakyma = nakyma.annaTuomarinakyma();
+                        tuomarinakyma.luoTuomariSivu(mihin);
+
+                    } else if (klikattu.equals(ikkuna.annaRootTuomarit())) {
+                        ohje = ("Valitse vasemmalta haluamasi tuomari tai lisää uusi.");
+                        PaaNakyma nakyma = ikkuna.annaPaaNakyma();
+                        nakyma.luoOhje(ohje, klikattu);
+                    } else if (klikattu.equals(ikkuna.annaRootSarjat())) {
+                        ohje = ("Valitse vasemmalta haluamasi sarja tai lisää uusi.");
+                        PaaNakyma nakyma = ikkuna.annaPaaNakyma();
+                        nakyma.luoOhje(ohje, klikattu);
+                    }
+
+                }
+
+            }
+        });
+
         sivuPuu.setRoot(rootSivuPuu);
-
-        // seuraavat käsittelee tapahtumia, kun käyttäjä klikkaa sivuvalikon kohteita
-        rs.addEventHandler(TreeItem.<Kohde>branchExpandedEvent(), new EventHandler<TreeItem.TreeModificationEvent<Kohde>>() {
-            @Override
-            public void handle(TreeItem.TreeModificationEvent<Kohde> event) {
-                kasittelija.branchExpended(event);
-            }
-        });
-
-        rs.addEventHandler(TreeItem.<Kohde>branchCollapsedEvent(), new EventHandler<TreeItem.TreeModificationEvent<Kohde>>() {
-            @Override
-            public void handle(TreeItem.TreeModificationEvent<Kohde> event) {
-                kasittelija.branchCollapsed(event);
-            }
-        });
-
-        rt.addEventHandler(TreeItem.<Kohde>branchExpandedEvent(), new EventHandler<TreeItem.TreeModificationEvent<Kohde>>() {
-            @Override
-            public void handle(TreeItem.TreeModificationEvent<Kohde> event) {
-                kasittelija.branchExpended(event);
-            }
-        });
-
-        rt.addEventHandler(TreeItem.<Kohde>branchCollapsedEvent(), new EventHandler<TreeItem.TreeModificationEvent<Kohde>>() {
-            @Override
-            public void handle(TreeItem.TreeModificationEvent<Kohde> event) {
-                kasittelija.branchCollapsed(event);
-            }
-        });
 
         return sivuPuu;
 

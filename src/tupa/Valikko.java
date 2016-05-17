@@ -111,6 +111,7 @@ public class Valikko implements EventHandler<ActionEvent> {
 
                     Kohde uusiTurnaus = new Turnaus();
                     ikkuna.asetaTurnaus(uusiTurnaus);
+                    ikkuna.annaKohteet().add(uusiTurnaus);
 
                     //vielä pitää tyhjentää puu
                     TreeItem<Kohde> parentSarjat = ikkuna.annaRootSarjat();
@@ -132,8 +133,7 @@ public class Valikko implements EventHandler<ActionEvent> {
                     //tyhjennetään kaikki tiedot 
                     ikkuna.annaKohteet().clear();
 
-                    Kohde uusiTurnaus = new Turnaus();
-                    ikkuna.asetaTurnaus(uusiTurnaus);
+           
 
                     //vielä pitää tyhjentää puu
                     TreeItem<Kohde> parentSarjat = ikkuna.annaRootSarjat();
@@ -148,7 +148,7 @@ public class Valikko implements EventHandler<ActionEvent> {
                     kohdetk = avaaja.avaa();
 
                     ikkuna.asetaKohteet(kohdetk);
-
+ 
                     List<Sarja> sarjatk = new ArrayList<>();
 
                     List<Tuomari> tuomaritk = new ArrayList<>();
@@ -231,13 +231,13 @@ public class Valikko implements EventHandler<ActionEvent> {
             }
             case "Ohje": {
 
-                Ohje ohje = new Ohje();
+                Ohjeistus ohje = new Ohjeistus();
                 ohje.annaYleisOhje();
                 break;
             }
             case "Tietoa ohjelmasta": {
 
-                Ohje ohje = new Ohje();
+                Ohjeistus ohje = new Ohjeistus();
                 ohje.annaTietoa();
                  break;
             }

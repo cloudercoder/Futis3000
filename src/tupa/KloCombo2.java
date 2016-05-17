@@ -12,7 +12,7 @@ import javafx.scene.control.TableCell;
 
 /**
  *
- * @author Omistaja
+ * @author Marianne
  */
 public class KloCombo2 extends TableCell<Ottelu, String> {
 
@@ -86,11 +86,7 @@ public class KloCombo2 extends TableCell<Ottelu, String> {
         
         comboBox.setValue(getItem());
         comboBox.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-//        comboBox.setOnAction((e) -> {
-//            System.out.println("Committed: " + comboBox.getSelectionModel().getSelectedItem());
-//            commitEdit(comboBox.getSelectionModel().getSelectedItem());
-//        });
-         
+
         comboBox.focusedProperty().addListener(new ChangeListener<Boolean>(){
                 @Override
                 public void changed(ObservableValue<? extends Boolean> arg0, 
@@ -103,7 +99,7 @@ public class KloCombo2 extends TableCell<Ottelu, String> {
     }
     
     private void comboBoxConverter(ComboBox<String> comboBox) {
-        // Define rendering of the list of values in ComboBox drop down. 
+
         comboBox.setCellFactory((c) -> {
             return new ListCell<String>() {
                 @Override

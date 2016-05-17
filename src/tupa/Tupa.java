@@ -29,7 +29,7 @@ import static javafx.application.Application.launch;
 public class Tupa extends Application {
 
     // turnaus, johon liittyy, tallennettu!
-    private Kohde turnaus;
+    private Kohde turnaus = new Turnaus();
 
     //kaikki kohteet tallennetaan tähän
     private List<Kohde> kohdetk = new ArrayList<>();
@@ -72,9 +72,9 @@ public class Tupa extends Application {
     public void start(Stage primaryStage) {
 
         //luodaan turnaus, kun ohjelma käynnistyy
-        turnaus = new Turnaus();
+       
         kohdetk.add(turnaus);
-        
+ 
         BorderPane border = new BorderPane();
 
         nakyma = new PaaNakyma(this);
@@ -105,8 +105,7 @@ public class Tupa extends Application {
         sivuPuu.setCellFactory(tehdas);
         // juuri näkymättömäksi
         sivuPuu.setShowRoot(false);
-        SivuKuuntelija tarkkailija = new SivuKuuntelija(this);
-        sivuPuu.getSelectionModel().selectedItemProperty().addListener(tarkkailija);
+
 
         //jonka jälkeen rakennetaan ikkunan vasen puoli
         border.setLeft(osiot.rakennaVasensivu(sivuPuu));
